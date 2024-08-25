@@ -13,6 +13,7 @@ const MONGOOSE_OPTIONS = { useNewUrlParser: true, useUnifiedTopology: true };
 mongoose.connect(process.env.MONGODB_URI, MONGOOSE_OPTIONS)
     .then(() => {
         console.log('Conectado ao MongoDB com sucesso');
+        enviarLembretePorEmail(0, " - HOJE");
     })
     .catch((error) => {
         console.log('Erro ao conectar ao MongoDB:', error);
