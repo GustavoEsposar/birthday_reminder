@@ -11,6 +11,7 @@ const transporter = nodemailer.createTransport({
 
 const enviarLembretePorEmail = async (intervalo, mensagem) => {
     const hoje = new Date();
+    console.log(hoje);
     hoje.setDate(hoje.getDate() + intervalo); //intervalo de dias para verificar;
 
     const month = hoje.getUTCMonth() + 1; // Mês é zero-based
