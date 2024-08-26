@@ -33,8 +33,8 @@ app.get('/', async (req, res) => {
         }
     }).sort({ date: 1 });
 
-    if (aniversarios.length > 0) {
-        await enviarLembretePorEmail();
+    if (aniversarios.length > 0) {        
+        await enviarLembretePorEmail(0, " - HOJE");
         res.send(`Emails enviados para os aniversariantes de hoje.`);
     } else {
         res.send('Nenhum aniversário encontrado para hoje.');
