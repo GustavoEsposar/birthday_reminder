@@ -1,5 +1,7 @@
 const nodemailer = require('nodemailer');
 const Pessoa = require('../models/Pessoa');
+const fs = require('fs');
+const path = require('path');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -14,10 +16,6 @@ const enviarLembretePorEmail = async (intervalo, mensagem) => {
 
     const month = hoje.getUTCMonth() + 1; // Mês é zero-based
     const day = hoje.getUTCDate();
-    console.log('Mês:', month, 'Dia:', day);
-    console.log(intervalo);
-    
-
 
     // Busca aniversariantes do dia de hoje
     const aniversarios = await Pessoa.find({
@@ -29,13 +27,20 @@ const enviarLembretePorEmail = async (intervalo, mensagem) => {
         }
     }).sort({ date: 1 }); // Ordena por data
 
+    // Carregar o conteúdo HTML
+    const templatePath = path.join(__dirname, '../templates/todayTemplate.html');
+    const template = fs.readFileSync(templatePath, 'utf-8');
+
     aniversarios.forEach((aniversario) => {
-        
+        // Substituir as variáveis do template
+        const htmlContent = template
+            .replace('{{name}}', aniversario.name);
+
         const mailOptions = {
             from: process.env.EMAIL,
             to: process.env.RECIPIENT,
             subject: 'Birthday Reminder 📅🎊' + mensagem,
-            text: `Aniversário de ${aniversario.name}!`
+            html: htmlContent
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
