@@ -27,7 +27,7 @@ app.get('/', async (req, res) => {
     //enviarLembretePorEmail(7, " - Em 7 dias");
 });
 
-cron.schedule('11 15 * * *', async () => {
+cron.schedule('15 15 * * *', async () => {
     await enviarLembretePorEmail(0, " - HOJE");
     await enviarLembretePorEmail(2, " - Em 2 dias");
     await enviarLembretePorEmail(7, " - Em 7 dias");
