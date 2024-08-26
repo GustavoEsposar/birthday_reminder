@@ -23,3 +23,11 @@ Para isso foram especificados email's de destinatário e remetente (Gmail), temp
 
 O node-cron é o core que possibilita programar os disparos de emails de notificação com base em timezones específicas.
 Basicamente todo dia num horario especifico uma rotina é disparada para consultar no banco de dados quais regsitros/documentos possuem data de aniversário nos intervalos especificos e com base na resposta obtida, dispara notificações.
+
+## Disclaimer
+
+Todos os artefatos utilizados neste projeto estão livres de direito autoral
+
+A figura a seguir ilustra a notificação recebida pelo destinatário
+
+![exemplo](./figures/IMG_7440.PNG)
