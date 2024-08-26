@@ -22,9 +22,9 @@ mongoose.connect(process.env.MONGODB_URI, MONGOOSE_OPTIONS)
     });
 
 app.get('/', async (req, res) => {
-    enviarLembretePorEmail(0, " - HOJE");
-    enviarLembretePorEmail(2, " - Em 2 dias");
-    enviarLembretePorEmail(7, " - Em 7 dias");
+    //enviarLembretePorEmail(0, " - HOJE");
+    //enviarLembretePorEmail(2, " - Em 2 dias");
+    //enviarLembretePorEmail(7, " - Em 7 dias");
 });
 
 cron.schedule('0 5 * * *', async () => {
