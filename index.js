@@ -9,7 +9,7 @@ const Pessoa = require('./models/Pessoa');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const MONGOOSE_OPTIONS = { useNewUrlParser: true, useUnifiedTopology: true };
+const MONGOOSE_OPTIONS = { };
 mongoose.connect(process.env.MONGODB_URI, MONGOOSE_OPTIONS)
     .then(() => {
         console.log('Conectado ao MongoDB com sucesso');
