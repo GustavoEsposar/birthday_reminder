@@ -15,6 +15,8 @@ const enviarLembretePorEmail = async (intervalo, mensagem) => {
 
     const month = hoje.getUTCMonth() + 1; // Mês é zero-based
     const day = hoje.getUTCDate();
+    console.log('Mês:', month, 'Dia:', day);
+
 
     // Busca aniversariantes do dia de hoje
     const aniversarios = await Pessoa.find({
