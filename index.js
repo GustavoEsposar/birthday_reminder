@@ -10,22 +10,24 @@ const Pessoa = require('./models/Pessoa');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const rotinaDeNotificacao = () => {
+        enviarLembretePorEmail(0, " - HOJE");
+        enviarLembretePorEmail(2, " - Em 2 dias");
+        enviarLembretePorEmail(7, " - Em 7 dias");
+}
+
 const MONGOOSE_OPTIONS = { };
 mongoose.connect(process.env.MONGODB_URI, MONGOOSE_OPTIONS)
     .then(() => {
         console.log('Conectado ao MongoDB com sucesso');
-        //enviarLembretePorEmail(0, " - HOJE");
-        //enviarLembretePorEmail(2, " - Em 2 dias");
-        //enviarLembretePorEmail(7, " - Em 7 dias");
+        rotinaDeNotificacao();
     })
     .catch((error) => {
         console.log('Erro ao conectar ao MongoDB:', error);
     });
 
-app.get('/', async (req, res) => {
-    //enviarLembretePorEmail(0, " - HOJE");
-    //enviarLembretePorEmail(2, " - Em 2 dias");
-    //enviarLembretePorEmail(7, " - Em 7 dias");
+app.get('/', (req, res) => {
+    res.send('Aplicação está ativa!' + new Date().toISOString());
 });
 
 cron.schedule('0 5 * * *', async () => {
