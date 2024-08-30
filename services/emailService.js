@@ -12,6 +12,19 @@ const transporter = nodemailer.createTransport({
 });
 
 const enviarLembretePorEmail = async (intervalo, mensagem) => {
+    const aniversariantes = await buscarAniversariantes(intervalo);
+
+    if(aniversariantes.length > 0) {
+        (aniversariantes).forEach((aniversario) => {
+            //prepararMailOptions(); //util para ampliar serviço e suportar varios receivers
+            enviarEmail(aniversario, mensagem, substituirVariaveisDoTemplate(prepararTemplate(), aniversario, intervalo));
+        });
+    } else {
+        console.log(`Nenhum aniversário encontrado para intervalo de ${intervalo} dias`);
+    }
+}
+
+const buscarAniversariantes = async (intervalo) => {
     const hoje = new Date();
     hoje.setDate(hoje.getDate() + intervalo)
 
@@ -28,40 +41,43 @@ const enviarLembretePorEmail = async (intervalo, mensagem) => {
         }
     }).sort({ date: 1 }); // Ordena por data
 
+    return aniversarios;
+}
+
+const prepararTemplate = (intervalo) => {
     // Carregar o conteúdo HTML
     let templatePath;
-    if(intervalo == 0) {
+    if (intervalo == 0) {
         templatePath = path.join(__dirname, '../templates/todayTemplate.html');
     } else {
         templatePath = path.join(__dirname, '../templates/fewDaysTemplate.html');
     }
     const template = fs.readFileSync(templatePath, 'utf-8');
+    return template;
+}
 
-    if (aniversarios.length > 0) {        
-        aniversarios.forEach((aniversario) => {
-            // Substituir as variáveis do template
-            const htmlContent = template
-                .replace('{{name}}', aniversario.name)
+const substituirVariaveisDoTemplate = (template, aniversariante, intervalo) => {
+    const htmlContent = template
+                .replace('{{name}}', aniversariante.name)
                 .replace('{{days}}', intervalo);
-    
-            const mailOptions = {
-                from: process.env.EMAIL,
-                to: process.env.RECIPIENT,
-                subject: 'Birthday Reminder 📅🎊' + mensagem,
-                html: htmlContent
-            };
-    
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.log(`Error: ${error}`);
-                } else {
-                    console.log(`Email enviado para ${aniversario.name}: ${info.response}`);
-                }
-            });
-        });
-    } else {
-        console.log(`Nenhum aniversário encontrado para intervalo de ${intervalo} dias`);
-    }
-};
+    return htmlContent;
+}
+
+const enviarEmail = (aniversario, mensagem, htmlContent) => {
+    const mailOptions = {
+        from: process.env.EMAIL,
+        to: process.env.RECIPIENT,
+        subject: 'Birthday Reminder 📅🎊' + mensagem,
+        html: htmlContent
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log(`Error: ${error}`);
+        } else {
+            console.log(`Email enviado para ${aniversario.name}: ${info.response}`);
+        }
+    });
+}
 
 module.exports = { enviarLembretePorEmail };
