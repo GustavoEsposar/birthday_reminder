@@ -3,6 +3,7 @@
 ## Tecnologias utilizadas
 -  [Render: Cloud Application Hosting for Developers](https://render.com/)
 - [MongoDB Atlas M0](https://mongodb.com/)
+- [UptimeRobot: Free Website Monitoring Service](https://uptimerobot.com/website-monitoring/)
 - HTML
 - CSS
 - Javascript

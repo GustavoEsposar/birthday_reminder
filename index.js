@@ -10,10 +10,10 @@ const Pessoa = require('./models/Pessoa');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const rotinaDeNotificacao = () => {
-        enviarLembretePorEmail(0, " - HOJE");
-        enviarLembretePorEmail(2, " - Em 2 dias");
-        enviarLembretePorEmail(7, " - Em 7 dias");
+const rotinaDeNotificacao = async () => {
+    enviarLembretePorEmail(0, " - HOJE");
+    enviarLembretePorEmail(2, " - Em 2 dias");
+    enviarLembretePorEmail(7, " - Em 7 dias");
 }
 
 const MONGOOSE_OPTIONS = { };
@@ -31,9 +31,7 @@ app.get('/', (req, res) => {
 });
 
 cron.schedule('0 5 * * *', async () => {
-    await enviarLembretePorEmail(0, " - HOJE");
-    await enviarLembretePorEmail(2, " - Em 2 dias");
-    await enviarLembretePorEmail(7, " - Em 7 dias");
+    await rotinaDeNotificacao();
 }, {
     timezone: timezone
 });
