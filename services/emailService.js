@@ -12,16 +12,25 @@ const transporter = nodemailer.createTransport({
 });
 
 const enviarLembretePorEmail = async (intervalo, mensagem) => {
-    const aniversariantes = await buscarAniversariantes(intervalo);
+    const usuarios = await buscarUsuarios();
+    
+    if(usuarios.length > 0) {
+        
+        usuarios.forEach((user) => {
+            user.birthdates.forEach(() => {
 
-    if(aniversariantes.length > 0) {
-        (aniversariantes).forEach((aniversario) => {
-            //prepararMailOptions(); //util para ampliar serviço e suportar varios receivers
+            });
+            //const aniversariantes = buscarAniversariantes(intervalo);
+            
             enviarEmail(aniversario, mensagem, substituirVariaveisDoTemplate(prepararTemplate(), aniversario, intervalo));
         });
     } else {
-        console.log(`Nenhum aniversário encontrado para intervalo de ${intervalo} dias`);
+        console.log(`Nenhuma conta registrada no sistema`);
     }
+}
+
+const buscarUsuarios = async () => {
+    return await Pessoa.find();
 }
 
 const buscarAniversariantes = async (intervalo) => {
