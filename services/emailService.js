@@ -15,15 +15,11 @@ const enviarLembretePorEmail = async (intervalo, mensagem) => {
     const usuarios = await buscarUsuarios();
     
     if(usuarios.length > 0) {
-        
-        usuarios.forEach((user) => {
-            user.birthdates.forEach(() => {
-
+            usuarios.forEach((user) => {
+                filtrarAniversariantes(user, intervalo).forEach((aniversario) => {
+                    enviarEmail(user, mensagem, substituirVariaveisDoTemplate(prepararTemplate(intervalo), aniversario, intervalo));
+                });
             });
-            //const aniversariantes = buscarAniversariantes(intervalo);
-            
-            enviarEmail(aniversario, mensagem, substituirVariaveisDoTemplate(prepararTemplate(), aniversario, intervalo));
-        });
     } else {
         console.log(`Nenhuma conta registrada no sistema`);
     }
@@ -33,24 +29,20 @@ const buscarUsuarios = async () => {
     return await Pessoa.find();
 }
 
-const buscarAniversariantes = async (intervalo) => {
+const filtrarAniversariantes = (user, intervalo) => {
     const hoje = new Date();
     hoje.setDate(hoje.getDate() + intervalo)
 
     const month = hoje.getUTCMonth() + 1; // Mês é zero-based
     const day = hoje.getUTCDate();    
 
-    // Busca aniversariantes do dia de hoje
-    const aniversarios = await Pessoa.find({
-        $expr: {
-            $and: [
-                { $eq: [{ $month: "$date" }, month] },
-                { $eq: [{ $dayOfMonth: "$date" }, day] }
-            ]
-        }
-    }).sort({ date: 1 }); // Ordena por data
+    const aniversariantes = user.birthdates.filter((birthdate) => {
+        const data = new Date(birthdate.date);
 
-    return aniversarios;
+        return (data.getUTCMonth() + 1 === month) && (data.getUTCDate() === day);
+    });
+
+    return aniversariantes;
 }
 
 const prepararTemplate = (intervalo) => {
@@ -72,10 +64,10 @@ const substituirVariaveisDoTemplate = (template, aniversariante, intervalo) => {
     return htmlContent;
 }
 
-const enviarEmail = (aniversario, mensagem, htmlContent) => {
+const enviarEmail = (user, mensagem, htmlContent) => {
     const mailOptions = {
         from: process.env.EMAIL,
-        to: process.env.RECIPIENT,
+        to: user.email,
         subject: 'Birthday Reminder 📅🎊' + mensagem,
         html: htmlContent
     };
@@ -84,7 +76,7 @@ const enviarEmail = (aniversario, mensagem, htmlContent) => {
         if (error) {
             console.log(`Error: ${error}`);
         } else {
-            console.log(`Email enviado para ${aniversario.name}: ${info.response}`);
+            console.log(`Email enviado para ${user.birthdates.name}: ${info.response}`);
         }
     });
 }
