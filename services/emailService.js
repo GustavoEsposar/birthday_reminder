@@ -30,17 +30,18 @@ const buscarUsuarios = async () => {
 }
 
 const filtrarAniversariantes = (user, intervalo) => {
-    const hoje = new Date();
+    let hoje = new Date();
+    hoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
     hoje.setDate(hoje.getDate() + intervalo)
 
     const month = hoje.getUTCMonth() + 1; // Mês é zero-based
-    const day = hoje.getUTCDate();    
+    const day = hoje.getUTCDate();
 
     const aniversariantes = user.birthdates.filter((birthdate) => {
         const data = new Date(birthdate.date);
-
+        
         return (data.getUTCMonth() + 1 === month) && (data.getUTCDate() === day);
-    });
+    });    
 
     return aniversariantes;
 }
@@ -76,7 +77,7 @@ const enviarEmail = (user, mensagem, htmlContent) => {
         if (error) {
             console.log(`Error: ${error}`);
         } else {
-            console.log(`Email enviado para ${user.birthdates.name}: ${info.response}`);
+            console.log(`Email enviado para ${user.email}: ${info.response}`);
         }
     });
 }
