@@ -20,7 +20,7 @@ const MONGOOSE_OPTIONS = { };
 mongoose.connect(process.env.MONGODB_URI, MONGOOSE_OPTIONS)
     .then(() => {
         console.log('Conectado ao MongoDB com sucesso');
-        rotinaDeNotificacao();  //apenas para verificar o deploy da aplicação
+        //rotinaDeNotificacao();  //apenas para verificar o deploy da aplicação
     })
     .catch((error) => {
         console.log('Erro ao conectar ao MongoDB:', error);
