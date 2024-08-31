@@ -1,11 +1,8 @@
 const mongoose = require('mongoose');
 
 const pessoaSchema = new mongoose.Schema({
-    email: String,
-    birthdates: [{
-        name: String,
-        date: Date
-    }]
-}, { collection: 'contas' });
+    name: String,
+    date: Date
+}, { collection: 'Aniversarios' });
 
 module.exports = mongoose.model('Pessoa', pessoaSchema);
