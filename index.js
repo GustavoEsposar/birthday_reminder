@@ -3,11 +3,25 @@ const mongoose = require('mongoose');
 const cron = require('node-cron');
 const timezone = 'America/Sao_Paulo'; 
 require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
 
 const { enviarLembretePorEmail } = require('./services/emailService');
-const Pessoa = require('./models/Pessoa');
 
 const app = express();
+
+// template engine
+app.set('view engine', 'ejs')
+
+// pulbic files
+app.use(express.static(path.join(__dirname, 'public')))
+const publicFolder = path.join(__dirname, 'public');
+const expressPublic = express.static(publicFolder);
+app.use(expressPublic)
+
+// enable receiving POST
+app.use(express.urlencoded( {extended: true} ))
+
 const PORT = process.env.PORT || 3000;
 
 const rotinaDeNotificacao = async () => {
@@ -27,7 +41,10 @@ mongoose.connect(process.env.MONGODB_URI, MONGOOSE_OPTIONS)
     });
 
 app.get('/', (req, res) => {
-    res.send('Aplicação está ativa!' + new Date().toISOString());
+    //res.send('Aplicação está ativa!' + new Date().toISOString());
+    res.render('index', {
+        title: 'Birthday Reminder - Home'
+    })
 });
 
 cron.schedule('0 5 * * *', async () => {

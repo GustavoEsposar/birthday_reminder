@@ -31,4 +31,4 @@ Todos os artefatos utilizados neste projeto estão livres de direito autoral
 
 A figura a seguir ilustra a notificação recebida pelo destinatário
 
-![exemplo](./figures/IMG_7440.png)
+![exemplo](./public/img/IMG_7440.png)
