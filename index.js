@@ -5,6 +5,8 @@ const timezone = 'America/Sao_Paulo';
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 
 const { enviarLembretePorEmail } = require('./services/emailService');
 
@@ -18,6 +20,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // enable receiving POST
 app.use(express.urlencoded( {extended: true} ))
+
+// Configurar sessões
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+    }),
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24, // 1 dia
+    }
+}));
 
 const PORT = process.env.PORT || 3000;
 
