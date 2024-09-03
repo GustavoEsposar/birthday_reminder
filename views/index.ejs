@@ -4,6 +4,19 @@
     <%- include('partials/head.ejs') %>
 </head>
 <body class="body">
-    <h1>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum et officia dicta quidem illo aliquam sit. Nulla aliquid cumque voluptates quaerat reprehenderit saepe, assumenda hic eligendi perspiciatis laborum, impedit tenetur?</h1>
+    <div class="container">
+        <nav class="nav-bar">
+            <div>                
+                <img src="/img/logo.png" alt="asdf" class="logo">
+                <h1 class="pacifico-regular name">Birthday Reminder</h1>
+            </div>
+
+            <ul class="pacifico-regular links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/login">Login</a></li>
+            </ul>
+        </nav>
+        <%- include('partials/footer.ejs') %>
+    </div>  
 </body>
 </html>

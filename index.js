@@ -14,10 +14,7 @@ const app = express();
 app.set('view engine', 'ejs')
 
 // pulbic files
-app.use(express.static(path.join(__dirname, 'public')))
-const publicFolder = path.join(__dirname, 'public');
-const expressPublic = express.static(publicFolder);
-app.use(expressPublic)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // enable receiving POST
 app.use(express.urlencoded( {extended: true} ))
