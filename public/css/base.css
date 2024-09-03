@@ -1,0 +1,28 @@
+.pacifico-regular {
+    font-family: "Pacifico", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.body {
+    background-image: url('../img/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 80vw;
+    margin: 0 auto;
+    justify-content: flex-start;
+    min-height: 100vh;
+}
+
+a {
+    color: black;
+}

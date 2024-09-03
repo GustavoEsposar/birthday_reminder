@@ -1,0 +1,25 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 0;
+}
+
+.content div {
+    background-color: #3b617485;
+    border-radius: 15px;
+    max-width: 90%;
+    padding: 0 20px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 15px black;
+}
+
+
+.content div:last-of-type {
+    margin-bottom: 0;
+}
+
+.content p {
+    font-size: 18px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}

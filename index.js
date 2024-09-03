@@ -37,12 +37,24 @@ mongoose.connect(process.env.MONGODB_URI, MONGOOSE_OPTIONS)
         console.log('Erro ao conectar ao MongoDB:', error);
     });
 
+/*          Rotas
+=============================================================================================
+*/
 app.get('/', (req, res) => {
-    //res.send('Aplicação está ativa!' + new Date().toISOString());
     res.render('index', {
         title: 'Birthday Reminder - Home'
     })
 });
+
+app.get('/login', (req, res) => {
+    res.render('login', {
+        title: 'Birthday Reminder - Login'
+    })
+});
+
+/*          
+=============================================================================================
+*/
 
 cron.schedule('0 5 * * *', async () => {
     await rotinaDeNotificacao();

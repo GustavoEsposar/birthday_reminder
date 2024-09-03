@@ -5,18 +5,31 @@
 </head>
 <body class="body">
     <div class="container">
-        <nav class="nav-bar">
-            <div>                
-                <img src="/img/logo.png" alt="asdf" class="logo">
-                <h1 class="pacifico-regular name">Birthday Reminder</h1>
+        <%- include('partials/navbar.ejs') %>
+        <div class="content">
+            <div class="about">
+                <h1 class="pacifico-regular">Nosso serviço</h1>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore illo veniam vero sequi sunt, aliquid eligendi quisquam ipsum, ipsam dolores incidunt laborum culpa esse corrupti assumenda et eveniet impedit omnis.
+                </p>
             </div>
+            <div>
+                <h1 class="pacifico-regular">Características</h1>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut eaque, doloribus ab deserunt quos dolorum pariatur dolorem nemo maxime neque natus impedit sequi praesentium illum fuga incidunt quaerat, perferendis rem.
 
-            <ul class="pacifico-regular links">
-                <li><a href="/">Home</a></li>
-                <li><a href="/login">Login</a></li>
-            </ul>
-        </nav>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, tempore quaerat saepe quae molestiae recusandae veritatis tenetur dignissimos beatae dicta nulla voluptate earum fugiat consequatur vero laborum aliquid ducimus placeat!
+                </p>
+            </div>
+            <div>
+                <h1 class="pacifico-regular">Tecnologias</h1>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut eaque, doloribus ab deserunt quos dolorum pariatur dolorem nemo maxime neque natus impedit sequi praesentium illum fuga incidunt quaerat, perferendis rem.
+                </p>
+            </div>
+        </div>
         <%- include('partials/footer.ejs') %>
-    </div>  
+    </div>
+    <%- include('partials/foot.ejs') %>
 </body>
 </html>
