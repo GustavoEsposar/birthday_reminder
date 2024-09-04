@@ -3,9 +3,10 @@
     flex-direction: column;
     align-items: center;
     padding: 60px 0;
+    
 }
 
-.content div {
+.content > div {
     background-color: #3b617485;
     border-radius: 15px;
     max-width: 90%;
@@ -15,11 +16,47 @@
 }
 
 
-.content div:last-of-type {
+.content > div:last-of-type {
     margin-bottom: 0;
 }
 
 .content p {
     font-size: 18px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.content .form-login {
+    padding: 40px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 400px;
+}
+
+.content .form-login div {
+    font-size: 25px;
+}
+
+.content .form-login div:last-of-type {
+    
+}
+
+.content .form-login div button {
+    font-size: 30px;
+    border-radius: 15px;
+    background-color: #2292ca;
+    border-color: rgba(255, 255, 255, 0);
+    border-style: solid;
+    border-width: 3px; 
+    box-shadow: 0 5px 5px black;
+    transition: all 200ms ease-in-out;
+}
+
+.content .form-login div button:hover {
+    cursor: pointer;
+    border-color: rgba(255, 255, 255, 1);
+    color: white;
+    text-decoration: underline;
 }

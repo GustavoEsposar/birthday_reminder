@@ -13,12 +13,17 @@ const pessoaSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        requiered: true
+        required: true // Corrigido aqui, estava como "requiered"
     },
     birthdates: [{
-        name: String,
-        date: Date,
-        required: true
+        name: {
+            type: String,
+            required: true
+        },
+        date: {
+            type: Date,
+            required: true
+        }
     }]
 }, { collection: 'contas' });
 
