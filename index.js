@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const Pessoa = require('./models/Pessoa'); //como desacoplar esta logica?
 
 const { enviarLembretePorEmail } = require('./services/emailService');
 
@@ -42,6 +43,15 @@ const rotinaDeNotificacao = async () => {
     enviarLembretePorEmail(7, " - Em 7 dias");
 }
 
+function isAuthenticated(req, res, next) {
+    if (req.session.userId) {
+        return next();
+    } else {
+        res.redirect('/login');
+    }
+}
+
+
 const MONGOOSE_OPTIONS = { };
 mongoose.connect(process.env.MONGODB_URI, MONGOOSE_OPTIONS)
     .then(() => {
@@ -65,6 +75,44 @@ app.get('/login', (req, res) => {
     res.render('login', {
         title: 'Birthday Reminder - Login'
     })
+});
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    
+    try {
+        const user = await Pessoa.findOne({ email });
+        
+        if (user && await user.matchPassword(password)) {
+            req.session.userId = user._id; // Iniciar sessão
+            res.redirect('/dashboard');
+        } else {
+            res.status(400).send('Credenciais inválidas');
+        }
+    } catch (error) {
+        res.status(500).send('Erro ao fazer login');
+        //res.redirect('/login');
+    }
+});
+
+app.post('/register', async (req, res) => {
+    const { name, email, password } = req.body;
+    try {
+        const user = new Pessoa({ name, email, password });
+        await user.save();
+        req.session.userId = user._id; // Iniciar sessão
+        res.redirect('/dashboard');
+    } catch (error) {
+        res.status(400).send('Erro ao registrar usuário');
+    }
+});
+
+app.get('/dashboard', isAuthenticated, async (req, res) => {
+    const user = await Pessoa.findById(req.session.userId);
+    res.render('dashboard', {
+        title: 'Birthday Reminder - Dashboard',
+        user: user
+    });
 });
 
 /*          
