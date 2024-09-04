@@ -8,18 +8,21 @@
         <%- include('partials/navbar.ejs') %>
         <div class="content">
             <div>
-                <form action="/login" method="POST" class="form-login">
+                <form action="/register" method="POST" class="form-login">
+                    <div>
+                        <input type="text" id="name" name="name" required placeholder="Digite seu nome">
+                    </div>
                     <div>
                         <input type="email" id="email" name="email" required placeholder="Digite seu email">
                     </div>
                     <div>
-                        <input type="password" id="password" name="password" required placeholder="Digite sua senha">
+                        <input type="password" id="passwordOne" name="passwordOne" required placeholder="Digite sua senha">
                     </div>
                     <div>
-                        <button type="submit" class="pacifico-regular">Entrar</button>
+                        <input type="password" id="passwordTwo" name="passwordTwo" required placeholder="Redigite sua senha">
                     </div>
                     <div>
-                        Não tem uma conta ainda? <a href="/register">Crie uma!</a>
+                        <button type="submit" class="pacifico-regular">Cadastrar</button>
                     </div>
                 </form>
             </div>

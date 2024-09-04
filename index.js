@@ -91,19 +91,28 @@ app.post('/login', async (req, res) => {
         }
     } catch (error) {
         res.status(500).send('Erro ao fazer login');
-        //res.redirect('/login');
     }
 });
 
+app.get('/register', (req, res) => {
+    res.render('register', {
+        title: 'Birthday Reminder - Cadastrar'
+    })
+});
+
 app.post('/register', async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, passwordOne, passwordTwo } = req.body;
+
     try {
+        if(passwordOne != passwordTwo) throw new Error("As senhas não são iguais!");
+        const password = passwordOne;
         const user = new Pessoa({ name, email, password });
+        
         await user.save();
-        req.session.userId = user._id; // Iniciar sessão
-        res.redirect('/dashboard');
+        req.session.userId = user._id;
+        res.redirect('/login');
     } catch (error) {
-        res.status(400).send('Erro ao registrar usuário');
+        res.status(400).send(error.message);
     }
 });
 

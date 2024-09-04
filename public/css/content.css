@@ -31,12 +31,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
     min-height: 400px;
+    min-width: 400px;
+    justify-content: center;
 }
 
 .content .form-login div {
     font-size: 25px;
+    margin-bottom: 40px ;
+}
+
+.content .form-login div input {
+    padding: 10px 15px;
+    font-size: 20px;
+    width: 300px;
+    border-radius: 15px;
+    box-shadow: 0 5px 5px black;
+    border: none;
 }
 
 .content .form-login div button {
@@ -55,4 +66,17 @@
     border-color: rgba(255, 255, 255, 1);
     color: white;
     text-decoration: underline;
+}
+
+.content .form-login div:last-of-type {
+    font-size: 20px;
+}
+
+.content .form-login div a {
+    transition: all 200ms ease-in-out;
+    color: white;
+}
+
+.content .form-login div a:hover {
+    text-shadow: 0 5px 5px white;
 }

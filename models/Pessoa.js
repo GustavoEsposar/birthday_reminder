@@ -13,7 +13,7 @@ const pessoaSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true // Corrigido aqui, estava como "requiered"
+        required: true 
     },
     birthdates: [{
         name: {
