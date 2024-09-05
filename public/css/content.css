@@ -10,7 +10,8 @@
     background-color: #3b617485;
     border-radius: 15px;
     max-width: 90%;
-    padding: 0 20px;
+    min-width: 500px;
+    padding: 0 0;
     margin-bottom: 40px;
     box-shadow: 0 10px 15px black;
 }
@@ -32,7 +33,6 @@
     flex-direction: column;
     align-items: center;
     min-height: 400px;
-    min-width: 400px;
     justify-content: center;
 }
 
@@ -55,7 +55,7 @@
     border-radius: 15px;
     background-color: #2292ca;
     border-color: rgba(255, 255, 255, 0);
-    border-style: solid;
+    border-style: outset;
     border-width: 3px; 
     box-shadow: 0 5px 5px black;
     transition: all 200ms ease-in-out;

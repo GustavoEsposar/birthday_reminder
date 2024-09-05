@@ -124,6 +124,32 @@ app.get('/dashboard', isAuthenticated, async (req, res) => {
     });
 });
 
+app.post('/add-birthdate', isAuthenticated, async (req, res) => {
+    const user = await Pessoa.findById(req.session.userId);
+    res.render('dashboard', {
+        title: 'Birthday Reminder - Dashboard',
+        user: user
+    });
+});
+
+app.post('/delete-birthdate', async (req, res) => {
+    try {
+        const { birthdateId, userId } = req.body;
+        
+        await Pessoa.updateOne(
+            { _id: userId },
+            { $pull: { birthdates: { _id: birthdateId } } }
+        );
+        res.redirect('/dashboard'); // Redireciona após a exclusão
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao deletar aniversário');
+    }
+});
+
+
+//update-birthdate
+
 /*          
 =============================================================================================
 */

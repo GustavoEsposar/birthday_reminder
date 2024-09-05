@@ -6,11 +6,41 @@
 <body class="body">
     <div class="container">
         <%- include('partials/navbar.ejs') %>
-        <div class="content">
-            
+        <div class="dashboard">
+            <h1 class="pacifico-regular">Aniversários</h1>
+            <div class="add-birthdate pacifico-regular sobrepor">
+                <a href="/post-register">+</a>
+            </div>
+            <div class="pessoas">
+                <% user.birthdates.forEach((aniversario) => { %>
+                    <div class="pessoa sobrepor">
+                        <h3><%= aniversario.name %></h3>
+                        <p>
+                            <% 
+                                const date = new Date(aniversario.date);
+                                const day = String(date.getUTCDate()).padStart(2, '0');
+                                const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                                const year = date.getUTCFullYear();
+                                const formattedDate = `${day}/${month}/${year}`;
+                            %>
+                            <%= formattedDate %>
+                        </p>
+
+                        <form action="/delete-birthdate" method="POST" class="delete-form">
+                            <input type="hidden" name="userId" value="<%= user._id %>">
+                            <input type="hidden" name="birthdateId" value="<%= aniversario._id %>">
+                            <button type="submit" class="delete-btn">
+                                <span class="material-symbols-outlined">
+                                    delete
+                                    </span> 
+                            </button>
+                        </form>
+                    </div>
+                <% }) %>
+            </div>
         </div>
-        <%- include('partials/footer.ejs') %>
-    </div>  
+    </div>
+    <%- include('partials/footer.ejs') %>
     <%- include('partials/foot.ejs') %>
 </body>
 </html>
