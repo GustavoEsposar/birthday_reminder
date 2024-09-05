@@ -5,12 +5,31 @@
 </head>
 <body class="body">
     <div class="container">
+
+        
+        <div id="birthdate-form-container" class="hidden">
+            <form action="/add-birthdate" method="POST" class="birthdate-form">
+                <input type="hidden" name="userId" value="<%= user._id %>">
+
+                <input class="input" type="text" id="name" name="name" required placeholder="Nome do aniversariante">
+
+                <input class="input" type="date" id="birthdate" name="birthdate" required>
+
+                <button class=" pacifico-regular" type="submit" class="submit-btn">Adicionar</button>
+            </form>
+        </div>
         <%- include('partials/navbar.ejs') %>
         <div class="dashboard">
+
+
             <h1 class="pacifico-regular">Aniversários</h1>
+
+            
             <div class="add-birthdate pacifico-regular sobrepor">
-                <a href="/post-register">+</a>
+                <a href="#" id="show-form">+</a>
             </div>
+
+
             <div class="pessoas">
                 <% user.birthdates.forEach((aniversario) => { %>
                     <div class="pessoa sobrepor">
@@ -32,7 +51,7 @@
                             <button type="submit" class="delete-btn">
                                 <span class="material-symbols-outlined">
                                     delete
-                                    </span> 
+                                </span> 
                             </button>
                         </form>
                     </div>
@@ -40,7 +59,23 @@
             </div>
         </div>
     </div>
+
     <%- include('partials/footer.ejs') %>
     <%- include('partials/foot.ejs') %>
+
+    <script>
+        document.getElementById('show-form').addEventListener('click', function() {
+            const formContainer = document.getElementById('birthdate-form-container');
+            if (formContainer.classList.contains('hidden')) {
+                formContainer.classList.remove('hidden');
+                formContainer.classList.add('visible');
+            } else {
+                formContainer.classList.remove('visible');
+                formContainer.classList.add('hidden');
+            }
+        });
+    </script>
+    
+    
 </body>
 </html>

@@ -125,14 +125,28 @@ app.get('/dashboard', isAuthenticated, async (req, res) => {
 });
 
 app.post('/add-birthdate', isAuthenticated, async (req, res) => {
-    const user = await Pessoa.findById(req.session.userId);
-    res.render('dashboard', {
-        title: 'Birthday Reminder - Dashboard',
-        user: user
-    });
+    try {
+        const { name, birthdate, userId } = req.body;
+        
+        await Pessoa.updateOne(
+            { _id: userId },
+            { 
+                $push: { 
+                    birthdates: { 
+                        name: name, 
+                        date: birthdate 
+                    } 
+                } 
+            }
+        );
+        res.redirect('/dashboard'); 
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao deletar aniversário');
+    }
 });
 
-app.post('/delete-birthdate', async (req, res) => {
+app.post('/delete-birthdate', isAuthenticated , async (req, res) => {
     try {
         const { birthdateId, userId } = req.body;
         
@@ -140,7 +154,7 @@ app.post('/delete-birthdate', async (req, res) => {
             { _id: userId },
             { $pull: { birthdates: { _id: birthdateId } } }
         );
-        res.redirect('/dashboard'); // Redireciona após a exclusão
+        res.redirect('/dashboard'); 
     } catch (error) {
         console.error(error);
         res.status(500).send('Erro ao deletar aniversário');
