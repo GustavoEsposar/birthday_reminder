@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <%- include('partials/head.ejs') %>
+</head>
+<body class="body">
+    <div class="container">
+        <%- include('partials/navbar.ejs') %>
+        <div class="content">
+            <div>
+                <form action="/register" method="POST" class="form-login">
+                    <div>
+                        <input type="text" id="name" name="name" required placeholder="Digite seu nome">
+                    </div>
+                    <div>
+                        <input type="email" id="email" name="email" required placeholder="Digite seu email">
+                    </div>
+                    <div>
+                        <input type="password" id="passwordOne" name="passwordOne" required placeholder="Digite sua senha">
+                    </div>
+                    <div>
+                        <input type="password" id="passwordTwo" name="passwordTwo" required placeholder="Redigite sua senha">
+                    </div>
+                    <div>
+                        <button type="submit" class="pacifico-regular">Cadastrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <%- include('partials/footer.ejs') %>
+    </div>  
+    <%- include('partials/foot.ejs') %>
+</body>
+</html>

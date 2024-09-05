@@ -1,0 +1,59 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.body {
+    background-image: url('../img/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 80vw;
+    margin: 0 auto;
+    justify-content: flex-start;
+    min-height: 100vh;
+}
+
+a {
+    color: black;
+}
+
+.pacifico-regular {
+    font-family: "Pacifico", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.sobrepor:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px aliceblue !important;
+    opacity: 1;
+    cursor: pointer;
+}
+
+.visible {
+    display: block;
+}
+
+.hidden {
+    display: none;
+    top: -200% !important;
+}
+
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
