@@ -81,3 +81,7 @@
 .content .form-login div a:hover {
     text-shadow: 0 5px 5px white;
 }
+
+@media screen and (max-width: 420px) {
+
+}

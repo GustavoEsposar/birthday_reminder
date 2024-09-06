@@ -46,6 +46,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr); 
     gap: 10px; 
+    justify-items: center;
 }
 
 .dashboard .pessoas .pessoa {
@@ -58,7 +59,9 @@
     background-color: #2292ca;
     border-radius: 15px;
     box-shadow: 0 5px 5px black;
-    transition: all 200ms ease-in-out; 
+    transition: all 200ms ease-in-out;
+
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .dashboard .pessoas .pessoa form {
@@ -110,4 +113,31 @@
     border-color: rgba(255, 255, 255, 1);
     color: white;
     text-decoration: underline;
+}
+
+
+@media screen and (max-width: 420px) {
+    .dashboard {
+        position: relative;
+        background: #3b617485;
+        padding: 30px 30px;
+        border-radius: 40px 0 0 40px;
+        margin: 20px 0;
+        width: 90%;
+        height: 80vh;
+        overflow-y: auto;
+    }
+
+    .dashboard .pessoas {
+        padding-top: 40px;
+        display: grid;
+        grid-template-columns: repeat(1, 1fr); 
+        gap: 0px;
+    }
+
+    .add-birthdate {
+        top: 20px;
+        right: 15px;
+        font-size: 30px;
+    }
 }

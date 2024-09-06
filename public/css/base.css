@@ -57,3 +57,9 @@ a {
   'GRAD' 0,
   'opsz' 24
 }
+
+@media screen and (max-width: 420px) {
+    .container {
+        width: 100vw;
+    }
+}
