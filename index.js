@@ -12,15 +12,15 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const timezone = 'America/Sao_Paulo';
 
-// Conectar ao banco de dados
+// connectando ao mongodb
 connectDB();
 
-// Template engine e arquivos estáticos
+// Configurando Template engine
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
-// Configurar sessões
+// Configurando sessões
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -29,13 +29,19 @@ app.use(session({
     cookie: { maxAge: 1000 * 60 * 60 * 24 }
 }));
 
-// Importar rotas
+/*          Rotas
+=============================================================================================
+*/
 const homeRoute = require('./routes/homeRoute');
 const authRoutes = require('./routes/authRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 app.use(homeRoute);
 app.use(authRoutes);
 app.use(dashboardRoutes);
+/*          
+=============================================================================================
+*/
+
 
 // Notificações agendadas
 cron.schedule('0 5 * * *', async () => {
