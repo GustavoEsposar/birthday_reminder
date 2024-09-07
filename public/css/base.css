@@ -60,6 +60,11 @@ a {
 }
 
 @media screen and (max-width: 420px) {
+
+    .body {
+        background-size: auto;
+        background-position: top;
+    }
     .container {
         width: 100vw;
     }
