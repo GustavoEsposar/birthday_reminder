@@ -119,4 +119,17 @@
         top: 90%; 
         font-size: 20px;
     }
+
+    .nav-bar .links {
+        gap: 0;
+    }
+
+    .nav-bar .links li {
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .nav-bar .links li:last-of-type {
+        margin: 10px;
+    }
 }
