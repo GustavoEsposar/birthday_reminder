@@ -12,3 +12,15 @@ document.getElementById('show-form').addEventListener('click', function() {
         button.innerHTML = "+";
     }
 });
+
+document.getElementById('menu-options').addEventListener('click', function() {
+    const menu = document.getElementById('menu-options');
+
+    if(menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        formContainer.classList.add('menu-visible');
+    } else {
+        menu.classList.remove('menu-visible');
+        formContainer.classList.add('hidden');
+    }
+});

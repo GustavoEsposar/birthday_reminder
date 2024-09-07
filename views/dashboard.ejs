@@ -18,7 +18,7 @@
                 <button class=" pacifico-regular" type="submit" class="submit-btn">Adicionar</button>
             </form>
         </div>
-        <%- include('partials/navbar.ejs') %>
+        <%- include('partials/navbar-dashboard.ejs') %>
         <div class="dashboard">
 
 
@@ -63,7 +63,7 @@
     <%- include('partials/footer.ejs') %>
     <%- include('partials/foot.ejs') %>
 
-    <script>
+    <script src="./js/main.js">
         document.getElementById('show-form').addEventListener('click', function() {
             const formContainer = document.getElementById('birthdate-form-container');
             const button = document.getElementById('show-form');
@@ -77,7 +77,19 @@
                 button.innerHTML = "+";
             }
         });
-    </script>
+
+        document.getElementById('menu-options').addEventListener('click', function() {
+            const menu = document.getElementById('menu-options');
+
+            if(menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                formContainer.classList.add('menu-visible');
+            } else {
+                menu.classList.remove('menu-visible');
+                formContainer.classList.add('hidden');
+            }
+        });
+    </script>s
     
     
 </body>

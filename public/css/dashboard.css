@@ -64,6 +64,17 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+.dashboard .pessoas .pessoa h3 {
+    width: 80%;
+}
+
+.dashboard .pessoas .pessoa p {
+    margin-top: 10px;
+    font-size: 20px;
+    font-style: italic;
+    text-align: center;
+}
+
 .dashboard .pessoas .pessoa form {
     position: absolute;
     top: 10px;
@@ -121,7 +132,7 @@
         position: relative;
         background: #3b617485;
         padding: 30px 30px;
-        border-radius: 40px 0 0 40px;
+        border-radius: 40px;
         margin: 20px 0;
         width: 90%;
         height: 80vh;

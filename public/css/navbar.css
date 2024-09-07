@@ -56,6 +56,40 @@
     color: white;
 }
 
+.menu-icon {
+    font-size: 40px !important;
+}
+
+.menu-icon:hover {
+    cursor: pointer;
+    color: white;
+}
+
+.material-symbols-menu {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+.menu-options {
+    display: none;
+}
+
+.menu-visible {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background-color: #2292ca;
+    height: 100px;
+
+}
+
 @media screen and (max-width: 420px) {
     .nav-bar {
         border-radius: 0 0 15px 15px;
