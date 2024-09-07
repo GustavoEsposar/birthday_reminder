@@ -9,9 +9,12 @@
 - Javascript
 - Node.js
     - express-server
+    - express-session
+    - connect-mongo
     - mongoose
     - nodemailer
     - node-cron
+    - nodemon
 
 ## Propóstio
 
