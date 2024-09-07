@@ -3,7 +3,8 @@
     flex-direction: column;
     align-items: center;
     padding: 60px 0;
-    
+    flex: 1;
+    min-height: calc(100vh - 85px - 50px);
 }
 
 .content > div {
@@ -15,11 +16,17 @@
     padding: 0 0;
     margin-bottom: 40px;
     box-shadow: 0 10px 15px black;
+    transition: all 250ms;
 }
-
 
 .content > div:last-of-type {
     margin-bottom: 0;
+}
+
+.content .about:hover {
+    background-color: #3b6174c2;
+    box-shadow: 0 0 20px black;
+    transform: scale(1.05);
 }
 
 .content p {
@@ -80,4 +87,21 @@
 
 .content .form-login div a:hover {
     text-shadow: 0 5px 5px white;
+}
+
+@media screen and (max-width: 420px) {
+    .content > div {
+        padding: 20px !important;
+        background-color: #3b617485;
+        border-radius: 15px;
+        max-width: 90%;
+        min-width: 90vw;
+        padding: 0 0;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 15px black;
+    }
+
+    .content .form-login {
+        padding: 20px 0;
+    }
 }
