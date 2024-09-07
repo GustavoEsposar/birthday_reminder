@@ -1,4 +1,5 @@
 .nav-bar {
+    position: relative;
     display: flex;
     background-color: #2292ca;
     width: 100%;
@@ -51,7 +52,8 @@
     transition: all 200ms ease-in-out; 
 }
 
-.nav-bar .links li a:hover {
+.nav-bar .links li a:hover, #menu-options a:hover
+ {
     border-color: rgba(255, 255, 255, 1);
     color: white;
 }
@@ -73,21 +75,28 @@
   'opsz' 24
 }
 
-.menu-options {
-    display: none;
+#menu-options {
+    position: absolute;
+    right: 0;
+    top: 80%;
+    background-color: #2292ca;
+    z-index: 3;
+    min-width: 150px;
+    font-size: 30px;
+    padding: 0 40px 20px;
+    border-radius: 0 0 15px 15px;
+    box-shadow: 0 5px 5px black;
 }
 
-.menu-visible {
-    display: flex;
+.menu-hidde {
+    display: none !important;
+}
+
+.menu-show {
+    display: flex !important;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    background-color: #2292ca;
-    height: 100px;
-
 }
 
 @media screen and (max-width: 420px) {
@@ -104,5 +113,10 @@
     .nav-bar .name {
         font-size: 30px;
         line-height: 30px;
+    }
+
+    #menu-options {
+        top: 90%; 
+        font-size: 20px;
     }
 }

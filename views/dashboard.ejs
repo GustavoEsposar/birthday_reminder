@@ -60,10 +60,23 @@
         </div>
     </div>
 
-    <!-- <%- include('partials/footer.ejs') %> -->
+    <%- include('partials/footer.ejs') %>
     <%- include('partials/foot.ejs') %>
-
+    <script src="./js/main.js"></script>
     <script>
+        document.getElementById('menu-icon').addEventListener('click', function() {
+        const menu = document.getElementById('menu-options');
+        
+
+            if(menu.classList.contains('menu-hidde')) {
+                menu.classList.remove('menu-hidde');
+                menu.classList.add('menu-show');
+            } else {
+                menu.classList.remove('menu-show');
+                menu.classList.add('menu-hidde');
+            }
+        });
+
         document.getElementById('show-form').addEventListener('click', function() {
             const formContainer = document.getElementById('birthdate-form-container');
             const button = document.getElementById('show-form');
