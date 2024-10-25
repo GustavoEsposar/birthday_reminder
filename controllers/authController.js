@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const Pessoa = require('../models/Pessoa');
 
 exports.login = async (req, res) => {
@@ -14,6 +15,23 @@ exports.login = async (req, res) => {
         res.status(500).send('Erro ao fazer login');
     }
 };
+
+exports.loginMobile = async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await Pessoa.findOne({ email });
+        
+        if (user && await user.matchPassword(password)) {
+            // Gerar token JWT
+            const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            res.json({ token });
+        } else {
+            res.status(400).json({ message: 'Credenciais inválidas' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao fazer login' });
+    }
+}
 
 exports.register = async (req, res) => {
     const { name, email, passwordOne, passwordTwo } = req.body;
