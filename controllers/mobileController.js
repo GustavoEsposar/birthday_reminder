@@ -34,3 +34,11 @@ exports.loginMobile = async (req, res) => {
         res.status(500).json({ message: 'Erro ao fazer login' });
     }
 }
+
+exports.deleteBirthdateMobile = async (req, res) => {
+
+}
+
+exports.addBirthdateMobile = async (req, res) => {
+    
+}
