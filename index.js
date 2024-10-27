@@ -38,9 +38,11 @@ app.use(session({
 const homeRoute = require('./routes/homeRoute');
 const authRoutes = require('./routes/authRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const mobileRoutes = require('./routes/mobileRoutes');
 app.use(homeRoute);
 app.use(authRoutes);
 app.use(dashboardRoutes);
+app.use(mobileRoutes);
 /*          
 =============================================================================================
 */

@@ -16,23 +16,6 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.loginMobile = async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        const user = await Pessoa.findOne({ email });
-        
-        if (user && await user.matchPassword(password)) {
-            // Gerar token JWT
-            const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            res.json({ token });
-        } else {
-            res.status(400).json({ message: 'Credenciais inválidas' });
-        }
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao fazer login' });
-    }
-}
-
 exports.register = async (req, res) => {
     const { name, email, passwordOne, passwordTwo } = req.body;
     try {
@@ -52,4 +35,15 @@ exports.isAuthenticated = (req, res, next) => {
     } else {
         res.redirect('/login');
     }
+};
+
+exports.authenticateToken = (req, res, next) => {
+    const token = req.headers['authorization']?.split(' ')[1];
+    if (!token) return res.status(401).json({ message: 'Acesso negado' });
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.status(403).json({ message: 'Token inválido' });
+        req.user = user;
+        next();
+    });
 };
