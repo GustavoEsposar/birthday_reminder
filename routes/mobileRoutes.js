@@ -1,5 +1,5 @@
 const { authenticateToken } = require('../controllers/authController');
-const { getBirthdates, loginMobile, addBirthdateMobile, deleteBirthdateMobile } = require('../controllers/mobileController');
+const { getBirthdates, loginMobile, addBirthdateMobile, deleteBirthdateMobile, addByQRCode } = require('../controllers/mobileController');
 const express = require('express');
 const router = express.Router();
 
@@ -10,5 +10,7 @@ router.post('/loginMobile', loginMobile);
 router.post('/addBirthdateMobile', authenticateToken, addBirthdateMobile);
 
 router.post('/deleteBirthdateMobile', authenticateToken, deleteBirthdateMobile);
+
+router.post('/addByQRCode', authenticateToken, addByQRCode);
 
 module.exports = router;

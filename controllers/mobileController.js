@@ -36,9 +36,25 @@ exports.loginMobile = async (req, res) => {
 }
 
 exports.deleteBirthdateMobile = async (req, res) => {
+    try {
+        const id = req.body._id;
 
+        await Pessoa.updateOne(
+            { _id: req.user.userId },
+            { $pull: { birthdates: { _id: id } } }
+        );
+        
+        res.sendStatus(200);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao deletar aniversário');
+    }
 }
 
 exports.addBirthdateMobile = async (req, res) => {
+
+}
+
+exports.addByQRCode = async (req, res) => {
     
 }
