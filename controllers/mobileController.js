@@ -26,7 +26,12 @@ exports.loginMobile = async (req, res) => {
             // Gerar token JWT
             const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET /*, { expiresIn: '1h' }*/);
             
-            res.json({ token });
+            res.json({ 
+                token,
+                name: user.name,
+                birth: user.birth
+            });
+            
         } else {
             res.status(400).json({ message: 'Credenciais inválidas' });
         }
