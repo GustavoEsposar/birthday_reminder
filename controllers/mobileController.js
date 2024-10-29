@@ -71,7 +71,3 @@ exports.addBirthdateMobile = async (req, res) => {
         res.status(500).send('Erro ao deletar aniversário');
     }
 }
-
-exports.addByQRCode = async (req, res) => {
-    
-}

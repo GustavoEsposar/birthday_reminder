@@ -11,6 +11,4 @@ router.post('/addBirthdateMobile', authenticateToken, addBirthdateMobile);
 
 router.post('/deleteBirthdateMobile', authenticateToken, deleteBirthdateMobile);
 
-router.post('/addByQRCode', authenticateToken, addByQRCode);
-
 module.exports = router;
