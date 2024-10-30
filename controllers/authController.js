@@ -17,10 +17,10 @@ exports.login = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
-    const { name, email, passwordOne, passwordTwo } = req.body;
+    const { name, email, passwordOne, passwordTwo, birth} = req.body;
     try {
         if (passwordOne != passwordTwo) throw new Error("As senhas não são iguais!");
-        const user = new Pessoa({ name, email, password: passwordOne });
+        const user = new Pessoa({ name, email, password: passwordOne, birth });
         await user.save();
         req.session.userId = user._id;
         res.redirect('/login');

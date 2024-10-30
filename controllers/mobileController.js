@@ -71,3 +71,18 @@ exports.addBirthdateMobile = async (req, res) => {
         res.status(500).send('Erro ao deletar aniversário');
     }
 }
+
+
+exports.registerMobile = async (req, res) => {
+    const { name, email, passwordOne, passwordTwo, birth} = req.body;
+    
+    try {
+        if (passwordOne != passwordTwo) throw new Error("As senhas não são iguais!");
+        const user = new Pessoa({ name, email, password: passwordOne, birth });
+        await user.save();
+
+        res.sendStatus(200);
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+};
