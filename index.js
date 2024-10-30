@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -19,6 +20,8 @@ connectDB();
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors());
 
 // Configurando sessões
 app.use(session({
@@ -35,9 +38,11 @@ app.use(session({
 const homeRoute = require('./routes/homeRoute');
 const authRoutes = require('./routes/authRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const mobileRoutes = require('./routes/mobileRoutes');
 app.use(homeRoute);
 app.use(authRoutes);
 app.use(dashboardRoutes);
+app.use(mobileRoutes);
 /*          
 =============================================================================================
 */

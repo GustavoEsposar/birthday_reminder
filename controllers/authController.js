@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const Pessoa = require('../models/Pessoa');
 
 exports.login = async (req, res) => {
@@ -16,10 +17,10 @@ exports.login = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
-    const { name, email, passwordOne, passwordTwo } = req.body;
+    const { name, email, passwordOne, passwordTwo, birth} = req.body;
     try {
         if (passwordOne != passwordTwo) throw new Error("As senhas não são iguais!");
-        const user = new Pessoa({ name, email, password: passwordOne });
+        const user = new Pessoa({ name, email, password: passwordOne, birth });
         await user.save();
         req.session.userId = user._id;
         res.redirect('/login');
@@ -34,4 +35,15 @@ exports.isAuthenticated = (req, res, next) => {
     } else {
         res.redirect('/login');
     }
+};
+
+exports.authenticateToken = (req, res, next) => {
+    const token = req.headers['authorization']?.split(' ')[1];
+    if (!token) return res.status(401).json({ message: 'Acesso negado' });
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.status(403).json({ message: 'Token inválido' });
+        req.user = user;
+        next();
+    });
 };

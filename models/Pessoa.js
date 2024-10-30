@@ -6,6 +6,10 @@ const pessoaSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    birth: {
+        type: Date,
+        required: true
+    },
     email: {
         type: String,
         required: true,
