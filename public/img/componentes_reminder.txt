@@ -1,0 +1,23 @@
+@startuml
+hide footbox
+skinparam shadowing true
+left to right direction
+
+rectangle "Navegador" as navegador << (B,#ADD8E6) client >>
+rectangle "Mobile" as mobile << (M,#90EE90) client >>
+
+node "https://reminder.gustavoesposar.dev" as servidor <<server>> {
+  portin 10000
+  
+  10000 -> "<<route>>"
+  
+  "<<route>>" - [birthday_reminder]
+}
+
+database "MongoDB" as db <<database>>
+
+navegador --> 10000 : <<https>>
+mobile --> 10000 : <<https>>
+
+servidor --> db : Operações de Leitura/Escrita
+@enduml
