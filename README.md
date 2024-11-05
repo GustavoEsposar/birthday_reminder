@@ -22,7 +22,7 @@
 ## Propóstio
 
 Esta aplicação de software é um projeto pessoal, desenvolvido como uma prova de conceito com o intuito de, além de satisfazer uma necessidade pessoal, desenvolver novas habilidades de banco de dados e gestão de servidores em nuvem (deploy), além de novas bibliotecas de linguagem.
-O projeto também foi reaproveitado para a disciplina DAM (Desenvolvimento de Aplicações Mobile) na graduação, obtendo por produto a versão Android do Birthday Reminder, tornando-se um *sistema distribuído* multi-plataforma
+O projeto também foi reaproveitado para a disciplina DAM (Desenvolvimento de Aplicações Mobile) na graduação, obtendo por produto a versão Android do Birthday Reminder, tornando-se um **sistema distribuído (Action Based API)** multi-plataforma
 
 ## Comportamento
 
