@@ -50,6 +50,7 @@ app.use(mobileRoutes);
 // Notificações agendadas
 cron.schedule('0 5 * * *', async () => {
     await enviarLembretePorEmail(0, " - HOJE");
+    await enviarLembretePorEmail(2, " - Em 1 dia");
     await enviarLembretePorEmail(2, " - Em 2 dias");
     await enviarLembretePorEmail(7, " - Em 7 dias");
 }, { timezone });
