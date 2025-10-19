@@ -49,10 +49,16 @@ app.use(mobileRoutes);
 
 // Notificações agendadas
 cron.schedule('0 5 * * *', async () => {
-    await enviarLembretePorEmail(0, " - HOJE");
-    await enviarLembretePorEmail(2, " - Em 1 dia");
-    await enviarLembretePorEmail(2, " - Em 2 dias");
-    await enviarLembretePorEmail(7, " - Em 7 dias");
+    const envios = [
+        { dias: 0, frase: " - HOJE" },
+        { dias: 1, frase: " - Em 1 dia" },
+        { dias: 2, frase: " - Em 2 dias" },
+        { dias: 7, frase: " - Em 7 dias" }
+    ];
+
+    for (const envio of envios) {
+        await enviarLembretePorEmail(envio.dias, envio.frase);
+    }
 }, { timezone });
 
 app.listen(PORT, () => {
