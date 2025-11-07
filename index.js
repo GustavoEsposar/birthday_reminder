@@ -6,7 +6,7 @@ const MongoStore = require('connect-mongo');
 const cron = require('node-cron');
 const connectDB = require('./db/db');
 const { enviarLembretePorEmail } = require('./services/emailService');
-const axios = "axios";
+const axios = require("axios");
 
 require('dotenv').config();
 
