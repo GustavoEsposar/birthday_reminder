@@ -6,6 +6,7 @@ const MongoStore = require('connect-mongo');
 const cron = require('node-cron');
 const connectDB = require('./db/db');
 const { enviarLembretePorEmail } = require('./services/emailService');
+const axios = "axios";
 
 require('dotenv').config();
 
@@ -63,4 +64,14 @@ cron.schedule('0 5 * * *', async () => {
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
+    ip_publico();
 });
+
+const ip_publico = async () => {
+    try {
+        const res = await axios.get("https://api.ipify.org?format=json");
+        console.log("Meu IP público Render:", res.data.ip);
+    } catch (err) {
+        console.error("Erro ao obter IP público:", err.message);
+    }
+};
