@@ -11,6 +11,7 @@
   "author": "Gustavo Barbieri Esposar",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.13.2",
     "bcryptjs": "^2.4.3",
     "birthday_reminder": "file:",
     "connect-mongo": "^5.1.0",
