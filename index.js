@@ -4,7 +4,7 @@ const path = require('path');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const cron = require('node-cron');
-const connectDB = require('./db/db');
+const connectDB = require('./src/db/db');
 const { enviarLembretePorEmail } = require('./services/emailService');
 
 require('dotenv').config();
@@ -35,10 +35,10 @@ app.use(session({
 /*          Rotas
 =============================================================================================
 */
-const homeRoute = require('./routes/homeRoute');
-const authRoutes = require('./routes/authRoutes');
-const dashboardRoutes = require('./routes/dashboardRoutes');
-const mobileRoutes = require('./routes/mobileRoutes');
+const homeRoute = require('./src/routes/homeRoute');
+const authRoutes = require('./src/routes/authRoutes');
+const dashboardRoutes = require('./src/routes/dashboardRoutes');
+const mobileRoutes = require('./src/routes/mobileRoutes');
 app.use(homeRoute);
 app.use(authRoutes);
 app.use(dashboardRoutes);
