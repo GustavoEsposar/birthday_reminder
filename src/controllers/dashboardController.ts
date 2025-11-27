@@ -1,7 +1,8 @@
-import Pessoa from '../models/Pessoa';
+import Pessoa from '../models/Pessoa.js';
+import type { Request, Response, NextFunction } from 'express';
 
 export class DashboardController {
-    async getDashboard(req, res) {
+    async getDashboard(req : Request, res: Response) {
         try {
             const user = await Pessoa.findById(req.session.userId);
             res.render('dashboard', {
@@ -13,7 +14,7 @@ export class DashboardController {
         }
     }
 
-    async addBirthdate(req, res) {
+    async addBirthdate(req: Request, res: Response) {
         try {
             const { name, birthdate } = req.body;
             await Pessoa.updateOne(
@@ -27,7 +28,7 @@ export class DashboardController {
         }
     }
 
-    async deleteBirthdate(req, res) {
+    async deleteBirthdate(req: Request, res: Response) {
         try {
             const { birthdateId } = req.body;
             await Pessoa.updateOne(
