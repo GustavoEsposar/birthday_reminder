@@ -1,6 +1,5 @@
 
 import express from "express";
-import type { Request, Response } from "express";
 import cors from "cors";
 import path from "path";
 import session from "express-session";
@@ -39,7 +38,9 @@ app.use(
     })
 )
 
-// Rotas
+/*          Rotas
+=============================================================================================
+*/
 import homeRoute from "./routes/homeRoute.js";
 import authRoutes from "./routes/authRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
@@ -49,6 +50,9 @@ app.use(homeRoute);
 app.use(authRoutes);
 app.use(dashboardRoutes);
 app.use(mobileRoutes);
+/*          
+=============================================================================================
+*/
 
 // Cron jobs
 cron.schedule(
