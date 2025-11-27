@@ -1,7 +1,22 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+import mongoose from 'mongoose';
+import { Schema, Document } from 'mongoose';
+import bcrypt from 'bcryptjs';
 
-const pessoaSchema = new mongoose.Schema({
+export interface IBirthdate {
+    name: string;
+    date: Date;
+}
+
+export interface IPessoa extends Document {
+    name: string;
+    birth: Date;
+    email: string;
+    password: string;
+    birthdates: IBirthdate[];
+    matchPassword(enteredPassword: string): Promise<boolean>;
+}
+
+const pessoaSchema = new Schema<IPessoa>({
     name: {
         type: String,
         required: true
@@ -38,7 +53,7 @@ pessoaSchema.pre('save', async function (next) {
     }
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    console.log();
+
     next();
 });
 
@@ -47,4 +62,5 @@ pessoaSchema.methods.matchPassword = function (enteredPassword) {
     return bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('Pessoa', pessoaSchema);
+const Pessoa = mongoose.model<IPessoa>('Pessoa', pessoaSchema);
+export default Pessoa;
