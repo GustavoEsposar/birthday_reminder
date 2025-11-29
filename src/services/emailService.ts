@@ -5,6 +5,8 @@ import path from "path";
 import Pessoa from "../models/Pessoa.js";
 import type { IPessoa } from "../models/Pessoa.js";
 
+const BATCH_SIZE = 100;
+
 interface AniversarioFiltrado {
     name: string;
     date: Date;
@@ -75,7 +77,7 @@ const buscarUsuarios = async (
     // Stream do Mongo — NÃO carrega tudo em RAM
     const cursor = Pessoa.find({})
         .lean()
-        .batchSize(300)
+        .batchSize(BATCH_SIZE)
         .cursor();
 
     for (
