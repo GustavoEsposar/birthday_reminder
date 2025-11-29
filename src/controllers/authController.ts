@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import Pessoa from '../models/Pessoa';
+import { AuthRequest } from '../types/AuthRequest';
 
 export class AuthController {
     async login(req: Request, res: Response) {
@@ -51,19 +52,24 @@ export class AuthController {
         return res.redirect('/login');
     }
 
-    authenticateToken(req: Request, res: Response, next: NextFunction) {
+    authenticateToken(req: AuthRequest, res: Response, next: NextFunction) {
         const token = req.headers['authorization']?.split(' ')[1];
 
         if (!token) {
             return res.status(401).json({ message: 'Acesso negado' });
         }
 
-        jwt.verify(token, process.env.JWT_SECRET as string, (err, user) => {
-            if (err) {
+        jwt.verify(token, process.env.JWT_SECRET as string, (err, decoded) => {
+            if (err || !decoded) {
                 return res.status(403).json({ message: 'Token inválido' });
             }
 
-            (req as any).user = user;
+            const payload = decoded as { userId: string };
+
+            req.user = {
+                userId: payload.userId
+            };
+
             next();
         });
     }
