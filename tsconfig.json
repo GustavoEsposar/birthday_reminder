@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "nodenext",
+    "module": "commonjs",
     "target": "es2019",
 
     "rootDir": "./src",
@@ -18,10 +18,8 @@
     "allowJs": true,
     "strictNullChecks": true,
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
+
     "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
     "skipLibCheck": true
   },
 

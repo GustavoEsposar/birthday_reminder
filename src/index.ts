@@ -7,8 +7,8 @@ import MongoStore from "connect-mongo";
 import cron from "node-cron";
 import dotenv from "dotenv";
 
-import connectDB from "./db/db.js";
-import { enviarLembretePorEmail } from "./services/emailService.js";
+import connectDB from "./db/db";
+import { enviarLembretePorEmail } from "./services/emailService";
 
 dotenv.config();
 
@@ -41,10 +41,10 @@ app.use(
 /*          Rotas
 =============================================================================================
 */
-import homeRoute from "./routes/homeRoute.js";
-import authRoutes from "./routes/authRoutes.js";
-import dashboardRoutes from "./routes/dashboardRoutes.js";
-import mobileRoutes from "./routes/mobileRoutes.js";
+import homeRoute from "./routes/homeRoute";
+import authRoutes from "./routes/authRoutes";
+import dashboardRoutes from "./routes/dashboardRoutes";
+import mobileRoutes from "./routes/mobileRoutes";
 
 app.use(homeRoute);
 app.use(authRoutes);

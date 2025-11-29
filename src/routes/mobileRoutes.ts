@@ -1,21 +1,22 @@
 import { Router } from 'express';
 
-import { authenticateToken } from '../controllers/authController.js';
+import { AuthController } from '../controllers/authController';
 import {
     getBirthdates, loginMobile, addBirthdateMobile, deleteBirthdateMobile, registerMobile, validateToken
-} from '../controllers/mobileController.js';
+} from '../controllers/mobileController';
 
 const router = Router();
 
-router.get('/getBirthdates', authenticateToken, getBirthdates);
+const authController = new AuthController();
 
+router.get('/getBirthdates', authController.authenticateToken.bind(authController), getBirthdates);
 router.post('/loginMobile', loginMobile);
 
 router.post('/registerMobile', registerMobile);
 
-router.post('/addBirthdateMobile', authenticateToken, addBirthdateMobile);
+router.post('/addBirthdateMobile', authController.authenticateToken.bind(authController), addBirthdateMobile);
 
-router.post('/deleteBirthdateMobile', authenticateToken, deleteBirthdateMobile);
+router.post('/deleteBirthdateMobile', authController.authenticateToken.bind(authController), deleteBirthdateMobile);
 
 router.post('/validateToken', validateToken);
 

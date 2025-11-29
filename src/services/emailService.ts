@@ -2,8 +2,8 @@ import nodemailer from "nodemailer";
 import fs from "fs";
 import path from "path";
 
-import Pessoa from "../models/Pessoa.js";
-import type { IPessoa } from "../models/Pessoa.js";
+import Pessoa from "../models/Pessoa";
+import type { IPessoa } from "../models/Pessoa";
 
 const BATCH_SIZE = 100;
 
