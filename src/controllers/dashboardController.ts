@@ -1,4 +1,4 @@
-import Pessoa from '../models/Pessoa.js';
+import Pessoa from '../models/Pessoa';
 import type { Request, Response, NextFunction } from 'express';
 
 export class DashboardController {
