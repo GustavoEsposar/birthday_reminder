@@ -1,16 +1,17 @@
 
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import path from "path";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import cron from "node-cron";
-import dotenv from "dotenv";
 
 import connectDB from "./db/db";
 import { enviarLembretePorEmail } from "./services/emailService";
 
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3003;

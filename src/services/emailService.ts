@@ -18,19 +18,15 @@ interface UsuarioComAniversarios {
 }
 
 const transporter = nodemailer.createTransport({
+    
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL!,
-        pass: process.env.PASSWORD!
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD
     },
-    attachments: [
-        {
-            filename: "logo.png",
-            path: path.join(__dirname, "../public/img/logo.png"),
-            cid: "logoBirthdayReminder" // mesmo nome do cid usado no HTML
-        }
-    ]
 });
+
+console.log("CAMINHO DA LOGO:", path.join(process.cwd(), "public/img/logo.png"));
 
 //=============================================== lógica core de envio de lembrete por email
 export const enviarLembretePorEmail = async (
@@ -49,7 +45,7 @@ export const enviarLembretePorEmail = async (
     for (const { user, aniversarios } of usuarios) {
 
         const aniversariosUl = aniversarios
-            .map(a => `<li>${a.name} — ${a.date}</li>`)
+            .map(a => `<li>${a.name} — ${new Date(a.date).toLocaleDateString("pt-BR")}</li>`)
             .join("");
 
         const html = substituirVariaveisDoTemplate(
@@ -114,8 +110,8 @@ const buscarUsuarios = async (
 const selecionarTemplate = (intervalo: number): string => {
     const templatePath =
         intervalo === 0
-            ? path.join(__dirname, "../templates/todayTemplate.html")
-            : path.join(__dirname, "../templates/fewDaysTemplate.html");
+            ? path.join(__dirname, "../../templates/todayTemplate.html")
+            : path.join(__dirname, "../../templates/fewDaysTemplate.html");
 
     return fs.readFileSync(templatePath, "utf-8");
 };
