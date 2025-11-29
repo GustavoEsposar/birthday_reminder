@@ -10,21 +10,50 @@
             background-color: #f4f4f4;
             color: #333;
         }
-        .container {
+
+        /* BLOCO */
+        .email {
             max-width: 600px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center; 
         }
-        h1 {
+
+        /* ELEMENTOS */
+        .email__logo {
+            width: 120px;
+            height: auto;
+            display: block;
+            margin: 10px auto 20px auto;
+        }
+
+        .email__title {
             color: #007bff;
+            margin-bottom: 10px;
         }
-        p {
+
+        .email__text {
             font-size: 16px;
+            margin-bottom: 15px;
+            text-align: left;
         }
-        .footer {
+
+        .email__birthday-list {
+            margin-top: 20px;
+            padding-left: 25px;
+            text-align: left;
+        }
+
+        .email__image {
+            max-width: 50%;
+            height: auto;
+            margin-top: 20px;
+        }
+
+        .email__footer {
             margin-top: 20px;
             font-size: 12px;
             color: #777;
@@ -32,12 +61,25 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Hoje é aniversário de {{name}}!</h1>
-        <p>🎉🎂🥳</p>
-        <img src="https://m.media-amazon.com/images/I/71KGbnmas4L._AC_UF894,1000_QL80_.jpg" alt="Imagem de Aniversário" style="max-width: 100%; height: auto;">
-        <div class="footer">
-            <p>Este é um lembrete automático. Por favor, não responda a este e-mail.</p>
+    <div class="email">
+
+        <img src="cid:logoBirthdayReminder" alt="Logo" class="email__logo">
+
+        <h1 class="email__title">Aniversariantes de Hoje 🎉</h1>
+
+        <p class="email__text">Hoje você tem <strong>{{qtde}}</strong> aniversariante(s):</p>
+
+        <!-- LISTA DINÂMICA -->
+        <ul class="email__birthday-list">
+            {{birthdayList}}
+        </ul>
+
+        <img src="https://m.media-amazon.com/images/I/71KGbnmas4L._AC_UF894,1000_QL80_.jpg" 
+             alt="Imagem de Aniversário"
+             class="email__image">
+
+        <div class="email__footer">
+            <p>Este é um lembrete automático. Por favor, não responda este e-mail.</p>
         </div>
     </div>
 </body>

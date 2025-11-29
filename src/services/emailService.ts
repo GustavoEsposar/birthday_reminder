@@ -20,7 +20,14 @@ const transporter = nodemailer.createTransport({
     auth: {
         user: process.env.EMAIL!,
         pass: process.env.PASSWORD!
-    }
+    },
+    attachments: [
+        {
+            filename: "logo.png",
+            path: path.join(__dirname, "../public/img/logo.png"),
+            cid: "logoBirthdayReminder" // mesmo nome do cid usado no HTML
+        }
+    ]
 });
 
 //=============================================== lógica core de envio de lembrete por email
@@ -38,15 +45,18 @@ export const enviarLembretePorEmail = async (
     const template = selecionarTemplate(intervalo);
 
     for (const { user, aniversarios } of usuarios) {
-        for (const aniversario of aniversarios) {
-            const html = substituirVariaveisDoTemplate(
-                template,
-                aniversario,
-                intervalo
-            );
 
-            await enviarEmail(user, mensagem, html);
-        }
+        const aniversariosUl = aniversarios
+            .map(a => `<li>${a.name} — ${a.date}</li>`)
+            .join("");
+
+        const html = substituirVariaveisDoTemplate(
+            template,
+            intervalo,
+            aniversariosUl
+        );
+
+        await enviarEmail(user, mensagem, html);
     }
 };
 
@@ -110,11 +120,12 @@ const selecionarTemplate = (intervalo: number): string => {
 
 const substituirVariaveisDoTemplate = (
     template: string,
-    aniversario: { name: string },
-    intervalo: number
+    intervalo: number,
+    aniversariosUl: string
 ): string => {
     return template
-        .replace("{{name}}", aniversario.name)
+        .replace("{{birthdayList}}", aniversariosUl)
+        .replace("{{qtde}}", (aniversariosUl.match(/<li>/g)?.length || 0).toString())
         .replace("{{days}}", intervalo.toString());
 };
 
