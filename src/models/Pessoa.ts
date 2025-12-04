@@ -13,8 +13,11 @@ export interface IPessoa extends Document {
     email: string;
     password: string;
     birthdates: IBirthdate[];
+    cron: string[];
     matchPassword(enteredPassword: string): Promise<boolean>;
 }
+
+const COLLECTION_NAME = process.env.COLLECTION_MONGODB || "";
 
 const pessoaSchema = new Schema<IPessoa>({
     name: {
@@ -43,8 +46,12 @@ const pessoaSchema = new Schema<IPessoa>({
             type: Date,
             required: true
         }
-    }]
-}, { collection: 'contas' });
+    }],
+    cron: {
+        type: [String],
+        required: true
+    }
+}, { collection: COLLECTION_NAME });
 
 // Middleware para criptografar a senha antes de salvar
 pessoaSchema.pre('save', async function (next) {
@@ -58,7 +65,7 @@ pessoaSchema.pre('save', async function (next) {
 });
 
 // Método para comparar a senha fornecida com a senha armazenada
-pessoaSchema.methods.matchPassword = function (enteredPassword) {
+pessoaSchema.methods.matchPassword = async function (enteredPassword: string): Promise<boolean> {
     return bcrypt.compare(enteredPassword, this.password);
 };
 
