@@ -46,19 +46,27 @@ export const enviarLembretePorEmail = async (): Promise<void> => {
 
         for (const { intervalo, aniversarios: aniversariosDoDia } of aniversarios) {
             corpoHtml += `
+            ${intervalo === 0 ? "<div class=\"email__div--today\">" : ""}
                 <p class="email__text">
                     ${intervalo === 0
-                                ? "<strong>Hoje</strong>"
-                                : `Em <strong>${intervalo}</strong> dia(s)`
-                            }, <strong>${aniversariosDoDia.length}</strong> aniversariante(s):
+                    ? "<strong>Hoje</strong>"
+                    : `Em <strong>${intervalo}</strong> dia(s)`
+                }, <strong>${aniversariosDoDia.length}</strong> aniversariante(s):
                 </p>
 
                 <ul class="email__birthday-list">
                     ${aniversariosDoDia
-                                .map(a => `<li>${a.name} — ${new Date(a.date).toLocaleDateString("pt-BR")}</li>`)
-                                .join("")
-                            }
+                    .map(a => {
+                        const d = new Date(a.date);
+                        const dia = String(d.getUTCDate()).padStart(2, "0");
+                        const mes = String(d.getUTCMonth() + 1).padStart(2, "0");
+                        const ano = d.getUTCFullYear();
+                        return `<li>${a.name} — ${dia}/${mes}/${ano}</li>`;
+                    })
+                    .join("")
+                }
                 </ul>
+                ${intervalo === 0 ? "</div>" : ""}
             `;
         }
 
@@ -88,12 +96,11 @@ const buscarUsuarios = async (): Promise<UsuarioComAniversarios[]> => {
     ) {
         if (!user.birthdates || user.birthdates.length === 0) continue;
 
-        const aniversariosPorDia: AniversariosPorDiaList[] = [] 
+        const aniversariosPorDia: AniversariosPorDiaList[] = []
 
         for (let intervalo of user.cron.map(d => parseInt(d))) {
             const alvo = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
             alvo.setDate(alvo.getDate() + intervalo);
-            alvo.setHours(12, 0, 0, 0);
 
             const targetMonth = alvo.getUTCMonth() + 1;
             const targetDay = alvo.getUTCDate();
@@ -101,6 +108,7 @@ const buscarUsuarios = async (): Promise<UsuarioComAniversarios[]> => {
             // Filtra apenas os aniversários do intervalo desejado
             const aniversariosFiltrados = user.birthdates.filter((b) => {
                 const data = new Date(b.date);
+
                 return (
                     data.getUTCMonth() + 1 === targetMonth &&
                     data.getUTCDate() === targetDay
