@@ -45,15 +45,21 @@ export const enviarLembretePorEmail = async (): Promise<void> => {
         let corpoHtml = "";
 
         for (const { intervalo, aniversarios: aniversariosDoDia } of aniversarios) {
-             corpoHtml += `<p class="email__text">Em <strong>${intervalo}</strong> dia(s), <strong>${aniversariosDoDia.length}</strong> aniversariante(s):</p>
+            corpoHtml += `
+                <p class="email__text">
+                    ${intervalo === 0
+                                ? "<strong>Hoje</strong>"
+                                : `Em <strong>${intervalo}</strong> dia(s)`
+                            }, <strong>${aniversariosDoDia.length}</strong> aniversariante(s):
+                </p>
+
                 <ul class="email__birthday-list">
-                ${ 
-                    aniversariosDoDia
-                    .map(a => `<li>${a.name} — ${new Date(a.date).toLocaleDateString("pt-BR")}</li>`)
-                    .join("")
-                }
+                    ${aniversariosDoDia
+                                .map(a => `<li>${a.name} — ${new Date(a.date).toLocaleDateString("pt-BR")}</li>`)
+                                .join("")
+                            }
                 </ul>
-             `;            
+            `;
         }
 
         const html = substituirVariaveisDoTemplate(
@@ -81,16 +87,17 @@ const buscarUsuarios = async (): Promise<UsuarioComAniversarios[]> => {
         user = (await cursor.next()) as IPessoa | null
     ) {
         if (!user.birthdates || user.birthdates.length === 0) continue;
-        
-        const aniversariosPorDia : AniversariosPorDiaList[] = []
+
+        const aniversariosPorDia: AniversariosPorDiaList[] = [] 
 
         for (let intervalo of user.cron.map(d => parseInt(d))) {
             const alvo = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
             alvo.setDate(alvo.getDate() + intervalo);
-    
+            alvo.setHours(12, 0, 0, 0);
+
             const targetMonth = alvo.getUTCMonth() + 1;
             const targetDay = alvo.getUTCDate();
-        
+
             // Filtra apenas os aniversários do intervalo desejado
             const aniversariosFiltrados = user.birthdates.filter((b) => {
                 const data = new Date(b.date);
