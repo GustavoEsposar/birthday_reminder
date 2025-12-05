@@ -12,13 +12,17 @@ interface AniversarioFiltrado {
     date: Date;
 }
 
-interface UsuarioComAniversarios {
-    user: IPessoa;
+interface AniversariosPorDiaList {
+    intervalo: number,
     aniversarios: AniversarioFiltrado[];
 }
 
+interface UsuarioComAniversarios {
+    user: IPessoa;
+    aniversarios: AniversariosPorDiaList[];
+}
+
 const transporter = nodemailer.createTransport({
-    
     service: 'gmail',
     auth: {
         user: process.env.EMAIL,
@@ -26,48 +30,43 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-console.log("CAMINHO DA LOGO:", path.join(process.cwd(), "public/img/logo.png"));
-
 //=============================================== lógica core de envio de lembrete por email
-export const enviarLembretePorEmail = async (
-    intervalo: number,
-    mensagem: string
-): Promise<void> => {
-    const usuarios = await buscarUsuarios(intervalo);
+export const enviarLembretePorEmail = async (): Promise<void> => {
+    const usuarios = await buscarUsuarios();
 
     if (usuarios.length === 0) {
         console.log("Nenhuma conta com aniversários no dia.");
         return;
     }
 
-    const template = selecionarTemplate(intervalo);
+    const template = selecionarTemplate();
 
     for (const { user, aniversarios } of usuarios) {
+        let corpoHtml = "";
 
-        const aniversariosUl = aniversarios
-            .map(a => `<li>${a.name} — ${new Date(a.date).toLocaleDateString("pt-BR")}</li>`)
-            .join("");
+        for (const { intervalo, aniversarios: aniversariosDoDia } of aniversarios) {
+             corpoHtml += `<p class="email__text">Em <strong>${intervalo}</strong> dia(s), <strong>${aniversariosDoDia.length}</strong> aniversariante(s):</p>
+                <ul class="email__birthday-list">
+                ${ 
+                    aniversariosDoDia
+                    .map(a => `<li>${a.name} — ${new Date(a.date).toLocaleDateString("pt-BR")}</li>`)
+                    .join("")
+                }
+                </ul>
+             `;            
+        }
 
         const html = substituirVariaveisDoTemplate(
             template,
-            intervalo,
-            aniversariosUl
+            corpoHtml
         );
 
-        await enviarEmail(user, mensagem, html);
+        await enviarEmail(user, html);
     }
 };
 
-const buscarUsuarios = async (
-    intervalo: number
-): Promise<UsuarioComAniversarios[]> => {
+const buscarUsuarios = async (): Promise<UsuarioComAniversarios[]> => {
     const hoje = new Date();
-    const alvo = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
-    alvo.setDate(alvo.getDate() + intervalo);
-
-    const targetMonth = alvo.getUTCMonth() + 1;
-    const targetDay = alvo.getUTCDate();
-
     const resultados: UsuarioComAniversarios[] = [];
 
     // Stream do Mongo — NÃO carrega tudo em RAM
@@ -82,23 +81,41 @@ const buscarUsuarios = async (
         user = (await cursor.next()) as IPessoa | null
     ) {
         if (!user.birthdates || user.birthdates.length === 0) continue;
+        
+        const aniversariosPorDia : AniversariosPorDiaList[] = []
 
-        // Filtra apenas os aniversários do intervalo desejado
-        const aniversariosFiltrados = user.birthdates.filter((b) => {
-            const data = new Date(b.date);
-            return (
-                data.getUTCMonth() + 1 === targetMonth &&
-                data.getUTCDate() === targetDay
-            );
-        });
+        for (let intervalo of user.cron.map(d => parseInt(d))) {
+            const alvo = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+            alvo.setDate(alvo.getDate() + intervalo);
+    
+            const targetMonth = alvo.getUTCMonth() + 1;
+            const targetDay = alvo.getUTCDate();
+        
+            // Filtra apenas os aniversários do intervalo desejado
+            const aniversariosFiltrados = user.birthdates.filter((b) => {
+                const data = new Date(b.date);
+                return (
+                    data.getUTCMonth() + 1 === targetMonth &&
+                    data.getUTCDate() === targetDay
+                );
+            });
 
-        if (aniversariosFiltrados.length > 0) {
+            // se nao houver aniversarios nesse intervalo, pula pro próximo intervalo
+            if (aniversariosFiltrados.length === 0) continue;
+
+            aniversariosPorDia.push({
+                intervalo: intervalo,
+                aniversarios: aniversariosFiltrados.map(b => ({
+                    name: b.name,
+                    date: b.date
+                }))
+            });
+        }
+
+        if (aniversariosPorDia.length > 0) {
             resultados.push({
                 user,
-                aniversarios: aniversariosFiltrados.map((a) => ({
-                    name: a.name,
-                    date: a.date,
-                })),
+                aniversarios: aniversariosPorDia
             });
         }
     }
@@ -107,31 +124,25 @@ const buscarUsuarios = async (
 };
 //===============================================
 
-const selecionarTemplate = (intervalo: number): string => {
-    const templatePath =
-        intervalo === 0
-            ? path.join(__dirname, "../../templates/todayTemplate.html")
-            : path.join(__dirname, "../../templates/fewDaysTemplate.html");
+const selecionarTemplate = (): string => {
+    const templatePath = path.join(__dirname, "../../templates/todayTemplate.html");
 
     return fs.readFileSync(templatePath, "utf-8");
 };
 
 const substituirVariaveisDoTemplate = (
     template: string,
-    intervalo: number,
     aniversariosUl: string
 ): string => {
     return template
-        .replace("{{birthdayList}}", aniversariosUl)
-        .replace("{{qtde}}", (aniversariosUl.match(/<li>/g)?.length || 0).toString())
-        .replace("{{days}}", intervalo.toString());
+        .replace("{{Beggining}}", aniversariosUl);
 };
 
-const enviarEmail = async (user: IPessoa, mensagem: string, htmlContent: string): Promise<void> => {
+const enviarEmail = async (user: IPessoa, htmlContent: string): Promise<void> => {
     const mailOptions = {
         from: process.env.EMAIL,
         to: user.email,
-        subject: `Birthday Reminder 📅🎊 ${mensagem}`,
+        subject: `Seu lembrete de aniversários chegou!`,
         html: htmlContent
     };
 
