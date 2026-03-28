@@ -1,4 +1,3 @@
-
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -10,8 +9,9 @@ import MongoStore from "connect-mongo";
 import cron from "node-cron";
 
 import connectDB from "./db/db";
-import { enviarLembretePorEmail } from "./services/emailService";
 
+// Importar o orquestrador isolado
+import { executarEnvioDiario } from "./jobs/notificationJob";
 
 const app = express();
 const PORT = process.env.PORT || 3003;
@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-// Sessões
+// Sessões de usuários web
 app.use(
     session({
         secret: process.env.SESSION_SECRET as string,
@@ -63,7 +63,7 @@ app.use(mobileRoutes);
 cron.schedule(
     "0 5 * * *",
     async () => {
-        await enviarLembretePorEmail();
+        await executarEnvioDiario();
     },
     { timezone }
 );
