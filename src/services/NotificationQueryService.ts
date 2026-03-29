@@ -8,6 +8,72 @@ const BATCH_SIZE = 100;
 // A responsabilidade dele é estritamente comportamental: ir ao banco de dados,
 // aplicar uma regra de negócio (filtrar datas) e devolver um resultado.
 
+export const buscarUsuariosComAniversariosEmLotes = async function* (): AsyncGenerator<UsuarioComAniversarios[]> {
+    const hoje = new Date();
+    let loteAtual: UsuarioComAniversarios[] = [];
+
+    const cursor = Pessoa.find({})
+        .lean()
+        .batchSize(BATCH_SIZE)
+        .cursor();
+
+    for (
+        let user = (await cursor.next()) as IPessoa | null;
+        user !== null;
+        user = (await cursor.next()) as IPessoa | null
+    ) {
+        if (!user.birthdates || user.birthdates.length === 0) continue;
+
+        const aniversariosPorDia: AniversariosPorDiaList[] = [];
+
+        for (let intervalo of user.cron.map(d => parseInt(d))) {
+            const alvo = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+            alvo.setDate(alvo.getDate() + intervalo);
+
+            const targetMonth = alvo.getUTCMonth() + 1;
+            const targetDay = alvo.getUTCDate();
+
+            // Filtra apenas os aniversários do intervalo desejado
+            const aniversariosFiltrados = user.birthdates.filter((b) => {
+                const data = new Date(b.date);
+
+                return (
+                    data.getUTCMonth() + 1 === targetMonth &&
+                    data.getUTCDate() === targetDay
+                );
+            });
+
+            // se nao houver aniversarios nesse intervalo, pula pro próximo intervalo
+            if (aniversariosFiltrados.length === 0) continue;
+
+            aniversariosPorDia.push({
+                intervalo: intervalo,
+                aniversarios: aniversariosFiltrados.map(b => ({
+                    name: b.name,
+                    date: b.date
+                }))
+            });
+        }
+
+        // se houver aniversários, faz o push:
+        if (aniversariosPorDia.length > 0) {
+            loteAtual.push({ user, aniversarios: aniversariosPorDia });
+        }
+
+        // Se o nosso lote em memória atingiu um tamanho limite,
+        // nós o liberamos para o Orquestrador processar imediatamente.
+        if (loteAtual.length >= BATCH_SIZE) {
+            yield loteAtual; // Pausa a busca no banco e entrega esse lote
+            loteAtual = [];  // Zera o array para o próximo lote liberar espaço na RAM
+        }
+    }
+
+    // Após terminar de ler todo o banco, se sobrou alguém no lote final, entrega também
+    if (loteAtual.length > 0) {
+        yield loteAtual;
+    }
+};
+
 export const buscarUsuariosComAniversarios = async (): Promise<UsuarioComAniversarios[]> => {
     const hoje = new Date();
     const resultados: UsuarioComAniversarios[] = [];

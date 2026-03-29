@@ -1,6 +1,26 @@
-import { buscarUsuariosComAniversarios } from "../services/NotificationQueryService";
+import { buscarUsuariosComAniversarios, buscarUsuariosComAniversariosEmLotes } from "../services/NotificationQueryService";
 import { emailService } from "../services/EmailService";
 // import { telegramBotService } from "../services/telegramBotService"; 
+
+export const executarEnvioDiarioEmLotes = async (): Promise<void> => {
+    try {
+        console.log("[CRON] Iniciando rotina em lotes...");
+
+        // Consome os dados aos poucos usando "for await"
+        for await (const loteUsuarios of buscarUsuariosComAniversariosEmLotes()) {
+            
+            console.log(`[CRON] Processando e enviando um lote de ${loteUsuarios.length} usuários...`);
+
+            // Dispara para esse lote. O EmailService recebe apenas um lote por vez.
+            await emailService.send(loteUsuarios);
+            // await telegramBotService.send(loteUsuarios);
+        }
+
+        console.log("[CRON] Rotina de notificações finalizada com sucesso.");
+    } catch (error) {
+        console.error("[CRON] Erro crítico na rotina de notificações:", error);
+    }
+};
 
 export const executarEnvioDiario = async (): Promise<void> => {
     try {

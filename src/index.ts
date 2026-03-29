@@ -11,7 +11,7 @@ import cron from "node-cron";
 import connectDB from "./db/db";
 
 // Importar o orquestrador isolado
-import { executarEnvioDiario } from "./jobs/notificationJob";
+import { executarEnvioDiario, executarEnvioDiarioEmLotes } from "./jobs/notificationJob";
 
 const app = express();
 const PORT = process.env.PORT || 3003;
@@ -63,7 +63,8 @@ app.use(mobileRoutes);
 cron.schedule(
     "0 5 * * *",
     async () => {
-        await executarEnvioDiario();
+        await executarEnvioDiarioEmLotes();
+        //await executarEnvioDiario();
     },
     { timezone }
 );
