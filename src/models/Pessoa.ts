@@ -55,8 +55,7 @@ const pessoaSchema = new Schema<IPessoa>({
     },
     chatId: {
         type: String,
-        default: null,
-        required: true
+        default: null
     },
     telegramBindToken: { 
         type: String, 
