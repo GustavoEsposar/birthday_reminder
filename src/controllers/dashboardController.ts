@@ -59,6 +59,11 @@ export class DashboardController {
                 return;
             }
 
+            if (usuario.chatId !== null) {
+                res.status(404).json({ error: "Usuário já possui telegram vinculado." });
+                return;
+            }
+
             // Gera um token aleatório de 6 caracteres hexadecimais (ex: 8F4A2B)
             const randomString = crypto.randomBytes(3).toString("hex").toUpperCase();
             const bindToken = `TKG-${randomString}`;
