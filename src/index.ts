@@ -7,7 +7,7 @@ import path from "path";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import cron from "node-cron";
-
+import { telegramBot } from "./services/TelegramBot";
 import connectDB from "./db/db";
 
 // Importar o orquestrador isolado
@@ -58,6 +58,8 @@ app.use(mobileRoutes);
 /*          
 =============================================================================================
 */
+
+telegramBot.initialize();
 
 // Cron jobs
 cron.schedule(

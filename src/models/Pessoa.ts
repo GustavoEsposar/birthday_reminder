@@ -15,7 +15,7 @@ export interface IPessoa extends Document {
     birthdates: IBirthdate[];
     cron: string[];
     chatId?: string;
-    telegramBindToken?: string;
+    telegramBindToken?: string | null;
     matchPassword(enteredPassword: string): Promise<boolean>;
 }
 

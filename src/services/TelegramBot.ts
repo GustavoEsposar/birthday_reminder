@@ -4,23 +4,19 @@ import { NewMessage } from "telegram/events";
 import readline from "readline";
 import dotenv from "dotenv";
 
-// Importações dos modelos e tipos da nossa arquitetura
 import Pessoa from "../models/Pessoa";
 import type { IPessoa } from "../models/Pessoa";
-import type { INotificationProvider, UsuarioComAniversarios } from "../types/NotificationTypes";
 
 dotenv.config();
 
-// Tipos auxiliares locais
 interface ParsedCommand {
     command: string;
     args: string[];
 }
 
-// O GramJS costuma lidar com IDs como números grandes (BigInt) ou strings
-type ChatId = string | number | bigint;
+export type ChatId = string | number | bigint;
 
-export class TelegramBotService implements INotificationProvider {
+export class TelegramBot {
     private client: TelegramClient | null;
     private session: StringSession;
 
@@ -29,15 +25,6 @@ export class TelegramBotService implements INotificationProvider {
         this.session = new StringSession(process.env.STRING_SESSION || "");
     }
 
-    public async send(usuarios: UsuarioComAniversarios[]): Promise<void> {
-        usuarios = usuarios.filter(u => u.user.chatId !== null) // Filtra apenas usuários com chatId definido
-
-        
-    }
-
-    // ==========================================
-    // MÉTODOS DE INICIALIZAÇÃO E SETUP DA API
-    // ==========================================
     public async initialize(): Promise<void> {
         this.client = new TelegramClient(
             this.session,
@@ -56,6 +43,25 @@ export class TelegramBotService implements INotificationProvider {
         }
     }
 
+    // ==========================================
+    // MÉTODOS PÚBLICOS DE ENVIO (Usado pelos Services)
+    // ==========================================
+    public async sendMessage(chatId: ChatId, message: string): Promise<void> {
+        if (!this.client) {
+            console.error("Tentativa de envio de mensagem sem o cliente Telegram inicializado.");
+            return;
+        }
+        
+        try {
+            await this.client.sendMessage(Number(chatId), { message });
+        } catch (error) {
+            console.error(`Falha ao enviar mensagem do Telegram para ${chatId}:`, error);
+        }
+    }
+
+    // ==========================================
+    // MÉTODOS PRIVADOS DE INFRAESTRUTURA
+    // ==========================================
     private async startClient(): Promise<void> {
         if (!this.client) return;
 
@@ -78,17 +84,11 @@ export class TelegramBotService implements INotificationProvider {
         }, new NewMessage({}));
     }
 
-    // ==========================================
-    // PROCESSAMENTO DE MENSAGENS E COMANDOS
-    // ==========================================
     private async handleMessage(event: any): Promise<void> {
         const message = event.message;
-        
         if (!this.isValidMessage(message)) return;
 
         const { command, args } = this.parseCommand(message.message);
-        
-        // Extração segura do ID do Chat baseado na estrutura da API do GramJS
         const chatId: ChatId = message.peerId?.userId || message.senderId?.value;
 
         if (chatId) {
@@ -111,7 +111,8 @@ export class TelegramBotService implements INotificationProvider {
                 await this.handleStartCommand(chatId);
                 break;
             case '/bind':
-                await this.handleBindCommand(chatId, args[0] || "");
+                // Passamos args[0] (email) e args[1] (token)
+                await this.handleBindCommand(chatId, args[0] || "", args[1] || "");
                 break;
             default:
                 await this.sendMessage(chatId, "Comando não reconhecido. Tente enviar /start");
@@ -119,25 +120,19 @@ export class TelegramBotService implements INotificationProvider {
         }
     }
 
-    // ==========================================
-    // REGRAS DE NEGÓCIO DOS COMANDOS
-    // ==========================================
     private async handleStartCommand(chatId: ChatId): Promise<void> {
-        const message = `Olá, muito obrigado por escolher o Birthday Reminder! 🎉
-Você está a um passo de receber seus lembretes pelo Telegram também!
-Para isso, digite [/bind seu-email@example.com] usando o email da sua conta cadastrada na plataforma.`;
-
+        const message = `Olá, muito obrigado por escolher o Birthday Reminder! 🎉\nVocê está a um passo de receber os seus lembretes pelo Telegram também!\nPara isso, gere o seu token no painel web e digite: \n\n[/bind seu-email@example.com SEU-TOKEN]`;
         await this.sendMessage(chatId, message);
     }
 
-    private async handleBindCommand(chatId: ChatId, email: string): Promise<void> {
-        if (!email) {
-            await this.sendMessage(chatId, "Por favor, forneça um email. Exemplo: /bind seu-email@example.com");
+    private async handleBindCommand(chatId: ChatId, email: string, token: string): Promise<void> {
+        if (!email || !token) {
+            await this.sendMessage(chatId, "Por favor, forneça o email e o token. \nExemplo: /bind seu-email@example.com TKG-ABCDEF");
             return;
         }
 
         try {
-            // Buscamos o usuário no MongoDB através do modelo Pessoa
+            // 1. Busca o utilizador no MongoDB através do email
             const usuario = await Pessoa.findOne({ email }) as IPessoa;
             
             if (!usuario) {
@@ -145,30 +140,24 @@ Para isso, digite [/bind seu-email@example.com] usando o email da sua conta cada
                 return;
             }
 
-            // Atribuímos o chatId convertendo para string, garantindo conformidade com o Banco
+            // 2. Valida se o utilizador possui um token gerado e se coincide com o informado
+            if (!usuario.telegramBindToken || usuario.telegramBindToken !== token) {
+                await this.sendMessage(chatId, "Token inválido ou expirado. Verifique os dados ou gere um novo token no painel web.");
+                return;
+            }
+
+            // 3. Atribui o chatId convertendo para string
             usuario.chatId = chatId.toString();
+            
+            // 4. Limpa o token para garantir que seja de uso único (One-Time-Use)
+            usuario.telegramBindToken = null;
+
             await usuario.save();
             
-            await this.sendMessage(chatId, "Conta do Telegram vinculada com sucesso! Você começará a receber as notificações aqui.");
+            await this.sendMessage(chatId, `✅ Sucesso! A conta de ${usuario.name} foi vinculada com sucesso. Passará a receber as notificações aqui.`);
         } catch (error) {
             console.error("Erro ao vincular conta:", error);
-            await this.sendMessage(chatId, "Ocorreu um erro interno ao tentar vincular sua conta.");
-        }
-    }
-
-    // ==========================================
-    // FUNÇÕES UTILITÁRIAS
-    // ==========================================
-    private async sendMessage(chatId: ChatId, message: string): Promise<void> {
-        if (!this.client) {
-            console.error("Tentativa de envio de mensagem sem o cliente Telegram inicializado.");
-            return;
-        }
-        
-        try {
-            await this.client.sendMessage(Number(chatId), { message });
-        } catch (error) {
-            console.error(`Falha ao enviar mensagem do Telegram para ${chatId}:`, error);
+            await this.sendMessage(chatId, "Ocorreu um erro interno ao tentar vincular a sua conta.");
         }
     }
 
@@ -187,5 +176,5 @@ Para isso, digite [/bind seu-email@example.com] usando o email da sua conta cada
     }
 }
 
-// Exporta uma única instância para ser consumida pelo NotificationJob
-export const telegramBotService = new TelegramBotService();
+// Exportamos a instância do Bot para ser inicializada no index.ts
+export const telegramBot = new TelegramBot();

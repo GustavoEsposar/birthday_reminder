@@ -1,6 +1,6 @@
 import { buscarUsuariosComAniversarios, buscarUsuariosComAniversariosEmLotes } from "../services/NotificationQueryService";
 import { emailService } from "../services/EmailService";
-// import { telegramBotService } from "../services/telegramBotService"; 
+import { telegramService } from "../services/TelegramService";
 
 export const executarEnvioDiarioEmLotes = async (): Promise<void> => {
     try {
@@ -13,7 +13,7 @@ export const executarEnvioDiarioEmLotes = async (): Promise<void> => {
 
             // Dispara para esse lote. O EmailService recebe apenas um lote por vez.
             await emailService.send(loteUsuarios);
-            // await telegramBotService.send(loteUsuarios);
+            // await telegramService.send(loteUsuarios);
         }
 
         console.log("[CRON] Rotina de notificações finalizada com sucesso.");
