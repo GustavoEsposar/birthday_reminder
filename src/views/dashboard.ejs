@@ -105,7 +105,8 @@
             alert(data.message);
             window.location.href = '/dashboard'; // Redireciona via frontend
         } else {
-            alert('Erro ao gerar token');
+            const errorData = await response.json();
+            alert(errorData.error || "Ocorreu um erro desconhecido."); 
         }
     } catch (error) {
         console.error('Erro na requisição:', error);
