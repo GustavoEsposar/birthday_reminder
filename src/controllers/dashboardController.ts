@@ -1,5 +1,7 @@
 import Pessoa from '../models/Pessoa';
 import type { Request, Response, NextFunction } from 'express';
+import crypto from "crypto";
+import { emailService } from '../services/EmailService';
 
 export class DashboardController {
     async getDashboard(req : Request, res: Response) {
@@ -39,6 +41,40 @@ export class DashboardController {
         } catch (error) {
             console.error(error);
             res.status(500).send('Erro ao deletar aniversário');
+        }
+    }
+
+    async generateTelegramToken(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = (req.session as any).userId;
+
+            if (!userId) {
+                res.status(401).json({ error: "Não autorizado." });
+                return;
+            }
+
+            const usuario = await Pessoa.findById(userId);
+            if (!usuario) {
+                res.status(404).json({ error: "Usuário não encontrado." });
+                return;
+            }
+
+            // Gera um token aleatório de 6 caracteres hexadecimais (ex: 8F4A2B)
+            const randomString = crypto.randomBytes(3).toString("hex").toUpperCase();
+            const bindToken = `TKG-${randomString}`;
+
+            usuario.telegramBindToken = bindToken;
+            await usuario.save();
+
+             // retorna sucesso e envia token por email
+            await emailService.enviarTokenDoTelegram(usuario, bindToken);
+            res.status(200).json(
+                { message: "Token gerado com sucesso. Verifique seu email para o próximo passo." }
+            );
+
+        } catch (error) {
+            console.error("Erro ao gerar token do Telegram:", error);
+            res.status(500).json({ error: "Erro interno do servidor." });
         }
     }
 }

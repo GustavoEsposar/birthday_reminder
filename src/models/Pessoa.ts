@@ -14,6 +14,8 @@ export interface IPessoa extends Document {
     password: string;
     birthdates: IBirthdate[];
     cron: string[];
+    chatId?: string;
+    telegramBindToken?: string;
     matchPassword(enteredPassword: string): Promise<boolean>;
 }
 
@@ -50,6 +52,15 @@ const pessoaSchema = new Schema<IPessoa>({
     cron: {
         type: [String],
         required: true
+    },
+    chatId: {
+        type: String,
+        default: null,
+        required: true
+    },
+    telegramBindToken: { 
+        type: String, 
+        default: null //precisa de required?
     }
 }, { collection: COLLECTION_NAME });
 

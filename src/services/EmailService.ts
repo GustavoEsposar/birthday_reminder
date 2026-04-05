@@ -6,6 +6,7 @@ import type { UsuarioComAniversarios, INotificationProvider } from "../types/Not
 
 export class EmailService implements INotificationProvider {
     private transporter: nodemailer.Transporter;
+    private subject: string = "Lembrete de Aniversário";
 
     constructor() {
         // Inicializa o transporter assim que a classe for instanciada
@@ -25,7 +26,7 @@ export class EmailService implements INotificationProvider {
             return;
         }
 
-        const template = this.selecionarTemplate();
+        const template = this.selecionarTemplate('LEMBRETE');
 
         for (const { user, aniversarios } of usuarios) {
             // Se o usuário por algum motivo não tiver email, pula a iteração
@@ -66,11 +67,37 @@ export class EmailService implements INotificationProvider {
         }
     }
 
+    public async enviarTokenDoTelegram(usuario: IPessoa, token: string): Promise<void> {
+        if (!usuario.email) {
+            console.log(`[EmailService] O usuário ${usuario.name} não possui email cadastrado. Não foi possível enviar o token do Telegram.`);
+            return;
+        }
+
+        const template = this.selecionarTemplate('TOKEN');
+
+        const corpoHtml = `<p>Seu token do Telegram é: <strong>${token}</strong></p>`;
+
+        const html = this.substituirVariaveisDoTemplate(template, corpoHtml);
+
+        // Chama o método privado para realizar o envio
+        await this.enviarEmail(usuario, html);
+    }
+
     // --- Métodos Privados da Classe ---
 
-    private selecionarTemplate(): string {
-        const templatePath = path.join(__dirname, "../../templates/todayTemplate.html");
-        return fs.readFileSync(templatePath, "utf-8");
+    private selecionarTemplate(tipo: string): string {
+        switch (tipo) {
+            case 'TOKEN':
+                this.subject = `Seu token do telegram chegou!`;
+                const tokenTemplatePath = path.join(__dirname, "../../templates/telegramTokenTemplate.html");
+                return fs.readFileSync(tokenTemplatePath, "utf-8");
+            case 'LEMBRETE':
+                this.subject = `Seu lembrete de aniversários chegou!`;
+                const templatePath = path.join(__dirname, "../../templates/todayTemplate.html");
+                return fs.readFileSync(templatePath, "utf-8");
+            default:
+                throw new Error(`Tipo de template desconhecido: ${tipo}`);
+        }
     }
 
     private substituirVariaveisDoTemplate(template: string, aniversariosUl: string): string {
@@ -81,7 +108,7 @@ export class EmailService implements INotificationProvider {
         const mailOptions = {
             from: process.env.EMAIL,
             to: user.email,
-            subject: `Seu lembrete de aniversários chegou!`,
+            subject: this.subject,
             html: htmlContent
         };
 
