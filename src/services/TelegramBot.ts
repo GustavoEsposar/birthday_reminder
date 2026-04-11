@@ -65,7 +65,7 @@ export class TelegramBot {
             } catch (error) {
                 console.error("Erro interno ao processar comando:", error);
                 await this.sendMessage(chatId, "Ocorreu um erro ao processar sua solicitação.",{
-                    parse_mode: "Markdown",
+                    parse_mode: "Markdownv2",
                 });
             }
         });
@@ -82,7 +82,7 @@ export class TelegramBot {
                 break;
             default:
                 await this.sendMessage(chatId, "Comando não reconhecido. Tente enviar /start",{
-                    parse_mode: "Markdown",
+                    parse_mode: "Markdownv2",
                 });
                 break;
         }
@@ -91,14 +91,14 @@ export class TelegramBot {
     private async handleStartCommand(chatId: ChatId): Promise<void> {
         const message = `Olá, muito obrigado por escolher o Birthday Reminder! 🎉\nVocê está a um passo de receber os seus lembretes pelo Telegram também!\nPara isso, gere o seu token no painel web e digite: \n\n/bind seu-email@example.com SEU-TOKEN`;
         await this.sendMessage(chatId, message, {
-                parse_mode: "Markdown",
+                parse_mode: "Markdownv2",
             });
     }
 
     private async handleBindCommand(chatId: ChatId, email: string, token: string): Promise<void> {
         if (!email || !token) {
             await this.sendMessage(chatId, "Por favor, forneça o email e o token. \nExemplo: /bind seu-email@example.com TKG-ABCDEF",{
-                parse_mode: "Markdown",
+                parse_mode: "Markdownv2",
             });
             return;
         }
@@ -108,14 +108,14 @@ export class TelegramBot {
             
             if (!usuario) {
                 await this.sendMessage(chatId, "Email não encontrado na base de dados do sistema.",{
-                    parse_mode: "Markdown",
+                    parse_mode: "Markdownv2",
                 });
                 return;
             }
 
             if (!usuario.telegramBindToken || usuario.telegramBindToken !== token) {
                 await this.sendMessage(chatId, "Token inválido ou expirado. Verifique os dados ou gere um novo token no painel web.",{
-                    parse_mode: "Markdown",
+                    parse_mode: "Markdownv2",
                 });
                 return;
             }
@@ -125,19 +125,19 @@ export class TelegramBot {
             await usuario.save();
             
             await this.sendMessage(chatId, `✅ Sucesso! A conta de ${usuario.name} foi vinculada com sucesso. Passará a receber as notificações aqui.`,{
-                parse_mode: "Markdown",
+                parse_mode: "Markdownv2",
             });
         } catch (error) {
             console.error("Erro ao vincular conta:", error);
             await this.sendMessage(chatId, "Ocorreu um erro interno ao tentar vincular a sua conta.",{
-                parse_mode: "Markdown",
+                parse_mode: "Markdownv2",
             });
         }
     }
 }
 
-// Função auxiliar para escapar caracteres especiais do MarkdownV2
-const escapeMarkdown = (text) => {
+// Função auxiliar para escapar caracteres especiais do Markdownv2V2
+const escapeMarkdownv2 = (text) => {
     return String(text).replace(/([_*\[\]()~`>#+\-=|{}.!])/g, "\\$1");
 };
 

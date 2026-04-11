@@ -59,7 +59,7 @@ export class TelegramService implements INotificationProvider {
             }
 
             await telegramBot.sendMessage(user.chatId as string, mensagem, {
-                parse_mode: "Markdown",
+                parse_mode: "Markdownv2",
             });
         }
     }
