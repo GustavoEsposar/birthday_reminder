@@ -33,7 +33,7 @@ export class TelegramBot {
     // ==========================================
     // MÉTODOS PÚBLICOS DE ENVIO (Usado pelos Services)
     // ==========================================
-    public async sendMessage(chatId: ChatId, message: string): Promise<void> {
+    public async sendMessage(chatId: ChatId, message: string, p0: { parse_mode: string; }): Promise<void> {
         if (!this.bot) {
             console.error("Tentativa de envio de mensagem sem o cliente Telegram inicializado.");
             return;

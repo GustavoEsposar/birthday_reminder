@@ -1,11 +1,14 @@
 import { telegramBot } from "./TelegramBot";
-import type { INotificationProvider, UsuarioComAniversarios } from "../types/NotificationTypes";
+import type {
+    INotificationProvider,
+    UsuarioComAniversarios,
+} from "../types/NotificationTypes";
+import { parse } from "path";
 
 export class TelegramService implements INotificationProvider {
-    
     public async send(usuarios: UsuarioComAniversarios[]): Promise<void> {
         // 1. Filtra apenas os usuários que possuem um chatId vinculado no banco
-        const usuariosValidos = usuarios.filter(u => u.user.chatId);
+        const usuariosValidos = usuarios.filter((u) => u.user.chatId);
 
         if (usuariosValidos.length === 0) {
             return;
@@ -13,31 +16,59 @@ export class TelegramService implements INotificationProvider {
 
         // 2. Itera sobre cada usuário para formatar e enviar a mensagem
         for (const { user, aniversarios } of usuariosValidos) {
-            let mensagem = `🎂 Olá, **${user.name}**! Aqui estão os lembretes de hoje:\n\n`;
+            const nomeRaw = user.name.trim().split(" ")?.[0] || "Amigo(a)";
+            const nome = escapeMarkdown(nomeRaw);
+            const d = new Date();
 
-            for (const { intervalo, aniversarios: listaDoDia } of aniversarios) {
-                
+            // Note o uso de * para negrito e o escape nas pontuações
+            let mensagem =
+                `🎂 *${nome}*, seu lembrete de aniversários chegou\!\n\n`;
+
+            for (
+                const { intervalo, aniversarios: listaDoDia } of aniversarios
+            ) {
                 if (intervalo === 0) {
-                    mensagem += `🔔 **HOJE** (${listaDoDia.length} aniversariante(s)):\n`;
+                    mensagem +=
+                        `🔔 \[HOJE\] Há ${listaDoDia.length} aniversariante(s):\n`;
                 } else {
-                    mensagem += `⏳ Em **${intervalo}** dia(s) (${listaDoDia.length} aniversariante(s)):\n`;
+                    const dataFutura = new Date(
+                        d.getTime() + intervalo * 24 * 60 * 60 * 1000,
+                    );
+                    const dia = String(dataFutura.getUTCDate()).padStart(
+                        2,
+                        "0",
+                    );
+                    const mes = String(dataFutura.getUTCMonth() + 1).padStart(
+                        2,
+                        "0",
+                    );
+                    const dataFormatada = `${dia}/${mes}`;
+
+                    // Escapamos a data e o intervalo, e usamos * para negrito
+                    mensagem += `⏳ \[${
+                        escapeMarkdown(dataFormatada)
+                    }\] Em *${intervalo}* dia(s) terá ${listaDoDia.length} aniversariante(s):\n`;
                 }
 
-                listaDoDia.forEach(a => {
-                    const d = new Date(a.date);
-                    const dia = String(d.getUTCDate()).padStart(2, "0");
-                    const mes = String(d.getUTCMonth() + 1).padStart(2, "0");
-                    mensagem += `  - ${a.name} (${dia}/${mes})\n`;
+                listaDoDia.forEach((a) => {
+                    // Escapamos o nome do aniversariante e o hífen
+                    mensagem += `  \- ${escapeMarkdown(a.name)}\n`;
                 });
 
-                mensagem += `\n`; // Quebra de linha entre intervalos
+                mensagem += `\n`;
             }
 
-            // 3. Usa o motor do bot para despachar a mensagem formatada
-            await telegramBot.sendMessage(user.chatId as string, mensagem);
+            await telegramBot.sendMessage(user.chatId as string, mensagem, {
+                parse_mode: "MarkdownV2",
+            });
         }
     }
 }
+
+// Função auxiliar para escapar caracteres especiais do MarkdownV2
+const escapeMarkdown = (text) => {
+    return String(text).replace(/([_*\[\]()~`>#+\-=|{}.!])/g, "\\$1");
+};
 
 // Exportamos a instância do Serviço para ser injetada no NotificationJob
 export const telegramService = new TelegramService();
