@@ -23,7 +23,6 @@ export class TelegramBot {
             return;
         }
 
-        // 'polling: true' faz o bot verificar ativamente por novas mensagens
         this.bot = new TelegramBotAPI(token, { polling: true });
 
         this.setupEventHandlers();
@@ -31,16 +30,23 @@ export class TelegramBot {
     }
 
     // ==========================================
-    // MÉTODOS PÚBLICOS DE ENVIO (Usado pelos Services)
+    // MÉTODOS PÚBLICOS DE ENVIO
     // ==========================================
-    public async sendMessage(chatId: ChatId, message: string, p0: { parse_mode: string; }): Promise<void> {
+    
+    // Atualizamos a assinatura para aceitar o objeto de opções (como o parse_mode)
+    public async sendMessage(
+        chatId: ChatId, 
+        message: string, 
+        options: TelegramBotAPI.SendMessageOptions = {} 
+    ): Promise<void> {
         if (!this.bot) {
             console.error("Tentativa de envio de mensagem sem o cliente Telegram inicializado.");
             return;
         }
         
         try {
-            await this.bot.sendMessage(chatId, message);
+            // REPASSE O OBJETO 'options' para o bot real aqui:
+            await this.bot.sendMessage(chatId, message, options);
         } catch (error) {
             console.error(`Falha ao enviar mensagem do Telegram para ${chatId}:`, error);
         }
@@ -52,21 +58,16 @@ export class TelegramBot {
     private setupEventHandlers(): void {
         if (!this.bot) return;
 
-        // Escuta qualquer mensagem de texto que o bot receber
         this.bot.on('text', async (msg) => {
             const chatId = msg.chat.id;
             const text = msg.text || "";
-
-            // Separa o texto em "comando" e "argumentos"
             const [command, ...args] = text.trim().split(" ");
 
             try {
                 await this.executeCommand(command || "", chatId, args);
             } catch (error) {
                 console.error("Erro interno ao processar comando:", error);
-                await this.sendMessage(chatId, "Ocorreu um erro ao processar sua solicitação.",{
-                    parse_mode: "Markdownv2",
-                });
+                await this.sendMessage(chatId, "Ocorreu um erro ao processar sua solicitação.");
             }
         });
     }
@@ -77,29 +78,24 @@ export class TelegramBot {
                 await this.handleStartCommand(chatId);
                 break;
             case '/bind':
-                // args[0] = email, args[1] = token
                 await this.handleBindCommand(chatId, args[0] || "", args[1] || "");
                 break;
             default:
-                await this.sendMessage(chatId, "Comando não reconhecido. Tente enviar /start",{
-                    parse_mode: "Markdownv2",
-                });
+                await this.sendMessage(chatId, "Comando não reconhecido. Tente enviar /start");
                 break;
         }
     }
 
     private async handleStartCommand(chatId: ChatId): Promise<void> {
-        const message = `Olá, muito obrigado por escolher o Birthday Reminder! 🎉\nVocê está a um passo de receber os seus lembretes pelo Telegram também!\nPara isso, gere o seu token no painel web e digite: \n\n/bind seu-email@example.com SEU-TOKEN`;
-        await this.sendMessage(chatId, message, {
-                parse_mode: "Markdownv2",
-            });
+        // Exemplo usando negrito em HTML
+        const message = `Olá, muito obrigado por escolher o <b>Birthday Reminder</b>! 🎉\n\nVocê está a um passo de receber os seus lembretes pelo Telegram!\nPara isso, gere o seu token no painel web e digite: \n\n<code>/bind seu-email@example.com SEU-TOKEN</code>`;
+        
+        await this.sendMessage(chatId, message, { parse_mode: "HTML" });
     }
 
     private async handleBindCommand(chatId: ChatId, email: string, token: string): Promise<void> {
         if (!email || !token) {
-            await this.sendMessage(chatId, "Por favor, forneça o email e o token. \nExemplo: /bind seu-email@example.com TKG-ABCDEF",{
-                parse_mode: "Markdownv2",
-            });
+            await this.sendMessage(chatId, "Por favor, forneça o email e o token. \nExemplo: <code>/bind seu-email@example.com TKG-ABCDEF</code>", { parse_mode: "HTML" });
             return;
         }
 
@@ -107,39 +103,26 @@ export class TelegramBot {
             const usuario = await Pessoa.findOne({ email }) as IPessoa;
             
             if (!usuario) {
-                await this.sendMessage(chatId, "Email não encontrado na base de dados do sistema.",{
-                    parse_mode: "Markdownv2",
-                });
+                await this.sendMessage(chatId, "Email não encontrado na base de dados do sistema.");
                 return;
             }
 
             if (!usuario.telegramBindToken || usuario.telegramBindToken !== token) {
-                await this.sendMessage(chatId, "Token inválido ou expirado. Verifique os dados ou gere um novo token no painel web.",{
-                    parse_mode: "Markdownv2",
-                });
+                await this.sendMessage(chatId, "Token inválido ou expirado.");
                 return;
             }
 
             usuario.chatId = chatId.toString();
-            usuario.telegramBindToken = null; // Invalida o token após uso
+            usuario.telegramBindToken = null; 
             await usuario.save();
             
-            await this.sendMessage(chatId, `✅ Sucesso! A conta de ${usuario.name} foi vinculada com sucesso. Passará a receber as notificações aqui.`,{
-                parse_mode: "Markdownv2",
-            });
+            // Usando negrito HTML na confirmação
+            await this.sendMessage(chatId, `✅ Sucesso! A conta de <b>${usuario.name}</b> foi vinculada.`, { parse_mode: "HTML" });
         } catch (error) {
             console.error("Erro ao vincular conta:", error);
-            await this.sendMessage(chatId, "Ocorreu um erro interno ao tentar vincular a sua conta.",{
-                parse_mode: "Markdownv2",
-            });
+            await this.sendMessage(chatId, "Ocorreu um erro interno.");
         }
     }
 }
 
-// Função auxiliar para escapar caracteres especiais do Markdownv2V2
-const escapeMarkdownv2 = (text) => {
-    return String(text).replace(/([_*\[\]()~`>#+\-=|{}.!])/g, "\\$1");
-};
-
-// Exportamos a instância do Bot
 export const telegramBot = new TelegramBot();
