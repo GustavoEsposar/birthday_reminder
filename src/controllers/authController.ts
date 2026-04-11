@@ -34,7 +34,9 @@ export class AuthController {
                 name,
                 email,
                 password: passwordOne,
-                birth
+                birth,
+                cron: ['0', '1', '2', '7'],
+                birthdates: []
             });
 
             await newUser.save();

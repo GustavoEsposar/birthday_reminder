@@ -51,7 +51,7 @@ const pessoaSchema = new Schema<IPessoa>({
     }],
     cron: {
         type: [String],
-        required: true
+        default: ['0', '1', '2', '7']
     },
     chatId: {
         type: String,
@@ -59,7 +59,7 @@ const pessoaSchema = new Schema<IPessoa>({
     },
     telegramBindToken: { 
         type: String, 
-        default: null //precisa de required?
+        default: null
     }
 }, { collection: COLLECTION_NAME });
 
