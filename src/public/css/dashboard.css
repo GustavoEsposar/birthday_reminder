@@ -14,22 +14,69 @@
     line-height: 1;
 }
 
-.add-birthdate {
+.sort-container {
     position: absolute;
     top: 30px;
-    right: 30px;
+    left: 30px;
+    z-index: 2;
+    
+    /* ADICIONADO: Necessário para as duas linhas abaixo funcionarem */
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    gap: 15px; /* O gap deve ficar no container pai direto que alinha os dois itens */
+}
+
+.sort-selection {
+    display: flex;
+    justify-content: center;
+    align-items: center;     
+    gap: 15px;               
+    font-size: 20px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+.sort-submit-btn {
+    /* ADICIONADO: Necessário para centralizar a seta perfeitamente no meio do círculo */
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+
     font-size: 30px;
     z-index: 2;
     width: 50px;
     height: 50px;
     background-color: #2292ca;
     border-radius: 100%;
-    display: flex;
+    transition: 0.2s ease;
+    
+    /* Bônus de reset visual para botões: */
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.add-birthdate {
+    /* ADICIONADO: Necessário para centralizar a seta perfeitamente no meio do círculo */
+    display: flex; 
     align-items: center;
     justify-content: center;
-    transition: 0.2s ease;
     text-align: center;
-    padding-top: 9px;
+
+    font-size: 30px;
+    z-index: 2;
+    width: 50px;
+    height: 50px;
+    background-color: #2292ca;
+    border-radius: 100%;
+    transition: 0.2s ease;
+    
+    /* Bônus de reset visual para botões: */
+    border: none;
+    padding: 9px;
+    cursor: pointer;
 }
 
 .add-birthdate a {
@@ -146,11 +193,7 @@
         gap: 0px;
     }
 
-    .add-birthdate {
-        top: 20px;
-        right: 15px;
-        font-size: 30px;
-    }
+
 
     #birthdate-form-container form {
         display: flex;
@@ -162,5 +205,31 @@
     #birthdate-form-container input {
         margin-right: 0;
         margin-bottom: 20px;
+    }
+
+    /* --- Ajustes da Ordenação para Mobile --- */
+    
+    .sort-container {
+        position: relative; /* Remove o absolute para evitar sobreposição */
+        top: 0;
+        left: 0;
+        margin-top: 15px;
+        margin-bottom: 2px; /* Cria um respiro antes da lista de pessoas */
+        width: 100%;
+        gap: 10px; /* Reduz o espaço entre o select e o botão */
+    }
+
+    .sort-selection {
+        font-size: 14px; /* Fonte menor para caber textos grandes no select */
+        padding: 8px 10px; /* Menos preenchimento interno */
+        width: 100%; /* Faz o select esticar para preencher o espaço disponível */
+    }
+
+    .sort-submit-btn, .add-birthdate {
+        color: black;
+        width: 40px; /* Botão reduzido */
+        height: 40px;
+        font-size: 20px; /* Setinhas menores */
+        flex-shrink: 0; /* REGRA DE OURO: Impede que o select "esmague" o botão redondo por falta de espaço */
     }
 }

@@ -43,22 +43,50 @@
             <div class="dashboard">
                 <h1 class="pacifico-regular">Aniversários</h1>
 
-                <div class="add-birthdate pacifico-regular sobrepor">
-                    <a href="#" id="show-form">+</a>
+                <div
+                    class="sort-container"
+                >
+                    <select
+                        id="sort-select"
+                        class="sort-selection"
+                    >
+                        <option value="name">Ordenar por Nome</option>
+                        <option value="calendar">Ordenar por Data</option>
+                        <option value="age">Ordenar por Idade</option>
+                    </select>
+                    <button
+                        id="sort-btn"
+                        class="sort-submit-btn pacifico-regular sobrepor"
+                    >
+                        ↑↓
+                    </button>
+                    
+                    <div class="add-birthdate pacifico-regular sobrepor">
+                        <a href="#" id="show-form">+</a>
+                    </div>
                 </div>
 
                 <div class="pessoas">
                     <% user.birthdates.forEach((aniversario) => { %>
-                    <div class="pessoa sobrepor">
+                    <% 
+                        // Preparando as datas no lado do servidor (EJS)
+                        const date = new Date(aniversario.date); 
+                        const day = String(date.getUTCDate()).padStart(2, '0');
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0'); 
+                        const year = date.getUTCFullYear(); 
+                        const formattedDate = `${day}/${month}/${year}`; 
+                        
+                        // Formato MMDD para ordenação de calendário (ex: 0418)
+                        const calendarSortValue = `${month}${day}`;
+                    %>
+                    <div
+                        class="pessoa sobrepor"
+                        data-name="<%= aniversario.name %>"
+                        data-age="<%= date.getTime() %>"
+                        data-calendar="<%= calendarSortValue %>"
+                    >
                         <h3><%= aniversario.name %></h3>
-                        <p>
-                            <% const date = new Date(aniversario.date); const
-                            day = String(date.getUTCDate()).padStart(2, '0');
-                            const month = String(date.getUTCMonth() +
-                            1).padStart(2, '0'); const year =
-                            date.getUTCFullYear(); const formattedDate =
-                            `${day}/${month}/${year}`; %> <%= formattedDate %>
-                        </p>
+                        <p><%= formattedDate %></p>
 
                         <form
                             action="/delete-birthdate"
@@ -91,6 +119,7 @@
         %>
         <script src="./js/main.js"></script>
         <script>
+            // Lógica para mostrar/ocultar o menu dropdown
             document.getElementById("menu-icon")
                 .addEventListener("click", function () {
                     const menu = document.getElementById(
@@ -106,6 +135,7 @@
                     }
                 });
 
+            // Lógica para mostrar/ocultar o formulário de adicionar aniversário
             document.getElementById("show-form")
                 .addEventListener("click", function () {
                     const formContainer = document
@@ -134,6 +164,7 @@
                     }
                 });
 
+            // Lógica para vincular Telegram
             document.getElementById("btn-vincular-telegram")
                 .addEventListener("click", async (e) => {
                     e.preventDefault(); // Evita que a página recarregue ou vá para o href="#"
@@ -166,6 +197,55 @@
                         );
                     }
                 });
+
+            //lógica de ordenação das divs de aniversários
+            // Variáveis de estado fora do evento para manter a "memória" entre os cliques
+            let currentSortType = "";
+            let isAscending = true;
+
+            document.getElementById("sort-btn").addEventListener("click", function () {
+            const sortType = document.getElementById("sort-select").value;
+            const container = document.querySelector(".pessoas");
+            const elements = Array.from(container.querySelectorAll(".pessoa"));
+            const btn = document.getElementById("sort-btn");
+
+            // Lógica de alternância (Toggle)
+            if (sortType === currentSortType) {
+                isAscending = !isAscending;
+            } else {
+                isAscending = true;
+                currentSortType = sortType;
+            }
+
+            // Ordenação
+            elements.sort((a, b) => {
+                let comparison = 0;
+
+                if (sortType === "name") {
+                    const nameA = a.getAttribute("data-name").toLowerCase();
+                    const nameB = b.getAttribute("data-name").toLowerCase();
+                    comparison = nameA.localeCompare(nameB);
+                    
+                } else if (sortType === "age") {
+                    // Ordena pelo timestamp completo (quem nasceu antes vem primeiro)
+                    const ageA = parseInt(a.getAttribute("data-age"));
+                    const ageB = parseInt(b.getAttribute("data-age"));
+                    comparison = ageA - ageB;
+                    
+                } else if (sortType === "calendar") {
+                    // Ordena apenas por Mês e Dia (formato MMDD)
+                    const calA = parseInt(a.getAttribute("data-calendar"));
+                    const calB = parseInt(b.getAttribute("data-calendar"));
+                    comparison = calA - calB;
+                }
+
+                // Retorna a comparação normal (crescente) ou invertida (decrescente)
+                return isAscending ? comparison : (comparison * -1);
+            });
+
+            // Reanexa os elementos na nova ordem
+            elements.forEach((el) => container.appendChild(el));
+        });
         </script>
     </body>
 </html>
