@@ -236,7 +236,7 @@
     }
 
     .sort-selection, .search-input {
-        font-size: 14px; /* Fonte menor para caber textos grandes no select */
+        font-size: 16px; /* Fonte menor para caber textos grandes no select */
         padding: 8px 10px; /* Menos preenchimento interno */
         width: 100%; /* Faz o select esticar para preencher o espaço disponível */
     }
