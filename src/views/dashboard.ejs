@@ -43,6 +43,15 @@
             <div class="dashboard">
                 <h1 class="pacifico-regular">Aniversários</h1>
 
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        class="search-input" 
+                        placeholder="Digite um nome para pesquisar" 
+                    >
+                </div>
+
                 <div
                     class="sort-container"
                 >
@@ -245,6 +254,29 @@
 
             // Reanexa os elementos na nova ordem
             elements.forEach((el) => container.appendChild(el));
+        });
+
+        // Lógica da Barra de Pesquisa (Filtro em tempo real)
+        document.getElementById("search-input").addEventListener("input", function (e) {
+            // Pega o que foi digitado e converte para minúsculas (insensitive case)
+            const searchTerm = e.target.value.toLowerCase();
+            
+            // Pega todas as divs de pessoas
+            const pessoas = document.querySelectorAll(".pessoa");
+
+            pessoas.forEach((pessoa) => {
+                // Lê o nome que salvamos no data-attribute
+                const name = pessoa.getAttribute("data-name").toLowerCase();
+                
+                // Verifica se o nome digitado está contido no nome da pessoa
+                if (name.includes(searchTerm)) {
+                    // Se encontrar o texto, remove qualquer 'display: none' para mostrar a div
+                    pessoa.style.display = ""; 
+                } else {
+                    // Se não encontrar, oculta a div
+                    pessoa.style.display = "none"; 
+                }
+            });
         });
         </script>
     </body>
