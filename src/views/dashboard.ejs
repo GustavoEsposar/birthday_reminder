@@ -5,40 +5,6 @@
     </head>
     <body class="body">
         <div class="container">
-            <div id="birthdate-form-container" class="hidden">
-                <form
-                    action="/add-birthdate"
-                    method="POST"
-                    class="birthdate-form"
-                >
-                    <input type="hidden" name="userId" value="<%= user._id %>">
-
-                    <input
-                        class="input"
-                        type="text"
-                        id="name"
-                        name="name"
-                        required
-                        placeholder="Nome do aniversariante"
-                    >
-
-                    <input
-                        class="input"
-                        type="date"
-                        id="birthdate"
-                        name="birthdate"
-                        required
-                    >
-
-                    <button
-                        class="pacifico-regular"
-                        type="submit"
-                        class="submit-btn"
-                    >
-                        Adicionar
-                    </button>
-                </form>
-            </div>
             <%- include('partials/navbar-dashboard.ejs') %>
             <div class="dashboard">
                 <h1 class="pacifico-regular">Aniversários</h1>
@@ -76,6 +42,45 @@
                 </div>
 
                 <div class="pessoas">
+                    <form
+                        id="inline-add-form"
+                        action="/add-birthdate"
+                        method="POST"
+                        class="pessoa sobrepor new-person-card"
+                        style="display: none;" 
+                    >
+                        <input type="hidden" name="userId" value="<%= user._id %>">
+
+                        <input
+                            type="text"
+                            id="new-name"
+                            name="name"
+                            required
+                            placeholder="Nome da pessoa"
+                            class="inline-input-name"
+                        >
+
+                        <input
+                            type="text"
+                            id="new-birthdate"
+                            name="birthdate"
+                            required
+                            class="inline-input-date"
+                            placeholder="Data (dd/mm/aaaa)"
+                            onfocus="(this.type='date')"
+                            onblur="if(!this.value) this.type='text'"
+                        >
+
+                        <div class="action-buttons">
+                            <button type="button" id="cancel-add" class="cancel-btn material-symbols-outlined">
+                                close
+                            </button>
+                            <button type="submit" class="save-btn material-symbols-outlined">
+                                check
+                            </button>
+                        </div>
+                    </form>
+
                     <% user.birthdates.forEach((aniversario) => { %>
                     <% 
                         // Preparando as datas no lado do servidor (EJS)
@@ -144,34 +149,36 @@
                     }
                 });
 
-            // Lógica para mostrar/ocultar o formulário de adicionar aniversário
-            document.getElementById("show-form")
-                .addEventListener("click", function () {
-                    const formContainer = document
-                        .getElementById(
-                            "birthdate-form-container",
-                        );
-                    const button = document.getElementById(
-                        "show-form",
-                    );
-                    if (
-                        formContainer.classList.contains(
-                            "hidden",
-                        )
-                    ) {
-                        formContainer.classList.remove(
-                            "hidden",
-                        );
-                        formContainer.classList.add("visible");
-                        button.innerHTML = "✘";
-                    } else {
-                        formContainer.classList.remove(
-                            "visible",
-                        );
-                        formContainer.classList.add("hidden");
-                        button.innerHTML = "+";
-                    }
-                });
+            // Lógica para mostrar/ocultar o card form inline
+            document.getElementById("show-form").addEventListener("click", function (e) {
+                e.preventDefault();
+                
+                const formCard = document.getElementById("inline-add-form");
+                const button = document.getElementById("show-form");
+                const nameInput = document.getElementById("new-name");
+
+                // Toggle de visibilidade usando o estilo inline
+                if (formCard.style.display === "none") {
+                    formCard.style.display = "flex"; // Mostra o card
+                    button.innerHTML = "✘";
+                    
+                    // UX Avançada: Coloca o cursor de digitação direto no campo de nome
+                    setTimeout(() => nameInput.focus(), 50); 
+                } else {
+                    formCard.style.display = "none"; // Oculta o card
+                    button.innerHTML = "+";
+                }
+            });
+
+            // Lógica para o botão interno de "Cancelar" fechar o card e limpar os dados
+            document.getElementById("cancel-add").addEventListener("click", function() {
+                const formCard = document.getElementById("inline-add-form");
+                const button = document.getElementById("show-form");
+                
+                formCard.style.display = "none";
+                button.innerHTML = "+";
+                formCard.reset(); // Limpa o que o usuário havia digitado caso tenha desistido
+            });
 
             // Lógica para vincular Telegram
             document.getElementById("btn-vincular-telegram")
@@ -215,7 +222,7 @@
             document.getElementById("sort-btn").addEventListener("click", function () {
             const sortType = document.getElementById("sort-select").value;
             const container = document.querySelector(".pessoas");
-            const elements = Array.from(container.querySelectorAll(".pessoa"));
+            const elements = Array.from(container.querySelectorAll(".pessoa:not(#inline-add-form)"));
             const btn = document.getElementById("sort-btn");
 
             // Lógica de alternância (Toggle)
@@ -262,7 +269,7 @@
             const searchTerm = e.target.value.toLowerCase();
             
             // Pega todas as divs de pessoas
-            const pessoas = document.querySelectorAll(".pessoa");
+            const pessoas = document.querySelectorAll(".pessoa:not(#inline-add-form)");
 
             pessoas.forEach((pessoa) => {
                 // Lê o nome que salvamos no data-attribute
