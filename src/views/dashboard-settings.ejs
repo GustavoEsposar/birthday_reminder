@@ -6,61 +6,172 @@
     <body class="body">
         <div class="container">
             <%- include('partials/navbar-dashboard.ejs') %>
-            <div class="dashboard">
+            <div class="dashboard settings-dashboard">
                 <div class="settings-header">
-                    <h2>Configurações da Conta</h2>
-                    <p>Gerencie suas preferências de notificação e segurança.</p>
+                    <div class="header-titles">
+                    <h1 class="pacifico-regular">Configurações</h1>
+                    <p class="subtitle">Gerencie suas preferências e segurança</p>
+                    </div>
+                    <a href="/dashboard" class="back-btn">⬅ Voltar ao Painel</a>
+                </div>
+
+                <div class="settings-tabs">
+                    <button class="tab-btn active" data-target="tab-account">🔒 Segurança</button>
+                    <button class="tab-btn" data-target="tab-notifications">🔔 Notificações</button>
+                    <button class="tab-btn" data-target="tab-integrations">✈️ Integrações</button>
                 </div>
 
                 <div class="settings-content">
-                    <section class="settings-card">
-                        <h3>Preferências de Notificação</h3>
-                        <hr>
-                        <form id="form-notifications" action="/dashboard/settings/notifications" method="POST">
-                            
-                            <div class="form-group">
-                                <label for="notification-receiver">Receber lembretes por:</label>
-                                <select id="notification-receiver" name="receiver">
-                                    <option value="email" <%= user.preferences?.receiver === 'email' ? 'selected' : '' %>>E-mail</option>
-                                    <option value="telegram" <%= user.preferences?.receiver === 'telegram' ? 'selected' : '' %>>Telegram</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="notification-schedule">Horário do aviso:</label>
-                                <input type="time" id="notification-schedule" name="schedule" value="<%= user.preferences?.schedule || '08:00' %>">
-                            </div>
-
-                            <button type="submit" class="btn-save">Salvar Preferências</button>
+                    
+                    <div class="tab-pane active" id="tab-account">
+                    <div class="settings-card">
+                        <h2 class="pacifico-regular">Alterar Senha</h2>
+                        <p>Mantenha sua conta segura utilizando uma senha forte.</p>
+                        
+                        <form id="form-change-password" class="settings-form">
+                        <div class="input-group">
+                            <label>Senha Atual</label>
+                            <input type="password" name="oldPassword" required class="input" placeholder="Digite a senha atual">
+                        </div>
+                        <div class="input-group">
+                            <label>Nova Senha</label>
+                            <input type="password" name="newPassword" required class="input" placeholder="Nova senha">
+                        </div>
+                        <button type="submit" class="submit-btn">Atualizar Senha</button>
                         </form>
-                    </section>
+                    </div>
+                    </div>
 
-                    <section class="settings-card">
-                        <h3>Segurança</h3>
-                        <hr>
-                        <form id="form-password" action="/dashboard/settings/password" method="POST">
-                            
-                            <div class="form-group">
-                                <label for="current-password">Senha Atual:</label>
-                                <input type="password" id="current-password" name="currentPassword" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="new-password">Nova Senha:</label>
-                                <input type="password" id="new-password" name="newPassword" required>
-                            </div>
-
-                            <button type="submit" class="btn-save btn-danger">Atualizar Senha</button>
+                    <div class="tab-pane" id="tab-notifications">
+                    <div class="settings-card">
+                        <h2 class="pacifico-regular">Intervalos de Aviso</h2>
+                        <p>Escolha com quantos dias de antecedência o Birthday Reminder deve te avisar.</p>
+                        
+                        <form id="form-notifications" class="settings-form">
+                        <div class="checkbox-grid">
+                            <label class="checkbox-label">
+                            <input type="checkbox" name="intervals" value="0" checked> 
+                            <span class="custom-check"></span> No dia (0)
+                            </label>
+                            <label class="checkbox-label">
+                            <input type="checkbox" name="intervals" value="1" checked> 
+                            <span class="custom-check"></span> 1 dia antes
+                            </label>
+                            <label class="checkbox-label">
+                            <input type="checkbox" name="intervals" value="2" checked> 
+                            <span class="custom-check"></span> 2 dias antes
+                            </label>
+                            <label class="checkbox-label">
+                            <input type="checkbox" name="intervals" value="7" checked> 
+                            <span class="custom-check"></span> 1 semana antes
+                            </label>
+                        </div>
+                        <button type="submit" class="submit-btn">Salvar Preferências</button>
                         </form>
-                    </section>
+                    </div>
+                    </div>
+
+                    <div class="tab-pane" id="tab-integrations">
+                    <div class="settings-card">
+                        <h2 class="pacifico-regular">Telegram Bot</h2>
+                        <p>Receba seus alertas diretamente no seu aplicativo do Telegram.</p>
+                        
+                        <div class="integration-status">
+                        <% if (user.chatId) { %>
+                            <div class="status-badge connected">✅ Telegram Vinculado</div>
+                            <button id="btn-revoke-telegram" class="submit-btn danger-btn">Desvincular Telegram</button>
+                        <% } else { %>
+                            <div class="status-badge disconnected">❌ Não vinculado</div>
+                            <button id="btn-generate-telegram" class="submit-btn telegram-btn">Gerar Token de Acesso</button>
+                        <% } %>
+                        </div>
+                    </div>
+                    </div>
+
                 </div>
-            </div>
+                </div>
         </div>
 
-        <%- include('partials/footer.ejs') %> <%- include('partials/foot.ejs')
-        %>
-        <script src="./js/main.js"></script>
+        <%- include('partials/footer.ejs') %> 
+        <%- include('partials/foot.ejs') %>
+        <script src="/js/main.js"></script>
         <script>
+            document.addEventListener("DOMContentLoaded", () => {
+            // 1. Lógica de Navegação por Abas (Tabs)
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                // Remove 'active' de todos
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabPanes.forEach(p => p.classList.remove('active'));
+
+                // Adiciona 'active' no alvo clicado
+                btn.classList.add('active');
+                const targetId = btn.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+            // 2. Lógica de Submissão Segura de Senha via Fetch
+            const passwordForm = document.getElementById('form-change-password');
+            if (passwordForm) {
+                passwordForm.addEventListener('submit', async (e) => {
+                e.preventDefault(); // Evita que a página recarregue
+                
+                const formData = new FormData(passwordForm);
+                const data = Object.fromEntries(formData.entries());
+
+                try {
+                    const response = await fetch('/api/users/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                    alert('Senha atualizada com sucesso!');
+                    passwordForm.reset();
+                    } else {
+                    alert(result.error || 'Erro ao atualizar senha.');
+                    }
+                } catch (err) {
+                    alert('Falha na comunicação com o servidor.');
+                }
+                });
+            }
+
+            // 3. Lógica de Atualização de Preferências de Notificação
+            const notificationForm = document.getElementById('form-notifications');
+            if (notificationForm) {
+                notificationForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Coleta todos os checkboxes marcados e transforma em array de inteiros
+                const checkedBoxes = document.querySelectorAll('input[name="intervals"]:checked');
+                const intervals = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
+
+                try {
+                    // Envio tipo PATCH para atualizações parciais
+                    const response = await fetch('/api/users/settings', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ notificationIntervals: intervals })
+                    });
+
+                    if (response.ok) {
+                    alert('Preferências de notificação salvas com sucesso!');
+                    } else {
+                    alert('Erro ao salvar preferências.');
+                    }
+                } catch (err) {
+                    alert('Falha na comunicação com o servidor.');
+                }
+                });
+            }
+            });
             // Lógica para mostrar/ocultar o menu dropdown
             document.getElementById("menu-icon")
                 .addEventListener("click", function () {
@@ -98,18 +209,8 @@
                 }
             });
 
-            // Lógica para o botão interno de "Cancelar" fechar o card e limpar os dados
-            document.getElementById("cancel-add").addEventListener("click", function() {
-                const formCard = document.getElementById("inline-add-form");
-                const button = document.getElementById("show-form");
-                
-                formCard.style.display = "none";
-                button.innerHTML = "+";
-                formCard.reset(); // Limpa o que o usuário havia digitado caso tenha desistido
-            });
-
             // Lógica para vincular Telegram
-            document.getElementById("btn-vincular-telegram")
+            document.getElementById("btn-generate-telegram")
                 .addEventListener("click", async (e) => {
                     e.preventDefault(); // Evita que a página recarregue ou vá para o href="#"
 

@@ -180,40 +180,6 @@
                 formCard.reset(); // Limpa o que o usuário havia digitado caso tenha desistido
             });
 
-            // Lógica para vincular Telegram
-            document.getElementById("btn-vincular-telegram")
-                .addEventListener("click", async (e) => {
-                    e.preventDefault(); // Evita que a página recarregue ou vá para o href="#"
-
-                    try {
-                        const response = await fetch(
-                            "/generate-telegram-token",
-                            {
-                                method: "POST", // Força a requisição a ser do tipo POST
-                            },
-                        );
-
-                        if (response.ok) {
-                            // Se o backend enviar um redirect ou JSON de sucesso
-                            const data = await response.json();
-                            alert(data.message);
-                            window.location.href = "/dashboard"; // Redireciona via frontend
-                        } else {
-                            const errorData = await response
-                                .json();
-                            alert(
-                                errorData.error ||
-                                    "Ocorreu um erro desconhecido.",
-                            );
-                        }
-                    } catch (error) {
-                        console.error(
-                            "Erro na requisição:",
-                            error,
-                        );
-                    }
-                });
-
             //lógica de ordenação das divs de aniversários
             // Variáveis de estado fora do evento para manter a "memória" entre os cliques
             let currentSortType = "";
