@@ -82,6 +82,34 @@ export class DashboardController {
             res.status(500).json({ error: "Erro interno do servidor." });
         }
     }
+
+    async revokeTelegram(req: Request, res:Response): Promise<void> {
+        try {
+            const userId = (req.session as any).userId;
+            console.log('teste')
+
+            if (!userId) {
+                res.status(401).json({ error: "Não autorizado." });
+                return;
+            }
+
+            const usuario = await Pessoa.findById(userId);
+            if (!usuario) {
+                res.status(404).json({ error: "Usuário não encontrado." });
+                return;
+            }
+
+            usuario.chatId = null;
+            await usuario.save();
+
+            res.status(200).json(
+                { message: "Telegram desvinculado com sucesso." }
+            );
+        } catch (error) {
+            console.error("Erro ao desvinular token do Telegram:", error);
+            res.status(500).json({ error: "Erro interno do servidor ao desvincular." });
+        }
+    }
 }
 
 export const dashboardController = new DashboardController();

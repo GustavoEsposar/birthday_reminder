@@ -14,8 +14,10 @@ router.post('/app/add-birthdate', authController.isAuthenticated.bind(authContro
 
 router.post('/app/delete-birthdate', authController.isAuthenticated.bind(authController), dashboardController.deleteBirthdate.bind(dashboardController));
 
+router.get('/app/settings', authController.isAuthenticated.bind(authController), settingsController.getSettings.bind(settingsController));
+
 router.post('/app/setting/generate-telegram-token', authController.isAuthenticated.bind(authController), dashboardController.generateTelegramToken.bind(dashboardController));
 
-router.get('/app/settings', authController.isAuthenticated.bind(authController), settingsController.getSettings.bind(settingsController));
+router.post('/app/settings/revoke-telegram', authController.isAuthenticated.bind(authController), dashboardController.revokeTelegram.bind(dashboardController));
 
 export default router;
