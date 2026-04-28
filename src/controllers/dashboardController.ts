@@ -23,7 +23,7 @@ export class DashboardController {
                 { _id: req.session.userId },
                 { $push: { birthdates: { name, date: birthdate } } }
             );
-            res.redirect('/dashboard');
+            res.redirect('/app');
         } catch (error) {
             console.error(error);
             res.status(500).send('Erro ao adicionar aniversário');
@@ -37,7 +37,7 @@ export class DashboardController {
                 { _id: req.session.userId },
                 { $pull: { birthdates: { _id: birthdateId } } }
             );
-            res.redirect('/dashboard');
+            res.redirect('/app');
         } catch (error) {
             console.error(error);
             res.status(500).send('Erro ao deletar aniversário');

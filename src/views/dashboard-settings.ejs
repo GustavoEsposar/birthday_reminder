@@ -12,7 +12,7 @@
                     <h1 class="pacifico-regular">Configurações</h1>
                     <p class="subtitle">Gerencie suas preferências e segurança</p>
                     </div>
-                    <a href="/dashboard" class="back-btn">⬅ Voltar ao Painel</a>
+                    <a href="/app" class="back-btn">⬅ Voltar ao Painel</a>
                 </div>
 
                 <div class="settings-tabs">
@@ -226,7 +226,7 @@
                             // Se o backend enviar um redirect ou JSON de sucesso
                             const data = await response.json();
                             alert(data.message);
-                            window.location.href = "/dashboard"; // Redireciona via frontend
+                            window.location.href = "/app"; // Redireciona via frontend
                         } else {
                             const errorData = await response
                                 .json();

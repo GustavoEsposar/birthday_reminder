@@ -8,7 +8,7 @@ const authController = new AuthController();
 const dashboardController = new DashboardController();
 const settingsController = new SettingsController();
 
-router.get('/dashboard', authController.isAuthenticated.bind(authController), dashboardController.getDashboard.bind(dashboardController));
+router.get('/app', authController.isAuthenticated.bind(authController), dashboardController.getDashboard.bind(dashboardController));
 
 router.post('/add-birthdate', authController.isAuthenticated.bind(authController), dashboardController.addBirthdate.bind(dashboardController));
 

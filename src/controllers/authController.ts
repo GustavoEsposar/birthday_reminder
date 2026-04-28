@@ -12,7 +12,7 @@ export class AuthController {
 
             if (user && await user.matchPassword(password)) {
                 req.session.userId = String(user._id);
-                return res.redirect('/dashboard');
+                return res.redirect('/app');
             }
 
             return res.status(400).send('Credenciais inválidas');
