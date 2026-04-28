@@ -10,9 +10,9 @@ const settingsController = new SettingsController();
 
 router.get('/app', authController.isAuthenticated.bind(authController), dashboardController.getDashboard.bind(dashboardController));
 
-router.post('/add-birthdate', authController.isAuthenticated.bind(authController), dashboardController.addBirthdate.bind(dashboardController));
+router.post('/app/add-birthdate', authController.isAuthenticated.bind(authController), dashboardController.addBirthdate.bind(dashboardController));
 
-router.post('/delete-birthdate', authController.isAuthenticated.bind(authController), dashboardController.deleteBirthdate.bind(dashboardController));
+router.post('/app/delete-birthdate', authController.isAuthenticated.bind(authController), dashboardController.deleteBirthdate.bind(dashboardController));
 
 router.post('/app/setting/generate-telegram-token', authController.isAuthenticated.bind(authController), dashboardController.generateTelegramToken.bind(dashboardController));
 
