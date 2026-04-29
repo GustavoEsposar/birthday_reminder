@@ -47,46 +47,53 @@
                     </div>
 
                     <div class="tab-pane" id="tab-notifications">
-                    <div class="settings-card">
-                        <h2 class="pacifico-regular">Intervalos de Aviso</h2>
-                        <p>Escolha com quantos dias de antecedência o Birthday Reminder deve te avisar (Máx: 10 intervalos).</p>
+                        <div class="settings-card">
+                            <h2 class="pacifico-regular">Intervalos de Aviso</h2>
+                            <p>Escolha com quantos dias de antecedência o Birthday Reminder deve te avisar (Máx: 10
+                                intervalos).</p>
 
-                        <form id="form-notifications" class="settings-form">
-                            
-                            <div id="intervals-container" class="chips-container">
-                                <% if (user.cron && user.cron.length > 0) { %>
-                                    <% user.cron.forEach(function(dayStr) { %>
-                                        <div class="chip sobrepor" data-value="<%= dayStr %>">
-                                            <span><%= dayStr === '0' ? 'No dia (0)' : dayStr + ' dia(s) antes' %></span>
-                                            <% if (dayStr !== '0') { %>
-                                                <button type="button" class="remove-chip" aria-label="Remover">✖</button>
-                                            <% } %>
-                                        </div>
-                                    <% }); %>
-                                <% } else { %>
-                                    <div class="chip" data-value="0">
-                                        <span>No dia</span>
-                                    </div>
-                                <% } %>
-                            </div>
+                            <form id="form-notifications" class="settings-form">
 
-                            <div class="add-interval-group">
-                                <input type="number" id="new-interval-input" class="input" min="1" max="180" placeholder="Ex: 15 (dias)">
-                                <button type="button" id="btn-add-interval" class="submit-btn outline-btn">Adicionar</button>
-                            </div>
-                            
-                            <small id="interval-error-msg" class="error-text" style="display: none;"></small>
+                                <div id="intervals-container" class="chips-container">
+                                    <% if (user.cron && user.cron.length> 0) { %>
+                                        <% user.cron.forEach(function(dayStr) { %>
+                                            <div class="chip sobrepor" data-value="<%= dayStr %>">
+                                                <span>
+                                                    <%= dayStr==='0' ? 'No dia (0)' : dayStr + ' dia(s) antes' %>
+                                                </span>
+                                                <% if (dayStr !=='0' ) { %>
+                                                    <button type="button" class="remove-chip"
+                                                        aria-label="Remover">✖</button>
+                                                    <% } %>
+                                            </div>
+                                            <% }); %>
+                                                <% } else { %>
+                                                    <div class="chip" data-value="0">
+                                                        <span>No dia</span>
+                                                    </div>
+                                                    <% } %>
+                                </div>
 
-                            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
-                            <button type="submit" class="submit-btn">Salvar Preferências</button>
-                        </form>
+                                <div class="add-interval-group">
+                                    <input type="number" id="new-interval-input" class="input" min="1" max="180"
+                                        placeholder="Ex: 15 (dias)">
+                                    <button type="button" id="btn-add-interval"
+                                        class="submit-btn outline-btn">Adicionar</button>
+                                </div>
+
+                                <small id="interval-error-msg" class="error-text" style="display: none;"></small>
+
+                                <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+                                <button type="submit" class="submit-btn">Salvar Preferências</button>
+                            </form>
+                        </div>
                     </div>
-                </div>
 
                     <div class="tab-pane" id="tab-integrations">
                         <div class="settings-card">
                             <h2 class="pacifico-regular">Telegram Bot</h2>
-                            <p>Receba seus alertas diretamente no seu aplicativo do Telegram. Caso mude de telefone, você precisará re-vincular o bot refazendo o processo.</p>
+                            <p>Receba seus alertas diretamente no seu aplicativo do Telegram. Caso mude de telefone,
+                                você precisará re-vincular o bot refazendo o processo.</p>
 
                             <div class="integration-status">
                                 <% if (user.chatId) { %>
@@ -107,174 +114,7 @@
     </div>
 
     <%- include('partials/footer.ejs') %>
-        <%- include('partials/foot.ejs') %>
-            <script src="/js/main.js"></script>
-            <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                    // Lógica para vincular Telegram
-                    const btnGenerateTelegram = document.getElementById("btn-generate-telegram");
-
-                    if (btnGenerateTelegram) {
-                        btnGenerateTelegram.addEventListener("click", async (e) => {
-                            e.preventDefault();
-
-                            try {
-                                const response = await fetch("/app/settings/generate-telegram-token", {
-                                    method: "POST",
-                                });
-
-                                if (response.ok) {
-                                    const data = await response.json();
-                                    alert(data.message);
-                                    window.location.href = "/app/settings";
-                                } else {
-                                    const errorData = await response.json();
-                                    alert(errorData.error || "Ocorreu um erro desconhecido.");
-                                }
-                            } catch (error) {
-                                console.error("Erro na requisição:", error);
-                            }
-                        });
-                    }
-
-                    //Lógica para desvincular o Telegram
-                    const btnRevokeTelegram = document.getElementById("btn-revoke-telegram");
-
-                    if (btnRevokeTelegram) {
-                        btnRevokeTelegram.addEventListener("click", async (e) => {
-                            e.preventDefault();
-
-                            try {
-                                const response = await fetch("/app/settings/revoke-telegram", {
-                                    method: "POST",
-                                });
-
-                                if (response.ok) {
-                                    const data = await response.json();
-                                    alert(data.message);
-                                    window.location.href = "/app/settings";
-                                } else {
-                                    const errorData = await response.json();
-                                    alert(errorData.error || "Ocorreu um erro desconhecido.");
-                                }
-                            } catch (error) {
-                                console.error("Erro na requisição:", error);
-                            }
-                        });
-                    }
-
-                    // 1. Lógica de Navegação por Abas (Tabs)
-                    const tabBtns = document.querySelectorAll('.tab-btn');
-                    const tabPanes = document.querySelectorAll('.tab-pane');
-
-                    tabBtns.forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            // Remove 'active' de todos
-                            tabBtns.forEach(b => b.classList.remove('active'));
-                            tabPanes.forEach(p => p.classList.remove('active'));
-
-                            // Adiciona 'active' no alvo clicado
-                            btn.classList.add('active');
-                            const targetId = btn.getAttribute('data-target');
-                            document.getElementById(targetId).classList.add('active');
-                        });
-                    });
-
-                    // 2. Lógica de Submissão Segura de Senha via Fetch
-                    const passwordForm = document.getElementById('form-change-password');
-                    if (passwordForm) {
-                        passwordForm.addEventListener('submit', async (e) => {
-                            e.preventDefault(); // Evita que a página recarregue
-
-                            const formData = new FormData(passwordForm);
-                            const data = Object.fromEntries(formData.entries());
-
-                            try {
-                                const response = await fetch('/api/users/change-password', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify(data)
-                                });
-
-                                const result = await response.json();
-                                if (response.ok) {
-                                    alert('Senha atualizada com sucesso!');
-                                    passwordForm.reset();
-                                } else {
-                                    alert(result.error || 'Erro ao atualizar senha.');
-                                }
-                            } catch (err) {
-                                alert('Falha na comunicação com o servidor.');
-                            }
-                        });
-                    }
-
-                    // 3. Lógica de Atualização de Preferências de Notificação
-                    const notificationForm = document.getElementById('form-notifications');
-                    if (notificationForm) {
-                        notificationForm.addEventListener('submit', async (e) => {
-                            e.preventDefault();
-
-                            // Coleta todos os checkboxes marcados e transforma em array de inteiros
-                            const checkedBoxes = document.querySelectorAll('input[name="intervals"]:checked');
-                            const intervals = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
-
-                            try {
-                                // Envio tipo PATCH para atualizações parciais
-                                const response = await fetch('/api/users/settings', {
-                                    method: 'PATCH',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ notificationIntervals: intervals })
-                                });
-
-                                if (response.ok) {
-                                    alert('Preferências de notificação salvas com sucesso!');
-                                } else {
-                                    alert('Erro ao salvar preferências.');
-                                }
-                            } catch (err) {
-                                alert('Falha na comunicação com o servidor.');
-                            }
-                        });
-                    }
-                });
-                // Lógica para mostrar/ocultar o menu dropdown
-                document.getElementById("menu-icon")
-                    .addEventListener("click", function () {
-                        const menu = document.getElementById(
-                            "menu-options",
-                        );
-
-                        if (menu.classList.contains("menu-hidde")) {
-                            menu.classList.remove("menu-hidde");
-                            menu.classList.add("menu-show");
-                        } else {
-                            menu.classList.remove("menu-show");
-                            menu.classList.add("menu-hidde");
-                        }
-                    });
-
-                // Lógica para mostrar/ocultar o card form inline
-                document.getElementById("show-form").addEventListener("click", function (e) {
-                    e.preventDefault();
-
-                    const formCard = document.getElementById("inline-add-form");
-                    const button = document.getElementById("show-form");
-                    const nameInput = document.getElementById("new-name");
-
-                    // Toggle de visibilidade usando o estilo inline
-                    if (formCard.style.display === "none") {
-                        formCard.style.display = "flex"; // Mostra o card
-                        button.innerHTML = "✘";
-
-                        // UX Avançada: Coloca o cursor de digitação direto no campo de nome
-                        setTimeout(() => nameInput.focus(), 50);
-                    } else {
-                        formCard.style.display = "none"; // Oculta o card
-                        button.innerHTML = "+";
-                    }
-                });
-            </script>
+    <%- include('partials/foot.ejs') %>
 </body>
 
 </html>

@@ -7,7 +7,8 @@ export class SettingsController {
             const user = await Pessoa.findById(req.session.userId);
             res.render('dashboard-settings', {
                 title: 'Birthday Reminder - Configurações',
-                user: user
+                user: user,
+                extraScripts: ['/js/navbar-dashboard.js', '/js/settings.js']
             });
         } catch (error) {
             res.status(500).send('Erro ao carregar as configurações');

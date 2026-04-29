@@ -1,6 +1,105 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Lógica para vincular Telegram
+    const btnGenerateTelegram = document.getElementById("btn-generate-telegram");
+
+    if (btnGenerateTelegram) {
+        btnGenerateTelegram.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            try {
+                const response = await fetch("/app/settings/generate-telegram-token", {
+                    method: "POST",
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.message);
+                    window.location.href = "/app/settings";
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.error || "Ocorreu um erro desconhecido.");
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+            }
+        });
+    }
+
+    //Lógica para desvincular o Telegram
+    const btnRevokeTelegram = document.getElementById("btn-revoke-telegram");
+
+    if (btnRevokeTelegram) {
+        btnRevokeTelegram.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            try {
+                const response = await fetch("/app/settings/revoke-telegram", {
+                    method: "POST",
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.message);
+                    window.location.href = "/app/settings";
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.error || "Ocorreu um erro desconhecido.");
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+            }
+        });
+    }
+
+    // 1. Lógica de Navegação por Abas (Tabs)
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove 'active' de todos
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabPanes.forEach(p => p.classList.remove('active'));
+
+            // Adiciona 'active' no alvo clicado
+            btn.classList.add('active');
+            const targetId = btn.getAttribute('data-target');
+            document.getElementById(targetId).classList.add('active');
+        });
+    });
+
+    // 2. Lógica de Submissão Segura de Senha via Fetch
+    const passwordForm = document.getElementById('form-change-password');
+    if (passwordForm) {
+        passwordForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Evita que a página recarregue
+
+            const formData = new FormData(passwordForm);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/api/users/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert('Senha atualizada com sucesso!');
+                    passwordForm.reset();
+                } else {
+                    alert(result.error || 'Erro ao atualizar senha.');
+                }
+            } catch (err) {
+                alert('Falha na comunicação com o servidor.');
+            }
+        });
+    }
+
+    // 3. Lógica de Atualização de Preferências de Notificação
     const formNotifications = document.getElementById("form-notifications");
-    
+
     if (formNotifications) {
         const container = document.getElementById("intervals-container");
         const input = document.getElementById("new-interval-input");
@@ -49,15 +148,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Se passou por tudo, cria o chip
             const chip = document.createElement("div");
-            chip.className = "chip";
+            chip.className = "chip sobrepor";
             chip.setAttribute("data-value", value.toString());
             chip.innerHTML = `
                 <span>${value} dia(s) antes</span>
                 <button type="button" class="remove-chip" aria-label="Remover">✖</button>
             `;
-            
+
             container.appendChild(chip);
-            input.value = ""; 
+            input.value = "";
             input.focus(); // Devolve o cursor para o usuário adicionar outro rapidamente
         });
 

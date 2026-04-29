@@ -9,7 +9,8 @@ export class DashboardController {
             const user = await Pessoa.findById(req.session.userId);
             res.render('dashboard', {
                 title: 'Birthday Reminder - Dashboard',
-                user: user
+                user: user,
+                extraScripts: ['/js/navbar-dashboard.js', '/js/dashboard.js']
             });
         } catch (error) {
             res.status(500).send('Erro ao carregar o dashboard');
