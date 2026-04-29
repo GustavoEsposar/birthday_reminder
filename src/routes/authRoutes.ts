@@ -6,14 +6,12 @@ const router = Router();
 
 const authController = new AuthController();
 
-router.get('/login', (req: Request, res: Response) => {
-    res.render('login', { title: 'Login' });
-});
+router.get('/login', authController.getLogin.bind(authController));
+
 router.post('/login', authController.login.bind(authController));
 
-router.get('/register', (req: Request, res: Response) => {
-    res.render('register', { title: 'Register' });
-});
+router.get('/register', authController.getRegister.bind(authController));
+
 router.post('/register', authController.register.bind(authController));
 
 export default router;
