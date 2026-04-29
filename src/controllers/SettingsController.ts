@@ -43,6 +43,8 @@ export class SettingsController {
     async updateNotificationReceiver(req: Request, res: Response) {}
 
     async updateAccountPassword(req: Request, res: Response) {}
+
+    async deleteAccount(req: Request, res: Response) {}
 }
 
 export const settingsController = new SettingsController();

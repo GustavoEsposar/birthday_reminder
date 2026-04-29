@@ -18,7 +18,7 @@
                 </div>
 
                 <div class="settings-tabs">
-                    <button class="tab-btn active" data-target="tab-account">🔒 Segurança</button>
+                    <button class="tab-btn active" data-target="tab-account">⚙️ Conta</button>
                     <button class="tab-btn" data-target="tab-notifications">🔔 Notificações</button>
                     <button class="tab-btn" data-target="tab-integrations">✈️ Integrações</button>
                 </div>
@@ -44,11 +44,16 @@
                                 <button type="submit" class="submit-btn">Atualizar Senha</button>
                             </form>
                         </div>
+                        <div class="settings-card">
+                            <h2 class="pacifico-regular">Excluir Conta</h2>
+                            <p>Esta ação é irreversível e resultará na perda de todos os seus dados, incluindo aniversários cadastrados e preferências de notificação.</p>
+                            <button id="btn-delete-account" class="submit-btn danger-btn">Excluir Minha Conta</button>
+                        </div>
                     </div>
 
                     <div class="tab-pane" id="tab-notifications">
                         <div class="settings-card">
-                            <h2 class="pacifico-regular">Intervalos de Aviso</h2>
+                            <h2 class="pacifico-regular">Intervalos de Notificação</h2>
                             <p>Escolha com quantos dias de antecedência o Birthday Reminder deve te avisar (Máx: 10
                                 intervalos).</p>
 
@@ -83,8 +88,22 @@
 
                                 <small id="interval-error-msg" class="error-text" style="display: none;"></small>
 
-                                <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
                                 <button type="submit" class="submit-btn">Salvar Preferências</button>
+                            </form>
+                        </div>
+                        <div class="settings-card">
+                            <h2 class="pacifico-regular">Canais de Notificação</h2>
+                            <p>Aqui você pode ativar e desativar os canais de notificação. Escolha como deseja receber suas notificações. Você decide!</p>
+
+                            <form id="form-email-notifications" class="settings-form">
+                                <div class="input-group checkbox-group">
+                                    <label>
+                                        <input type="checkbox" name="emailNotifications"
+                                            <% if (user.emailNotifications) { %> checked <% } %> >
+                                        Ativar Alertas por E-mail
+                                    </label>
+                                </div>
+                                <button type="submit" class="submit-btn">Salvar Configurações de E-mail</button>
                             </form>
                         </div>
                     </div>
