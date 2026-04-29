@@ -174,7 +174,20 @@ document.addEventListener("DOMContentLoaded", () => {
             let cronValues = getCurrentIntervals();
             if (!cronValues.includes("0")) cronValues.push("0");
 
-            // ... seu código de fetch(PATCH) aqui ...
+            try {
+                const response = await fetch("/app/settings/update-notification-schedule", {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ cronValues })
+                });
+
+                const data = await response.json();
+                alert("Preferências atualizadas com sucesso!");
+            } catch (error) {
+                alert(`Erro ao atualizar preferências: ${error.message}`);
+            }
         });
     }
 });

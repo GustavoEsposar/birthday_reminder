@@ -20,4 +20,6 @@ router.post('/app/settings/generate-telegram-token', authController.isAuthentica
 
 router.post('/app/settings/revoke-telegram', authController.isAuthenticated.bind(authController), dashboardController.revokeTelegram.bind(dashboardController));
 
+router.patch('/app/settings/update-notification-schedule', authController.isAuthenticated.bind(authController), settingsController.updateNotificationSchedule.bind(settingsController));
+
 export default router;
