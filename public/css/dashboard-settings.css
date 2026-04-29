@@ -1,3 +1,17 @@
+.input {           
+  font-size: 16px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  padding: 10px 15px;
+  border-radius: 10px;
+}
+
+/* Feedback visual de erro para inputs */
+.input-error {
+    border: 2px solid #ff6b6b !important;
+    box-shadow: 0 0 8px rgba(255, 107, 107, 0.4);
+    transition: all 0.3s ease;
+}
+
 /* --- Settings Dashboard --- */
 .settings-dashboard {
   display: flex;
@@ -163,6 +177,78 @@
 
 .status-badge.connected { background: rgba(40, 167, 69, 0.2); color: #28a745; border: 1px solid #28a745; }
 .status-badge.disconnected { background: rgba(220, 53, 69, 0.2); color: #dc3545; border: 1px solid #dc3545; }
+
+/* --- Chips & Tags --- */
+.chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    min-height: 50px;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    background: #2292ca;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: transform 0.2s;
+}
+
+.chip[data-value="0"] {
+    background: #1a74a1; /* Destaca o dia 0 por ser obrigatório */
+    cursor: default;
+}
+
+.remove-chip {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    margin-left: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0;
+    line-height: 1;
+}
+
+.remove-chip:hover {
+    color: white;
+}
+
+/* --- Grupo de Adicionar --- */
+.add-interval-group {
+    display: flex;
+    gap: 10px;
+}
+
+.add-interval-group .input {
+    flex: 1;
+}
+
+.outline-btn {
+    background: transparent;
+    border: 2px solid #2292ca;
+    color: #2292ca;
+    margin-top: 0;
+}
+
+.outline-btn:hover {
+    background: #2292ca;
+    color: white;
+}
+
+.error-text {
+    color: #ff6b6b;
+    display: block;
+    margin-top: 5px;
+}
 
 /* Responsividade Mobile */
 @media screen and (max-width: 480px) {
