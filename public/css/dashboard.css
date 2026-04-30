@@ -203,7 +203,7 @@
     margin-top: 10px;
 }
 
-.save-btn, .cancel-btn {
+.save-btn, .cancel-btn-inline {
     background: none;
     border: none;
     cursor: pointer;
@@ -213,10 +213,10 @@
 }
 
 .save-btn { color: #ffffff; }
-.cancel-btn { color: #dc3545; }
+.cancel-btn-inline { color: #dc3545; }
 
 .save-btn:hover { transform: scale(1.3); }
-.cancel-btn:hover { transform: scale(1.3); }
+.cancel-btn-inline:hover { transform: scale(1.3); }
 
 @media screen and (max-width: 420px) {
     .dashboard {

@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok) {
                     const data = await response.json();
                     showToast(data.message, "success");
-                    window.location.href = "/app/settings";
                 } else {
                     const errorData = await response.json();
                     showToast(errorData.error || "Ocorreu um erro desconhecido.", "error");
@@ -29,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnRevokeTelegram = document.getElementById("btn-revoke-telegram");
 
     if (btnRevokeTelegram) {
-        btnRevokeTelegram.addEventListener("click", async (e) => {
+        btnRevokeTelegram.addEventListener("action-confirmed", async (e) => {
             e.preventDefault();
 
             try {

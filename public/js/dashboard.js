@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
     containerPessoas.addEventListener('submit', async function (e) {
         // Verifica se o submit veio de um formulário com a classe 'delete-form'
         if (e.target && e.target.classList.contains('delete-form')) {
-            // Impede o recarregamento da página!
             e.preventDefault();
 
             // O e.target é o formulário específico que foi clicado
@@ -26,8 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok) {
                     showToast(result.message, "success");
 
-                    // Remove o card da tela de forma muito mais simples:
-                    // Pega o elemento pai mais próximo que tenha a classe '.pessoa'
+                    // Remove o card da tela pelo elemento pai mais próximo que tenha a classe '.pessoa'
                     const cardToRemove = form.closest('.pessoa');
                     if (cardToRemove) {
                         cardToRemove.remove();

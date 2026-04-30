@@ -44,7 +44,7 @@
                             onblur="if(!this.value) this.type='text'">
 
                         <div class="action-buttons">
-                            <button type="button" id="cancel-add" class="cancel-btn material-symbols-outlined">
+                            <button type="button" id="cancel-add" class="cancel-btn-inline material-symbols-outlined">
                                 close
                             </button>
                             <button type="submit" class="save-btn material-symbols-outlined">
@@ -55,13 +55,13 @@
 
                     <template id="card-pessoa-template">
                         <div class="pessoa sobrepor" data-name="" data-age="" data-calendar="">
-                            <h3 class="card-name"></h3> <!-- classe criada para facilitar a identificação -->
-                            <p class="card-date"></p> <!-- classe criada para facilitar a identificação -->
+                            <h3 class="card-name"></h3>
+                            <p class="card-date"></p> 
 
                             <form  action="/app/delete-birthdate" method="POST" class="delete-form">
                                 <input type="hidden" name="userId" value="<%= user._id %>">
                                 <input type="hidden" name="birthdateId" value=""> 
-                                <button type="submit" class="delete-btn">
+                                <button type="submit" class="delete-btn danger-btn">
                                     <span class="material-symbols-outlined">delete</span>
                                 </button>
                             </form>
@@ -91,7 +91,7 @@
                             <form  action="/app/delete-birthdate" method="POST" class="delete-form">
                                 <input type="hidden" name="userId" value="<%= user._id %>">
                                 <input type="hidden" name="birthdateId" value="<%= aniversario._id %>">
-                                <button type="submit" class="delete-btn">
+                                <button type="submit" class="delete-btn danger-btn">
                                     <span class="material-symbols-outlined">delete</span>
                                 </button>
                             </form>
