@@ -111,19 +111,22 @@
                     <div class="tab-pane" id="tab-integrations">
                         <div class="settings-card">
                             <h2 class="pacifico-regular">Telegram Bot</h2>
-                            <p>Receba seus alertas diretamente no seu aplicativo do Telegram. Caso mude de telefone,
-                                você precisará re-vincular o bot refazendo o processo.</p>
+                            <p>Receba seus lembretes diretamente no seu aplicativo do Telegram. Para isso basta clicar no botão <b>Gerar Token de Acesso</b> e você receberá um token de vinculação no seu email, em seguida basta abrir um chat com o bot clicando <a href="https://t.me/BirthdayReminderBar_bot" target="_blank">aqui</a>, digitar <b>/start</b> e seguir as instruções!
+                            <br><br>
+                            Caso mude de telefone ou perca o acesso ao seu Telegram, você precisará clicar em <b>Desvincular Telegram</b> e refazer o processo.</p>
 
                             <div class="integration-status">
                                 <% if (user.chatId) { %>
                                     <div class="status-badge connected">✅ Telegram Vinculado</div>
+                                    <br>
                                     <button id="btn-revoke-telegram" class="submit-btn danger-btn">Desvincular
                                         Telegram</button>
-                                    <% } else { %>
-                                        <div class="status-badge disconnected">❌ Não vinculado</div>
-                                        <button id="btn-generate-telegram" class="submit-btn telegram-btn">Gerar Token
-                                            de Acesso</button>
-                                        <% } %>
+                                <% } else { %>
+                                    <div class="status-badge disconnected">❌ Não vinculado</div>
+                                    <br>
+                                    <button id="btn-generate-telegram" class="submit-btn telegram-btn">Gerar Token
+                                        de Acesso</button>
+                                <% } %>
                             </div>
                         </div>
                     </div>
