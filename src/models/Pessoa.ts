@@ -7,6 +7,8 @@ export interface IBirthdate {
     date: Date;
 }
 
+export type NotificationChannel = 'email' | 'telegram';
+
 export interface IPessoa extends Document {
     name: string;
     birth: Date;
@@ -14,6 +16,7 @@ export interface IPessoa extends Document {
     password: string;
     birthdates: IBirthdate[];
     cron: string[];
+    notificationChannels: NotificationChannel[];
     chatId?: string | null;
     telegramBindToken?: string | null;
     matchPassword(enteredPassword: string): Promise<boolean>;
@@ -49,6 +52,11 @@ const pessoaSchema = new Schema<IPessoa>({
             required: true
         }
     }],
+    notificationChannels: {
+        type: [String],
+        enum: ['email', 'telegram'],
+        default: ['email']
+    },
     cron: {
         type: [String],
         default: ['0', '1', '2', '7']

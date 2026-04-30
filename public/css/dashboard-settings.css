@@ -254,6 +254,27 @@
     margin-top: 5px;
 }
 
+/* Espaçamento entre os grupos de canais */
+.settings-form .telegram-group {
+    margin-top: 10px;
+}
+
+.settings-form .disabled-label {
+    color: #888;
+    cursor: not-allowed;
+}
+
+.settings-form .validation-warning {
+    display: block;
+    color: #d9534f; 
+    margin-top: 5px;
+    font-size: 0.85em;
+}
+
+.settings-form .save-channels-btn {
+    margin-top: 20px;
+}
+
 /* Responsividade Mobile */
 @media screen and (max-width: 480px) {
   .settings-tabs {

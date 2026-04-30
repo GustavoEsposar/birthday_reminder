@@ -46,7 +46,8 @@
                         </div>
                         <div class="settings-card">
                             <h2 class="pacifico-regular">Excluir Conta</h2>
-                            <p>Esta ação é irreversível e resultará na perda de todos os seus dados, incluindo aniversários cadastrados e preferências de notificação.</p>
+                            <p>Esta ação é irreversível e resultará na perda de todos os seus dados, incluindo
+                                aniversários cadastrados e preferências de notificação.</p>
                             <button id="btn-delete-account" class="submit-btn danger-btn">Excluir Minha Conta</button>
                         </div>
                     </div>
@@ -95,15 +96,32 @@
                             <h2 class="pacifico-regular">Canais de Notificação</h2>
                             <p>Aqui você pode ativar e desativar os canais de notificação. Escolha como deseja receber suas notificações. Você decide!</p>
 
-                            <form id="form-email-notifications" class="settings-form">
+                            <form id="form-notification-channels" class="settings-form">
+
                                 <div class="input-group checkbox-group">
                                     <label>
-                                        <input type="checkbox" name="emailNotifications"
-                                            <% if (user.emailNotifications) { %> checked <% } %> >
+                                        <input type="checkbox" name="channels" value="email" 
+                                            <% if (user.notificationChannels && user.notificationChannels.includes('email')) { %> checked <% } %> >
                                         Ativar Alertas por E-mail
                                     </label>
                                 </div>
-                                <button type="submit" class="submit-btn">Salvar Configurações de E-mail</button>
+
+                                <div class="input-group checkbox-group telegram-group">
+                                    <label class="<%= !user.chatId ? 'disabled-label' : '' %>">
+                                        <input type="checkbox" name="channels" value="telegram" 
+                                            <% if (user.notificationChannels && user.notificationChannels.includes('telegram')) { %> checked <% } %>
+                                            <% if (!user.chatId) { %> disabled title="Vincule seu Telegram primeiro para ativar" <% } %> >
+                                        Ativar Alertas por Telegram
+                                    </label>
+
+                                    <% if (!user.chatId) { %>
+                                        <small class="validation-warning">
+                                            * Você precisa vincular o Telegram no painel de <b>Integrações</b> para habilitar esta opção.
+                                        </small>
+                                    <% } %>
+                                </div>
+
+                                <button type="submit" class="submit-btn save-channels-btn">Salvar Canais de Notificação</button>
                             </form>
                         </div>
                     </div>
@@ -111,9 +129,15 @@
                     <div class="tab-pane" id="tab-integrations">
                         <div class="settings-card">
                             <h2 class="pacifico-regular">Telegram Bot</h2>
-                            <p>Receba seus lembretes diretamente no seu aplicativo do Telegram. Para isso basta clicar no botão <b>Gerar Token de Acesso</b> e você receberá um token de vinculação no seu email, em seguida basta abrir um chat com o bot clicando <a href="https://t.me/BirthdayReminderBar_bot" target="_blank">aqui</a>, digitar <b>/start</b> e seguir as instruções!
-                            <br><br>
-                            Caso mude de telefone ou perca o acesso ao seu Telegram, você precisará clicar em <b>Desvincular Telegram</b> e refazer o processo.</p>
+                            <p>Receba seus lembretes diretamente no seu aplicativo do Telegram. Para isso basta clicar
+                                no botão <b>Gerar Token de Acesso</b> e você receberá um token de vinculação no seu
+                                email, em seguida basta abrir um chat com o bot clicando <a
+                                    href="https://t.me/BirthdayReminderBar_bot" target="_blank">aqui</a>, digitar
+                                <b>/start</b> e seguir as instruções!
+                                <br><br>
+                                Caso mude de telefone ou perca o acesso ao seu Telegram, você precisará clicar em
+                                <b>Desvincular Telegram</b> e refazer o processo.
+                            </p>
 
                             <div class="integration-status">
                                 <% if (user.chatId) { %>
@@ -121,12 +145,12 @@
                                     <br>
                                     <button id="btn-revoke-telegram" class="submit-btn danger-btn">Desvincular
                                         Telegram</button>
-                                <% } else { %>
-                                    <div class="status-badge disconnected">❌ Não vinculado</div>
-                                    <br>
-                                    <button id="btn-generate-telegram" class="submit-btn telegram-btn">Gerar Token
-                                        de Acesso</button>
-                                <% } %>
+                                    <% } else { %>
+                                        <div class="status-badge disconnected">❌ Não vinculado</div>
+                                        <br>
+                                        <button id="btn-generate-telegram" class="submit-btn telegram-btn">Gerar Token
+                                            de Acesso</button>
+                                        <% } %>
                             </div>
                         </div>
                     </div>
@@ -136,7 +160,7 @@
     </div>
 
     <%- include('partials/footer.ejs') %>
-    <%- include('partials/foot.ejs') %>
+        <%- include('partials/foot.ejs') %>
 </body>
 
 </html>

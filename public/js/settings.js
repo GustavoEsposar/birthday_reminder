@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Lógica para vincular Telegram
+    //1. Lógica para vincular Telegram
     const btnGenerateTelegram = document.getElementById("btn-generate-telegram");
 
     if (btnGenerateTelegram) {
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    //Lógica para desvincular o Telegram
+    //2. Lógica para desvincular o Telegram
     const btnRevokeTelegram = document.getElementById("btn-revoke-telegram");
 
     if (btnRevokeTelegram) {
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 1. Lógica de Navegação por Abas (Tabs)
+    // 3. Lógica de Navegação por Abas (Tabs)
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabPanes = document.querySelectorAll('.tab-pane');
 
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 2. Lógica de Submissão Segura de Senha via Fetch
+    // 4. Lógica de Submissão Segura de Senha via Fetch
     const passwordForm = document.getElementById('form-change-password');
     if (passwordForm) {
         passwordForm.addEventListener('submit', async (e) => {
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 3. Lógica de Atualização de Preferências de Notificação
+    // 5. Lógica de Atualização de Preferências de Notificação
     const formNotifications = document.getElementById("form-notifications");
 
     if (formNotifications) {
@@ -192,6 +192,47 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             } catch (error) {
                 showToast("Erro de conexão com o servidor.", "error");
+            }
+        });
+    }
+
+    // 6. Lógica das configurações de Canais de Notificação
+    const formChannels = document.getElementById('form-notification-channels');
+
+    if (formChannels) {
+        formChannels.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Pega todos os checkboxes marcados com o nome 'channels'
+            const checkedBoxes = formChannels.querySelectorAll('input[name="channels"]:checked');
+            
+            // Regra 1 (Front-end): Pelo menos um canal
+            if (checkedBoxes.length === 0) {
+                showToast('Você deve manter ao menos um canal de notificação ativo!', 'error');
+                return;
+            }
+
+            // Constrói o array de strings (ex: ['email', 'telegram'] ou ['email'])
+            const selectedChannels = Array.from(checkedBoxes).map(cb => cb.value);
+
+            try {
+                const response = await fetch('/dashboard/settings/channels', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ channels: selectedChannels })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    showToast(result.error || 'Erro ao salvar configurações.', 'error');
+                    return;
+                }
+
+                showToast('Canais de notificação atualizados com sucesso!', 'success');
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                showToast('Ocorreu um erro ao comunicar com o servidor.', 'error');
             }
         });
     }

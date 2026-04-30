@@ -22,4 +22,6 @@ router.post('/app/settings/revoke-telegram', authController.isAuthenticated.bind
 
 router.patch('/app/settings/update-notification-schedule', authController.isAuthenticated.bind(authController), settingsController.updateNotificationSchedule.bind(settingsController));
 
+router.patch('/dashboard/settings/channels', authController.isAuthenticated.bind(authController), settingsController.updateNotificationChannels.bind(settingsController));
+
 export default router;

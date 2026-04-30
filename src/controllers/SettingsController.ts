@@ -40,7 +40,43 @@ export class SettingsController {
         }
     }
 
-    async updateNotificationReceiver(req: Request, res: Response) {}
+    async updateNotificationChannels(req: Request, res: Response) {
+        try {
+            const userId = req.session.userId;
+            let { channels } = req.body;
+
+            // Proteção: Garante que channels seja sempre um array
+            if (!channels) channels = [];
+            if (!Array.isArray(channels)) channels = [channels];
+
+            // Regra de Negócio 1
+            if (channels.length === 0) {
+                return res.status(400).json({ error: "Você deve manter ao menos um canal de notificação ativo." });
+            }
+
+            const user = await Pessoa.findById(userId);
+            if (!user) {
+                return res.status(404).json({ error: "Usuário não encontrado." });
+            }
+
+            // Regra de Negócio 2
+            if (channels.includes('telegram') && !user.chatId) {
+                return res.status(403).json({ error: "Vínculo do Telegram ausente. Não é possível ativar este canal." });
+            }
+
+            user.notificationChannels = channels;
+            await user.save();
+
+            return res.status(200).json({ 
+                message: "Canais atualizados com sucesso!", 
+                notificationChannels: user.notificationChannels 
+            });
+
+        } catch (error) {
+            console.error("Erro ao atualizar canais de notificação:", error);
+            return res.status(500).json({ error: "Erro interno do servidor." });
+        }
+    }
 
     async updateAccountPassword(req: Request, res: Response) {}
 
