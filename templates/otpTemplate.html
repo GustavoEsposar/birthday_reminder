@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código de Verificação - Birthday Reminder</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 40px 0;
+        }
+
+        .email {
+            max-width: 550px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .email__title {
+            font-size: 24px;
+            color: #222;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .email__subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .email__token-box {
+            background-color: #f8fbff;
+            border: 2px solid #e1ecf8;
+            border-radius: 10px;
+            padding: 25px 20px;
+            margin: 0 auto 30px auto;
+            max-width: 300px;
+        }
+
+        .email__token {
+            font-size: 42px;
+            font-weight: 700;
+            color: #0056b3;
+            letter-spacing: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            display: block;
+        }
+
+        .email__instructions {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .email__footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="email">
+        <h1 class="email__title">{{Title}}</h1>
+        <p class="email__subtitle">{{Subtitle}}</p>
+
+        {{Beggining}}
+
+        <div class="email__footer">
+            <p>Se você não solicitou este código, por favor ignore este email. Ele expirará automaticamente em 5 minutos.</p>
+            <p>Este é um email automático. Por favor, não o responda.</p>
+        </div>
+    </div>
+</body>
+</html>

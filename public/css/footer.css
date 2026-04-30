@@ -14,3 +14,144 @@
     display: flex;
     align-items: center;
 }
+
+/* Container fixo no canto da tela */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espaço entre múltiplos avisos */
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* O design do aviso (Card) */
+.toast {
+    min-width: 250px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    color: #ffffff;
+    font-weight: 500;
+    font-family: inherit;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    /* Estado inicial invisível para a animação */
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+/* Tipos de aviso */
+.toast.success { background-color: #10B981; } 
+.toast.error { background-color: #EF4444; } 
+.toast.info { background-color: #3B82F6; }    
+
+/* Animação de saída */
+.toast.fade-out {
+    animation: fadeOut 0.3s ease-in forwards;
+}
+
+/* Keyframes das animações */
+@keyframes slideIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateY(20px); }
+}
+
+/* =========================================
+    TOAST DE CONFIRMAÇÃO (OVERLAY) 
+   ========================================= */
+.toast-overlay {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* Classe utilitária para esconder o toast */
+.toast-overlay.hidden {
+    opacity: 0;
+    pointer-events: none; /* Impede cliques quando invisível */
+}
+
+/* O cartão do Toast em si */
+.toast-content {
+    background: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    transform: translateY(0);
+    transition: transform 0.2s ease-in-out;
+}
+
+.toast-overlay.hidden .toast-content {
+    transform: translateY(-20px); /* Efeito de deslizar para cima ao sumir */
+}
+
+.toast-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    color: #d9534f;
+}
+
+.toast-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    gap: 15px;
+}
+
+.toast-actions button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    border: none;
+}
+
+.cancel-btn {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.cancel-btn:hover { background: #ccc; transform: scale(1.0)!important; }
+
+/* =========================================
+    RESPONSIVIDADE PARA MOBILE
+   ========================================= */
+@media (max-width: 600px) {
+    .toast-container {
+        right: 5%;
+        left: 5%;
+        bottom: 20px;
+        align-items: center; 
+    }
+    
+    .toast {
+        width: 100%;
+        min-width: unset;
+        text-align: center;
+    }
+}

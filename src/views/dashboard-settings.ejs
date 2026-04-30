@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <%- include('partials/head.ejs') %>
+</head>
+
+<body class="body">
+    <div class="container">
+        <%- include('partials/navbar-dashboard.ejs') %>
+            <div class="dashboard settings-dashboard">
+                <div class="settings-header">
+                    <div class="header-titles">
+                        <h1 class="pacifico-regular">Configurações</h1>
+                        <p class="subtitle">Gerencie suas preferências e segurança</p>
+                    </div>
+                    <a href="/app" class="back-btn">⬅ Voltar ao Painel</a>
+                </div>
+
+                <div class="settings-tabs">
+                    <button class="tab-btn active" data-target="tab-account">⚙️ Conta</button>
+                    <button class="tab-btn" data-target="tab-notifications">🔔 Notificações</button>
+                    <button class="tab-btn" data-target="tab-integrations">✈️ Integrações</button>
+                </div>
+
+                <div class="settings-content">
+
+                    <div class="tab-pane active" id="tab-account">
+                        <div class="settings-card">
+                            <h2 class="pacifico-regular">Alterar Senha</h2>
+                            <p>Mantenha sua conta segura utilizando uma senha forte.</p>
+
+                            <form id="form-change-password" class="settings-form">
+                                <div class="input-group">
+                                    <label>Senha Atual</label>
+                                    <input type="password" name="oldPassword" required class="input"
+                                        placeholder="Digite a senha atual">
+                                </div>
+                                <div class="input-group">
+                                    <label>Nova Senha</label>
+                                    <input type="password" name="newPassword" required class="input"
+                                        placeholder="Nova senha">
+                                </div>
+                                <button type="submit" class="submit-btn">Atualizar Senha</button>
+                            </form>
+                        </div>
+                        <div class="settings-card">
+                            <h2 class="pacifico-regular">Excluir Conta</h2>
+                            <p>Esta ação é irreversível e resultará na perda de todos os seus dados, incluindo
+                                aniversários cadastrados e preferências de notificação.</p>
+                            <button id="btn-delete-account" class="submit-btn danger-btn">Excluir Minha Conta</button>
+
+                            <div id="delete-token-area" class="delete-token-area hidden">
+                                <p class="delete-token-warning">Atenção: Um código de verificação foi enviado ao seu e-mail.</p>
+                                <p class="delete-token-instruction">Digite o código abaixo para confirmar a exclusão permanente da sua conta.</p>
+                                <div class="input-group">
+                                    <input type="text" id="delete-token-input" class="input delete-token-input" placeholder="Código de 6 dígitos" maxlength="6">
+                                </div>
+                                <button id="btn-confirm-delete" class="submit-btn final-delete-btn" disabled>Confirmar Exclusão Definitiva</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="tab-notifications">
+                        <div class="settings-card">
+                            <h2 class="pacifico-regular">Intervalos de Notificação</h2>
+                            <p>Escolha com quantos dias de antecedência o Birthday Reminder deve te avisar (Máx: 10
+                                intervalos).</p>
+
+                            <form id="form-notifications" class="settings-form">
+
+                                <div id="intervals-container" class="chips-container">
+                                    <% if (user.cron && user.cron.length> 0) { %>
+                                        <% user.cron.forEach(function(dayStr) { %>
+                                            <div class="chip sobrepor" data-value="<%= dayStr %>">
+                                                <span>
+                                                    <%= dayStr==='0' ? 'No dia (0)' : dayStr + ' dia(s) antes' %>
+                                                </span>
+                                                <% if (dayStr !=='0' ) { %>
+                                                    <button type="button" class="remove-chip"
+                                                        aria-label="Remover">✖</button>
+                                                    <% } %>
+                                            </div>
+                                            <% }); %>
+                                                <% } else { %>
+                                                    <div class="chip" data-value="0">
+                                                        <span>No dia</span>
+                                                    </div>
+                                                    <% } %>
+                                </div>
+
+                                <div class="add-interval-group">
+                                    <input type="number" id="new-interval-input" class="input" min="1" max="180"
+                                        placeholder="Ex: 15 (dias)">
+                                    <button type="button" id="btn-add-interval"
+                                        class="submit-btn outline-btn">Adicionar</button>
+                                </div>
+
+                                <small id="interval-error-msg" class="error-text" style="display: none;"></small>
+
+                                <button type="submit" class="submit-btn">Salvar Preferências</button>
+                            </form>
+                        </div>
+                        <div class="settings-card">
+                            <h2 class="pacifico-regular">Canais de Notificação</h2>
+                            <p>Escolha como deseja receber suas notificações, Você decide! Ao menos um canal deve estar
+                                habilitado obrigatoriamente.</p>
+
+                            <form id="form-notification-channels" class="settings-form">
+
+                                <div class="input-group checkbox-group">
+                                    <label>
+                                        <input type="checkbox" name="channels" value="email" <% if
+                                            (user.notificationChannels && user.notificationChannels.includes('email')) {
+                                            %> checked <% } %> >
+                                            Ativar Alertas por E-mail
+                                    </label>
+                                </div>
+
+                                <div class="input-group checkbox-group telegram-group">
+                                    <label class="<%= !user.chatId ? 'disabled-label' : '' %>">
+                                        <input type="checkbox" name="channels" value="telegram" <% if
+                                            (user.notificationChannels &&
+                                            user.notificationChannels.includes('telegram')) { %> checked <% } %>
+                                            <% if (!user.chatId) { %> disabled title="Vincule seu Telegram primeiro para
+                                                ativar" <% } %> >
+                                                    Ativar Alertas por Telegram
+                                    </label>
+
+                                    <% if (!user.chatId) { %>
+                                        <small class="validation-warning">
+                                            * Você precisa vincular o Telegram no painel de <b>Integrações</b> para
+                                            habilitar esta opção.
+                                        </small>
+                                        <% } %>
+                                </div>
+
+                                <button type="submit" class="submit-btn save-channels-btn">Salvar Preferências</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="tab-integrations">
+                        <div class="settings-card">
+                            <h2 class="pacifico-regular">Telegram Bot</h2>
+                            <p>Receba seus lembretes diretamente no seu aplicativo do Telegram. Para isso basta clicar
+                                no botão <b>Gerar Token de Acesso</b> e você receberá um token de vinculação no seu
+                                email, em seguida basta abrir um chat com o bot clicando <a
+                                    href="https://t.me/BirthdayReminderBar_bot" target="_blank">aqui</a>, digitar
+                                <b>/start</b> e seguir as instruções!
+                                <br><br>
+                                Caso mude de telefone ou perca o acesso ao seu Telegram, você precisará clicar em
+                                <b>Desvincular Telegram</b> e refazer o processo.
+                            </p>
+
+                            <div class="integration-status">
+                                <% if (user.chatId) { %>
+                                    <div class="status-badge connected">✅ Telegram Vinculado</div>
+                                    <br>
+                                    <button id="btn-revoke-telegram" class="submit-btn danger-btn">Desvincular
+                                        Telegram</button>
+                                    <% } else { %>
+                                        <div class="status-badge disconnected">❌ Não vinculado</div>
+                                        <br>
+                                        <button id="btn-generate-telegram" class="submit-btn telegram-btn">Gerar Token
+                                            de Acesso</button>
+                                        <% } %>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+    </div>
+
+    <%- include('partials/footer.ejs') %>
+        <%- include('partials/foot.ejs') %>
+</body>
+
+</html>

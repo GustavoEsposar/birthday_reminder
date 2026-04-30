@@ -58,3 +58,23 @@ Todos os artefatos utilizados neste projeto estão em conformidade com direitos 
 A figura a seguir ilustra a notificação recebida pelo destinatário
 
 ![exemplo](./public/img/IMG_7440.png)
+
+```mermaid
+classDiagram
+    class EmailService
+
+    class notificationJob
+
+    class NotificationQueryService
+
+    class index
+
+    class INotificationProvider
+
+    notificationJob --> EmailService
+    notificationJob --> NotificationQueryService
+    
+    index --> notificationJob
+
+    EmailService --|> INotificationProvider
+```
