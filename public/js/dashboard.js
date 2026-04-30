@@ -1,4 +1,105 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Lógica para deletar aniversarios
+    // Captura o container pai que guarda todos os cards -> isso garante que novos cards também funcionarao
+    const containerPessoas = document.querySelector('.pessoas');
+
+    containerPessoas.addEventListener('submit', async function (e) {
+        // Verifica se o submit veio de um formulário com a classe 'delete-form'
+        if (e.target && e.target.classList.contains('delete-form')) {
+            // Impede o recarregamento da página!
+            e.preventDefault();
+
+            // O e.target é o formulário específico que foi clicado
+            const form = e.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/app/delete-birthdate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showToast(result.message, "success");
+
+                    // Remove o card da tela de forma muito mais simples:
+                    // Pega o elemento pai mais próximo que tenha a classe '.pessoa'
+                    const cardToRemove = form.closest('.pessoa');
+                    if (cardToRemove) {
+                        cardToRemove.remove();
+                    }
+                } else {
+                    showToast(result.error || "Erro ao deletar", "error");
+                }
+            } catch (error) {
+                showToast("Erro de comunicação com o servidor", "error");
+            }
+        }
+    });
+
+    // Lógica para o formulário de adição inline (dentro do dashboard)
+    document.getElementById('inline-add-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch('/app/add-birthdate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                showToast(result.message, "success");
+
+                // 1. Formatação da data para exibição (DD/MM/AAAA)
+                let displayDate = data.birthdate;
+                if (data.birthdate.includes('-')) {
+                    const [ano, mes, dia] = data.birthdate.split('-');
+                    displayDate = `${dia}/${mes}/${ano}`;
+                }
+
+                // 2. Localiza o Template
+                const template = document.getElementById('card-pessoa-template');
+                const clone = template.content.cloneNode(true);
+
+                // 3. Preenche os dados no clone (usando as classes que sugerimos no template)
+                const cardDiv = clone.querySelector('.pessoa');
+                clone.querySelector('.card-name').textContent = data.name;
+                clone.querySelector('.card-date').textContent = displayDate;
+
+                // 4. Configura os atributos de ordenação/pesquisa (data-attributes)
+                cardDiv.setAttribute('data-name', data.name);
+                cardDiv.setAttribute('data-age', new Date(data.birthdate).getTime());
+                cardDiv.setAttribute('data-calendar', data.birthdate.slice(5).replace('-', ''));
+
+                // 5. Configura o Formulário de Delete do novo card
+                clone.querySelector('input[name="birthdateId"]').value = result.birthdate._id;
+
+                // 6. Insere o card na tela (antes do primeiro irmão)
+                this.parentNode.insertBefore(clone, this.nextElementSibling);
+
+                // 7. Reseta e esconde o formulário
+                this.reset();
+                this.style.display = 'none';
+                document.getElementById("show-form").innerHTML = "+";
+
+            } else {
+                showToast(result.error || "Erro ao adicionar", "error");
+            }
+        } catch (error) {
+            showToast("Erro de comunicação com o servidor", "error");
+        }
+    });
+
     // Lógica para mostrar/ocultar o card form inline
     document.getElementById("show-form").addEventListener("click", function (e) {
         e.preventDefault();

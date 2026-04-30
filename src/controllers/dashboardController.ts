@@ -1,47 +1,54 @@
 import Pessoa from '../models/Pessoa';
 import type { Request, Response, NextFunction } from 'express';
 import crypto from "crypto";
+import mongoose from 'mongoose';
 import { emailService } from '../services/EmailService';
 
 export class DashboardController {
-    async getDashboard(req : Request, res: Response) {
+    async getDashboard(req : Request, res: Response): Promise<void> {
         try {
             const user = await Pessoa.findById(req.session.userId);
             res.render('dashboard', {
                 title: 'Birthday Reminder - Dashboard',
                 user: user,
-                extraScripts: ['/js/navbar-dashboard.js', '/js/dashboard.js']
+                extraScripts: ['/js/navbar-dashboard.js', '/js/dashboard.js', '/js/toast.js']
             });
         } catch (error) {
-            res.status(500).send('Erro ao carregar o dashboard');
+            res.status(500).json({ error: 'Erro ao carregar o dashboard' });
         }
     }
 
-    async addBirthdate(req: Request, res: Response) {
+    async addBirthdate(req: Request, res: Response): Promise<void> {
         try {
             const { name, birthdate } = req.body;
+
+            const novoAniversario = {
+                _id: new mongoose.Types.ObjectId(), // Gera um ID único para o aniversário
+                name,
+                date: birthdate
+            }
             await Pessoa.updateOne(
                 { _id: req.session.userId },
-                { $push: { birthdates: { name, date: birthdate } } }
+                { $push: { birthdates: novoAniversario } }
             );
-            res.redirect('/app');
+            res.status(200).json({ message: 'Aniversário adicionado com sucesso!', birthdate: novoAniversario });
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erro ao adicionar aniversário');
+            res.status(500).json({ error: 'Erro ao adicionar aniversário' });
         }
     }
 
-    async deleteBirthdate(req: Request, res: Response) {
+    async deleteBirthdate(req: Request, res: Response): Promise<void> {
         try {
             const { birthdateId } = req.body;
             await Pessoa.updateOne(
                 { _id: req.session.userId },
                 { $pull: { birthdates: { _id: birthdateId } } }
             );
-            res.redirect('/app');
+            res.status(200).json({ message: 'Aniversário deletado com sucesso!' });
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erro ao deletar aniversário');
+            res.status(500).json({ error: 'Erro ao deletar aniversário' });
         }
     }
 

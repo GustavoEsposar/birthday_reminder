@@ -13,11 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    alert(data.message);
+                    showToast(data.message, "success");
                     window.location.href = "/app/settings";
                 } else {
                     const errorData = await response.json();
-                    alert(errorData.error || "Ocorreu um erro desconhecido.");
+                    showToast(errorData.error || "Ocorreu um erro desconhecido.", "error");
                 }
             } catch (error) {
                 console.error("Erro na requisição:", error);
@@ -39,11 +39,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    alert(data.message);
+                    showToast(data.message, "success");
                     window.location.href = "/app/settings";
                 } else {
                     const errorData = await response.json();
-                    alert(errorData.error || "Ocorreu um erro desconhecido.");
+                    showToast(errorData.error || "Ocorreu um erro desconhecido.", "error");
                 }
             } catch (error) {
                 console.error("Erro na requisição:", error);
@@ -86,13 +86,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const result = await response.json();
                 if (response.ok) {
-                    alert('Senha atualizada com sucesso!');
+                    showToast('Senha atualizada com sucesso!', 'success');
                     passwordForm.reset();
                 } else {
-                    alert(result.error || 'Erro ao atualizar senha.');
+                    showToast(result.error || 'Erro ao atualizar senha.', 'error');
                 }
             } catch (err) {
-                alert('Falha na comunicação com o servidor.');
+                showToast('Falha na comunicação com o servidor.', 'error');
             }
         });
     }
@@ -184,9 +184,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 const data = await response.json();
-                alert("Preferências atualizadas com sucesso!");
+
+                if (response.ok) {
+                    showToast(data.message, "success");
+                } else {
+                    showToast("Erro ao salvar", "error");
+                }
             } catch (error) {
-                alert(`Erro ao atualizar preferências: ${error.message}`);
+                showToast("Erro de conexão com o servidor.", "error");
             }
         });
     }

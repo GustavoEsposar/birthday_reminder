@@ -8,7 +8,7 @@ export class SettingsController {
             res.render('dashboard-settings', {
                 title: 'Birthday Reminder - Configurações',
                 user: user,
-                extraScripts: ['/js/navbar-dashboard.js', '/js/settings.js']
+                extraScripts: ['/js/navbar-dashboard.js', '/js/settings.js', '/js/toast.js']
             });
         } catch (error) {
             res.status(500).send('Erro ao carregar as configurações');
@@ -34,7 +34,7 @@ export class SettingsController {
             usuario.cron = cronValues;
             await usuario.save();
 
-            res.json({ message: 'Programação de notificações atualizada com sucesso' });
+            res.status(200).json({ message: 'Preferências salvas com sucesso!' });
         } catch (error) {
             res.status(500).json({ error: 'Erro ao atualizar a programação de notificações' });
         }
