@@ -12,8 +12,8 @@ export const executarEnvioDiarioEmLotes = async (): Promise<void> => {
             console.log(`[CRON] Processando e enviando um lote de ${loteUsuarios.length} usuários...`);
 
             // Dispara para esse lote. O EmailService recebe apenas um lote por vez.
-            await emailService.send(loteUsuarios);
-            await telegramService.send(loteUsuarios);
+            await emailService.send(loteUsuarios.filter(u => u.user.notificationChannels.includes("email")));
+            await telegramService.send(loteUsuarios.filter(u => u.user.notificationChannels.includes("telegram")));
         }
 
         console.log("[CRON] Rotina de notificações finalizada com sucesso.");
@@ -37,7 +37,7 @@ export const executarEnvioDiario = async (): Promise<void> => {
         console.log(`[CRON] Processando notificações para ${listaUsuarios.length} usuário(s).`);
 
         // Dispara as mensagens repassando a lista para os provedores
-        await emailService.send(listaUsuarios);
+        await emailService.send(listaUsuarios.filter(u => u.user.notificationChannels.includes("email")));
         //await telegramBotService.send(listaUsuarios);
         
         console.log("[CRON] Rotina de notificações finalizada com sucesso.");
