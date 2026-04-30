@@ -153,6 +153,8 @@
 
 .danger-btn { background-color: #d9534f; }
 .danger-btn:hover { background-color: #c9302c; }
+.final-delete-btn { background-color: #d9534f; }
+.final-delete-btn:hover { background-color: #c9302c; }
 .telegram-btn { background-color: #0088cc; }
 .telegram-btn:hover { background-color: #0077b5; }
 
@@ -283,4 +285,33 @@
   .checkbox-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* --- Delete Token Area --- */
+.delete-token-area {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.delete-token-area.hidden {
+    display: none;
+}
+
+.delete-token-warning {
+    font-weight: bold;
+    color: #d9534f;
+    margin-bottom: 5px !important;
+}
+
+.delete-token-instruction {
+    font-size: 0.9em;
+    margin-bottom: 15px !important;
+}
+
+.delete-token-input {
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 1.2em;
+    letter-spacing: 5px;
 }

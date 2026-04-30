@@ -24,4 +24,8 @@ router.patch('/app/settings/update-notification-schedule', authController.isAuth
 
 router.patch('/dashboard/settings/channels', authController.isAuthenticated.bind(authController), settingsController.updateNotificationChannels.bind(settingsController));
 
+router.post('/app/settings/generate-delete-token', authController.isAuthenticated.bind(authController), settingsController.generateDeleteToken.bind(settingsController));
+
+router.post('/app/settings/delete-account', authController.isAuthenticated.bind(authController), settingsController.deleteAccount.bind(settingsController));
+
 export default router;

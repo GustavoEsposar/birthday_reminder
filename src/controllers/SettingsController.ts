@@ -1,5 +1,8 @@
 import Pessoa, { NotificationChannel } from '../models/Pessoa';
 import type { Request, Response } from 'express';
+import { tokenService } from '../services/TokenService';
+import { emailService } from '../services/EmailService';
+import { TokenType } from '../models/Token';
 
 export class SettingsController {
     public async getSettings(req: Request, res: Response): Promise<void> {
@@ -80,7 +83,71 @@ export class SettingsController {
 
     async updateAccountPassword(req: Request, res: Response) {}
 
-    async deleteAccount(req: Request, res: Response) {}
+    async generateDeleteToken(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = (req.session as any).userId;
+
+            if (!userId) {
+                res.status(401).json({ error: "Não autorizado." });
+                return;
+            }
+
+            const usuario = await Pessoa.findById(userId);
+            if (!usuario) {
+                res.status(404).json({ error: "Usuário não encontrado." });
+                return;
+            }
+
+            const deleteToken = await tokenService.generateToken(usuario._id, TokenType.ACCOUNT_DELETION);
+            await emailService.enviarToken(usuario, deleteToken, TokenType.ACCOUNT_DELETION);
+
+            res.status(200).json({ message: "Token gerado com sucesso. Verifique seu e-mail." });
+        } catch (error) {
+            console.error("Erro ao gerar token de deleção de conta:", error);
+            res.status(500).json({ error: "Erro interno do servidor." });
+        }
+    }
+
+    async deleteAccount(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = (req.session as any).userId;
+            const { token } = req.body;
+
+            if (!userId) {
+                res.status(401).json({ error: "Não autorizado." });
+                return;
+            }
+
+            if (!token) {
+                res.status(400).json({ error: "O token é obrigatório." });
+                return;
+            }
+
+            const usuario = await Pessoa.findById(userId);
+            if (!usuario) {
+                res.status(404).json({ error: "Usuário não encontrado." });
+                return;
+            }
+
+            const isValidToken = await tokenService.validateToken(usuario._id, token, TokenType.ACCOUNT_DELETION);
+            if (!isValidToken) {
+                res.status(400).json({ error: "Token inválido ou expirado." });
+                return;
+            }
+
+            await tokenService.deleteToken(usuario._id, TokenType.ACCOUNT_DELETION);
+            await Pessoa.findByIdAndDelete(usuario._id);
+
+            req.session.destroy((err) => {
+                if (err) console.error("Erro ao destruir sessão:", err);
+            });
+
+            res.status(200).json({ message: "Conta excluída com sucesso." });
+        } catch (error) {
+            console.error("Erro ao excluir conta:", error);
+            res.status(500).json({ error: "Erro interno do servidor ao excluir conta." });
+        }
+    }
 }
 
 export const settingsController = new SettingsController();
