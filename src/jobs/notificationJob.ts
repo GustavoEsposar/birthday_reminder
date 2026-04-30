@@ -1,6 +1,7 @@
 import { buscarUsuariosComAniversarios, buscarUsuariosComAniversariosEmLotes } from "../services/NotificationQueryService";
 import { emailService } from "../services/EmailService";
 import { telegramService } from "../services/TelegramService";
+import { NotificationChannel } from "../models/Pessoa";
 
 export const executarEnvioDiarioEmLotes = async (): Promise<void> => {
     try {
@@ -12,8 +13,8 @@ export const executarEnvioDiarioEmLotes = async (): Promise<void> => {
             console.log(`[CRON] Processando e enviando um lote de ${loteUsuarios.length} usuários...`);
 
             // Dispara para esse lote. O EmailService recebe apenas um lote por vez.
-            await emailService.send(loteUsuarios.filter(u => u.user.notificationChannels.includes("email")));
-            await telegramService.send(loteUsuarios.filter(u => u.user.notificationChannels.includes("telegram")));
+            await emailService.send(loteUsuarios.filter(u => u.user.notificationChannels.includes(NotificationChannel.EMAIL)));
+            await telegramService.send(loteUsuarios.filter(u => u.user.notificationChannels.includes(NotificationChannel.TELEGRAM)));
         }
 
         console.log("[CRON] Rotina de notificações finalizada com sucesso.");
@@ -37,7 +38,7 @@ export const executarEnvioDiario = async (): Promise<void> => {
         console.log(`[CRON] Processando notificações para ${listaUsuarios.length} usuário(s).`);
 
         // Dispara as mensagens repassando a lista para os provedores
-        await emailService.send(listaUsuarios.filter(u => u.user.notificationChannels.includes("email")));
+        await emailService.send(listaUsuarios.filter(u => u.user.notificationChannels.includes(NotificationChannel.EMAIL)));
         //await telegramBotService.send(listaUsuarios);
         
         console.log("[CRON] Rotina de notificações finalizada com sucesso.");

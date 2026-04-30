@@ -1,4 +1,4 @@
-import Pessoa from '../models/Pessoa';
+import Pessoa, { NotificationChannel } from '../models/Pessoa';
 import type { Request, Response } from 'express';
 
 export class SettingsController {
@@ -60,7 +60,7 @@ export class SettingsController {
             }
 
             // Regra de Negócio 2
-            if (channels.includes('telegram') && !user.chatId) {
+            if (channels.includes(NotificationChannel.TELEGRAM) && !user.chatId) {
                 return res.status(403).json({ error: "Vínculo do Telegram ausente. Não é possível ativar este canal." });
             }
 

@@ -1,8 +1,10 @@
-import Pessoa from '../models/Pessoa';
+import Pessoa, { NotificationChannel } from '../models/Pessoa';
 import type { Request, Response, NextFunction } from 'express';
 import crypto from "crypto";
 import mongoose from 'mongoose';
 import { emailService } from '../services/EmailService';
+import { tokenService } from '../services/TokenService';
+import { TokenType } from '../models/Token';
 
 export class DashboardController {
     async getDashboard(req : Request, res: Response): Promise<void> {
@@ -72,12 +74,9 @@ export class DashboardController {
                 return;
             }
 
-            // Gera um token aleatório de 6 caracteres hexadecimais (ex: 8F4A2B)
-            const randomString = crypto.randomBytes(3).toString("hex").toUpperCase();
-            const bindToken = `TKG-${randomString}`;
+            const bindToken = await tokenService.generateToken(usuario._id, TokenType.TELEGRAM_BIND);
 
-            usuario.telegramBindToken = bindToken;
-            usuario.notificationChannels = usuario.notificationChannels.includes("telegram") ? usuario.notificationChannels : [...usuario.notificationChannels, "telegram"];
+            usuario.notificationChannels = usuario.notificationChannels.includes(NotificationChannel.TELEGRAM) ? usuario.notificationChannels : [...usuario.notificationChannels, NotificationChannel.TELEGRAM];
             await usuario.save();
 
              // retorna sucesso e envia token por email

@@ -7,7 +7,10 @@ export interface IBirthdate {
     date: Date;
 }
 
-export type NotificationChannel = 'email' | 'telegram';
+export enum NotificationChannel {
+    EMAIL = 'email',
+    TELEGRAM = 'telegram'
+}
 
 export interface IPessoa extends Document {
     name: string;
@@ -18,7 +21,6 @@ export interface IPessoa extends Document {
     cron: string[];
     notificationChannels: NotificationChannel[];
     chatId?: string | null;
-    telegramBindToken?: string | null;
     matchPassword(enteredPassword: string): Promise<boolean>;
 }
 
@@ -54,8 +56,8 @@ const pessoaSchema = new Schema<IPessoa>({
     }],
     notificationChannels: {
         type: [String],
-        enum: ['email', 'telegram'],
-        default: ['email']
+        enum: Object.values(NotificationChannel),
+        default: [NotificationChannel.EMAIL]
     },
     cron: {
         type: [String],
@@ -63,10 +65,6 @@ const pessoaSchema = new Schema<IPessoa>({
     },
     chatId: {
         type: String,
-        default: null
-    },
-    telegramBindToken: { 
-        type: String, 
         default: null
     }
 }, { collection: COLLECTION_NAME });
