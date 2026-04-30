@@ -57,7 +57,7 @@ app.use(mobileRoutes);
 =============================================================================================
 */
 
-//telegramBot.initialize();
+telegramBot.initialize();
 
 // Cron jobs
 cron.schedule(
