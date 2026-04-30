@@ -77,6 +77,7 @@ export class DashboardController {
             const bindToken = `TKG-${randomString}`;
 
             usuario.telegramBindToken = bindToken;
+            usuario.notificationChannels = usuario.notificationChannels.includes("telegram") ? usuario.notificationChannels : [...usuario.notificationChannels, "telegram"];
             await usuario.save();
 
              // retorna sucesso e envia token por email
