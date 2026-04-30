@@ -1,78 +1,50 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head>
-        <%- include('partials/head.ejs') %>
-    </head>
-    <body class="body">
-        <div class="container">
-            <%- include('partials/navbar-dashboard.ejs') %>
+
+<head>
+    <%- include('partials/head.ejs') %>
+</head>
+
+<body class="body">
+    <div class="container">
+        <%- include('partials/navbar-dashboard.ejs') %>
             <div class="dashboard">
                 <h1 class="pacifico-regular">Aniversários</h1>
 
                 <div class="search-container">
-                    <input 
-                        type="text" 
-                        id="search-input" 
-                        class="search-input" 
-                        placeholder="Digite um nome para pesquisar" 
-                    >
+                    <input type="text" id="search-input" class="search-input"
+                        placeholder="Pesquise por um nome">
                 </div>
 
-                <div
-                    class="sort-container"
-                >
-                    <select
-                        id="sort-select"
-                        class="sort-selection"
-                    >
+                <div class="sort-container">
+                    <select id="sort-select" class="sort-selection">
                         <option value="name">Ordenar por Nome</option>
                         <option value="calendar">Ordenar por Data</option>
                         <option value="age">Ordenar por Idade</option>
                     </select>
-                    <button
-                        id="sort-btn"
-                        class="sort-submit-btn pacifico-regular sobrepor"
-                    >
+                    <button id="sort-btn" class="sort-submit-btn pacifico-regular sobrepor">
                         ↑↓
                     </button>
-                    
+
                     <div class="add-birthdate pacifico-regular sobrepor">
                         <a href="#" id="show-form">+</a>
                     </div>
                 </div>
 
                 <div class="pessoas">
-                    <form
-                        id="inline-add-form"
-                        action="/add-birthdate"
-                        method="POST"
-                        class="pessoa sobrepor new-person-card"
-                        style="display: none;" 
-                    >
+                    <form id="inline-add-form" action="/app/add-birthdate" method="POST"
+                        class="pessoa sobrepor new-person-card" style="display: none;">
                         <input type="hidden" name="userId" value="<%= user._id %>">
 
-                        <input
-                            type="text"
-                            id="new-name"
-                            name="name"
-                            required
-                            placeholder="Nome da pessoa"
-                            class="inline-input-name"
-                        >
+                        <input type="text" id="new-name" name="name" required placeholder="Nome da pessoa"
+                            class="inline-input-name">
 
-                        <input
-                            type="text"
-                            id="new-birthdate"
-                            name="birthdate"
-                            required
-                            class="inline-input-date"
-                            placeholder="Data (dd/mm/aaaa)"
-                            onfocus="(this.type='date')"
-                            onblur="if(!this.value) this.type='text'"
-                        >
+                        <input type="text" id="new-birthdate" name="birthdate" required class="inline-input-date"
+                            placeholder="Data (dd/mm/aaaa)" onfocus="(this.type='date')"
+                            onblur="if(!this.value) this.type='text'">
 
                         <div class="action-buttons">
-                            <button type="button" id="cancel-add" class="cancel-btn material-symbols-outlined">
+                            <button type="button" id="cancel-add" class="cancel-btn-inline material-symbols-outlined">
                                 close
                             </button>
                             <button type="submit" class="save-btn material-symbols-outlined">
@@ -81,210 +53,55 @@
                         </div>
                     </form>
 
-                    <% user.birthdates.forEach((aniversario) => { %>
-                    <% 
-                        // Preparando as datas no lado do servidor (EJS)
-                        const date = new Date(aniversario.date); 
-                        const day = String(date.getUTCDate()).padStart(2, '0');
-                        const month = String(date.getUTCMonth() + 1).padStart(2, '0'); 
-                        const year = date.getUTCFullYear(); 
-                        const formattedDate = `${day}/${month}/${year}`; 
-                        
-                        // Formato MMDD para ordenação de calendário (ex: 0418)
-                        const calendarSortValue = `${month}${day}`;
-                    %>
-                    <div
-                        class="pessoa sobrepor"
-                        data-name="<%= aniversario.name %>"
-                        data-age="<%= date.getTime() %>"
-                        data-calendar="<%= calendarSortValue %>"
-                    >
-                        <h3><%= aniversario.name %></h3>
-                        <p><%= formattedDate %></p>
+                    <template id="card-pessoa-template">
+                        <div class="pessoa sobrepor" data-name="" data-age="" data-calendar="">
+                            <h3 class="card-name"></h3>
+                            <p class="card-date"></p> 
 
-                        <form
-                            action="/delete-birthdate"
-                            method="POST"
-                            class="delete-form"
-                        >
-                            <input
-                                type="hidden"
-                                name="userId"
-                                value="<%= user._id %>"
-                            >
-                            <input
-                                type="hidden"
-                                name="birthdateId"
-                                value="<%= aniversario._id %>"
-                            >
-                            <button type="submit" class="delete-btn">
-                                <span class="material-symbols-outlined">
-                                    delete
-                                </span>
-                            </button>
-                        </form>
-                    </div>
-                    <% }) %>
+                            <form  action="/app/delete-birthdate" method="POST" class="delete-form">
+                                <input type="hidden" name="userId" value="<%= user._id %>">
+                                <input type="hidden" name="birthdateId" value=""> 
+                                <button type="submit" class="delete-btn danger-btn">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </form>
+                        </div>
+                    </template>
+
+                    <% user.birthdates.forEach((aniversario)=> {
+                        // Criamos as variáveis fora do comentário para não haver erro de leitura
+                        const date = new Date(aniversario.date);
+                        const day = String(date.getUTCDate()).padStart(2, '0');
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                        const year = date.getUTCFullYear();
+
+                        const formattedDate = day + '/' + month + '/' + year;
+                        const calendarSortValue = month + day;
+                        %>
+                        <div class="pessoa sobrepor" data-name="<%= aniversario.name %>"
+                            data-age="<%= date.getTime() %>" data-calendar="<%= calendarSortValue %>">
+
+                            <h3 class="card-name">
+                                <%= aniversario.name %>
+                            </h3>
+                            <p class="card-date">
+                                <%= formattedDate %>
+                            </p>
+
+                            <form  action="/app/delete-birthdate" method="POST" class="delete-form">
+                                <input type="hidden" name="userId" value="<%= user._id %>">
+                                <input type="hidden" name="birthdateId" value="<%= aniversario._id %>">
+                                <button type="submit" class="delete-btn danger-btn">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </form>
+                        </div>
+                        <% }) %>
                 </div>
             </div>
-        </div>
+    </div>
 
-        <%- include('partials/footer.ejs') %> <%- include('partials/foot.ejs')
-        %>
-        <script src="./js/main.js"></script>
-        <script>
-            // Lógica para mostrar/ocultar o menu dropdown
-            document.getElementById("menu-icon")
-                .addEventListener("click", function () {
-                    const menu = document.getElementById(
-                        "menu-options",
-                    );
+    <%- include('partials/footer.ejs') %> <%- include('partials/foot.ejs') %>
+</body>
 
-                    if (menu.classList.contains("menu-hidde")) {
-                        menu.classList.remove("menu-hidde");
-                        menu.classList.add("menu-show");
-                    } else {
-                        menu.classList.remove("menu-show");
-                        menu.classList.add("menu-hidde");
-                    }
-                });
-
-            // Lógica para mostrar/ocultar o card form inline
-            document.getElementById("show-form").addEventListener("click", function (e) {
-                e.preventDefault();
-                
-                const formCard = document.getElementById("inline-add-form");
-                const button = document.getElementById("show-form");
-                const nameInput = document.getElementById("new-name");
-
-                // Toggle de visibilidade usando o estilo inline
-                if (formCard.style.display === "none") {
-                    formCard.style.display = "flex"; // Mostra o card
-                    button.innerHTML = "✘";
-                    
-                    // UX Avançada: Coloca o cursor de digitação direto no campo de nome
-                    setTimeout(() => nameInput.focus(), 50); 
-                } else {
-                    formCard.style.display = "none"; // Oculta o card
-                    button.innerHTML = "+";
-                }
-            });
-
-            // Lógica para o botão interno de "Cancelar" fechar o card e limpar os dados
-            document.getElementById("cancel-add").addEventListener("click", function() {
-                const formCard = document.getElementById("inline-add-form");
-                const button = document.getElementById("show-form");
-                
-                formCard.style.display = "none";
-                button.innerHTML = "+";
-                formCard.reset(); // Limpa o que o usuário havia digitado caso tenha desistido
-            });
-
-            // Lógica para vincular Telegram
-            document.getElementById("btn-vincular-telegram")
-                .addEventListener("click", async (e) => {
-                    e.preventDefault(); // Evita que a página recarregue ou vá para o href="#"
-
-                    try {
-                        const response = await fetch(
-                            "/generate-telegram-token",
-                            {
-                                method: "POST", // Força a requisição a ser do tipo POST
-                            },
-                        );
-
-                        if (response.ok) {
-                            // Se o backend enviar um redirect ou JSON de sucesso
-                            const data = await response.json();
-                            alert(data.message);
-                            window.location.href = "/dashboard"; // Redireciona via frontend
-                        } else {
-                            const errorData = await response
-                                .json();
-                            alert(
-                                errorData.error ||
-                                    "Ocorreu um erro desconhecido.",
-                            );
-                        }
-                    } catch (error) {
-                        console.error(
-                            "Erro na requisição:",
-                            error,
-                        );
-                    }
-                });
-
-            //lógica de ordenação das divs de aniversários
-            // Variáveis de estado fora do evento para manter a "memória" entre os cliques
-            let currentSortType = "";
-            let isAscending = true;
-
-            document.getElementById("sort-btn").addEventListener("click", function () {
-            const sortType = document.getElementById("sort-select").value;
-            const container = document.querySelector(".pessoas");
-            const elements = Array.from(container.querySelectorAll(".pessoa:not(#inline-add-form)"));
-            const btn = document.getElementById("sort-btn");
-
-            // Lógica de alternância (Toggle)
-            if (sortType === currentSortType) {
-                isAscending = !isAscending;
-            } else {
-                isAscending = true;
-                currentSortType = sortType;
-            }
-
-            // Ordenação
-            elements.sort((a, b) => {
-                let comparison = 0;
-
-                if (sortType === "name") {
-                    const nameA = a.getAttribute("data-name").toLowerCase();
-                    const nameB = b.getAttribute("data-name").toLowerCase();
-                    comparison = nameA.localeCompare(nameB);
-                    
-                } else if (sortType === "age") {
-                    // Ordena pelo timestamp completo (quem nasceu antes vem primeiro)
-                    const ageA = parseInt(a.getAttribute("data-age"));
-                    const ageB = parseInt(b.getAttribute("data-age"));
-                    comparison = ageA - ageB;
-                    
-                } else if (sortType === "calendar") {
-                    // Ordena apenas por Mês e Dia (formato MMDD)
-                    const calA = parseInt(a.getAttribute("data-calendar"));
-                    const calB = parseInt(b.getAttribute("data-calendar"));
-                    comparison = calA - calB;
-                }
-
-                // Retorna a comparação normal (crescente) ou invertida (decrescente)
-                return isAscending ? comparison : (comparison * -1);
-            });
-
-            // Reanexa os elementos na nova ordem
-            elements.forEach((el) => container.appendChild(el));
-        });
-
-        // Lógica da Barra de Pesquisa (Filtro em tempo real)
-        document.getElementById("search-input").addEventListener("input", function (e) {
-            // Pega o que foi digitado e converte para minúsculas (insensitive case)
-            const searchTerm = e.target.value.toLowerCase();
-            
-            // Pega todas as divs de pessoas
-            const pessoas = document.querySelectorAll(".pessoa:not(#inline-add-form)");
-
-            pessoas.forEach((pessoa) => {
-                // Lê o nome que salvamos no data-attribute
-                const name = pessoa.getAttribute("data-name").toLowerCase();
-                
-                // Verifica se o nome digitado está contido no nome da pessoa
-                if (name.includes(searchTerm)) {
-                    // Se encontrar o texto, remove qualquer 'display: none' para mostrar a div
-                    pessoa.style.display = ""; 
-                } else {
-                    // Se não encontrar, oculta a div
-                    pessoa.style.display = "none"; 
-                }
-            });
-        });
-        </script>
-    </body>
 </html>

@@ -1,0 +1,286 @@
+.input {           
+  font-size: 16px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  padding: 10px 15px;
+  border-radius: 10px;
+}
+
+/* Feedback visual de erro para inputs */
+.input-error {
+    border: 2px solid #ff6b6b !important;
+    box-shadow: 0 0 8px rgba(255, 107, 107, 0.4);
+    transition: all 0.3s ease;
+}
+
+/* --- Settings Dashboard --- */
+.settings-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 15px;
+}
+
+.settings-header h1 {
+  font-size: 28px;
+  color: #000000;
+}
+
+.subtitle {
+  margin: 15px 0 0 0;
+  font-size: 14px;
+  color: black;
+}
+
+.back-btn {
+  background: #2292ca;
+  color: black;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Tabs Navigation */
+.settings-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tab-btn {
+  background: transparent;
+  color: #b0c4de;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.tab-btn:hover {
+  color: #fff;
+}
+
+.tab-btn.active {
+  color: #fff;
+  border-bottom: 3px solid #2292ca;
+}
+
+/* Tabs Content */
+.tab-pane {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cards */
+.settings-card {
+  background: rgba(255, 255, 255, 0.816);
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.settings-card:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.settings-card h2 {
+  margin-top: 0;
+  color: black;
+  font-size: 20px;
+}
+
+.settings-card p {
+  color: black;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* Forms & Inputs */
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px;
+}
+
+.input-group label {
+  display: block;
+  color: black;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.submit-btn {
+  background-color: #2292ca;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.submit-btn:hover {
+  background-color: #1a74a1;
+}
+
+.danger-btn { background-color: #d9534f; }
+.danger-btn:hover { background-color: #c9302c; }
+.telegram-btn { background-color: #0088cc; }
+.telegram-btn:hover { background-color: #0077b5; }
+
+/* Custom Checkboxes */
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: black;
+  cursor: pointer;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.status-badge.connected { background: rgba(40, 167, 69, 0.2); color: #28a745; border: 1px solid #28a745; }
+.status-badge.disconnected { background: rgba(220, 53, 69, 0.2); color: #dc3545; border: 1px solid #dc3545; }
+
+/* --- Chips & Tags --- */
+.chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    min-height: 50px;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    background: #2292ca;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: transform 0.2s;
+}
+
+.chip[data-value="0"] {
+    background: #1a74a1; /* Destaca o dia 0 por ser obrigatório */
+    cursor: default;
+}
+
+.remove-chip {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    margin-left: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0;
+    line-height: 1;
+}
+
+.remove-chip:hover {
+    color: white;
+}
+
+/* --- Grupo de Adicionar --- */
+.add-interval-group {
+    display: flex;
+    gap: 10px;
+}
+
+.add-interval-group .input {
+    flex: 1;
+}
+
+.outline-btn {
+    background: transparent;
+    border: 2px solid #2292ca;
+    color: #2292ca;
+    margin-top: 0;
+}
+
+.outline-btn:hover {
+    background: #2292ca;
+    color: white;
+}
+
+.error-text {
+    color: #ff6b6b;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Espaçamento entre os grupos de canais */
+.settings-form .telegram-group {
+    margin-top: 10px;
+}
+
+.settings-form .disabled-label {
+    color: #888;
+    cursor: not-allowed;
+}
+
+.settings-form .validation-warning {
+    display: block;
+    color: #d9534f; 
+    margin-top: 5px;
+    font-size: 0.85em;
+}
+
+.settings-form .save-channels-btn {
+    margin-top: 20px;
+}
+
+/* Responsividade Mobile */
+@media screen and (max-width: 480px) {
+  .settings-tabs {
+    flex-direction: column;
+  }
+  .checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+}

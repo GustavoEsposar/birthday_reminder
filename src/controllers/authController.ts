@@ -4,6 +4,10 @@ import Pessoa from '../models/Pessoa';
 import { AuthRequest } from '../types/AuthRequest';
 
 export class AuthController {
+    async getLogin(req: Request, res: Response) {
+        res.render('login', { title: 'Login' });
+    }
+
     async login(req: Request, res: Response) {
         const { email, password } = req.body;
 
@@ -12,7 +16,7 @@ export class AuthController {
 
             if (user && await user.matchPassword(password)) {
                 req.session.userId = String(user._id);
-                return res.redirect('/dashboard');
+                return res.redirect('/app');
             }
 
             return res.status(400).send('Credenciais inválidas');
@@ -20,6 +24,10 @@ export class AuthController {
         } catch (error) {
             return res.status(500).send('Erro ao fazer login');
         }
+    }
+
+    async getRegister(req: Request, res: Response) {
+        res.render('register', { title: 'Register' });
     }
 
     async register(req: Request, res: Response) {

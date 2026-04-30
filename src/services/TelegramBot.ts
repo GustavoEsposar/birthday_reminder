@@ -61,7 +61,7 @@ export class TelegramBot {
         this.bot.on('text', async (msg) => {
             const chatId = msg.chat.id;
             const text = msg.text || "";
-            const [command, ...args] = text.trim().split(" ");
+            const [command, ...args] = text.trim().split(/\s+/);
 
             try {
                 await this.executeCommand(command || "", chatId, args);
