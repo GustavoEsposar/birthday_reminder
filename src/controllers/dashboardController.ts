@@ -108,6 +108,15 @@ export class DashboardController {
             }
 
             usuario.chatId = null;
+            
+            usuario.notificationChannels = usuario.notificationChannels.filter(
+                channel => channel !== NotificationChannel.TELEGRAM
+            );
+
+            if (usuario.notificationChannels.length === 0) {
+                usuario.notificationChannels.push(NotificationChannel.EMAIL);
+            }
+
             await usuario.save();
 
             res.status(200).json(
