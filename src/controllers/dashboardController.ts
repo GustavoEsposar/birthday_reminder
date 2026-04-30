@@ -80,7 +80,7 @@ export class DashboardController {
             await usuario.save();
 
              // retorna sucesso e envia token por email
-            await emailService.enviarTokenDoTelegram(usuario, bindToken);
+            await emailService.enviarToken(usuario, bindToken, TokenType.TELEGRAM_BIND);
             res.status(200).json(
                 { message: "Token gerado com sucesso. Verifique seu email para o próximo passo." }
             );
