@@ -235,4 +235,80 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+    // 7. Lógica da Exclusão de Conta
+    const btnDeleteAccount = document.getElementById("btn-delete-account");
+    const deleteTokenArea = document.getElementById("delete-token-area");
+    const deleteTokenInput = document.getElementById("delete-token-input");
+    const btnConfirmDelete = document.getElementById("btn-confirm-delete");
+
+    if (btnDeleteAccount) {
+        btnDeleteAccount.addEventListener("action-confirmed", async (e) => {
+            e.preventDefault();
+
+            try {
+                // Solicita a geração do token
+                const response = await fetch("/app/settings/generate-delete-token", {
+                    method: "POST",
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showToast(data.message, "success");
+                    
+                    // Altera a UI
+                    btnDeleteAccount.style.display = "none";
+                    deleteTokenArea.style.display = "block";
+                    deleteTokenInput.focus();
+                } else {
+                    const errorData = await response.json();
+                    showToast(errorData.error || "Ocorreu um erro desconhecido.", "error");
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+                showToast("Falha na comunicação com o servidor.", "error");
+            }
+        });
+    }
+
+    if (deleteTokenInput) {
+        deleteTokenInput.addEventListener("input", (e) => {
+            // Habilita o botão apenas se tiver preenchido os 6 caracteres
+            if (e.target.value.trim().length === 6) {
+                btnConfirmDelete.removeAttribute("disabled");
+            } else {
+                btnConfirmDelete.setAttribute("disabled", "true");
+            }
+        });
+    }
+
+    if (btnConfirmDelete) {
+        btnConfirmDelete.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const token = deleteTokenInput.value.trim().toUpperCase();
+
+            try {
+                const response = await fetch("/app/settings/delete-account", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showToast(data.message, "success");
+                    
+                    // Aguarda o tempo do toast antes de redirecionar para o Login
+                    setTimeout(() => {
+                        window.location.href = "/login";
+                    }, 2000);
+                } else {
+                    const errorData = await response.json();
+                    showToast(errorData.error || "Código inválido.", "error");
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+                showToast("Falha na comunicação com o servidor.", "error");
+            }
+        });
+    }
 });

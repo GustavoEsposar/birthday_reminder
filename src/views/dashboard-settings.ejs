@@ -49,6 +49,15 @@
                             <p>Esta ação é irreversível e resultará na perda de todos os seus dados, incluindo
                                 aniversários cadastrados e preferências de notificação.</p>
                             <button id="btn-delete-account" class="submit-btn danger-btn">Excluir Minha Conta</button>
+
+                            <div id="delete-token-area" class="delete-token-area hidden">
+                                <p class="delete-token-warning">Atenção: Um código de verificação foi enviado ao seu e-mail.</p>
+                                <p class="delete-token-instruction">Digite o código abaixo para confirmar a exclusão permanente da sua conta.</p>
+                                <div class="input-group">
+                                    <input type="text" id="delete-token-input" class="input delete-token-input" placeholder="Código de 6 dígitos" maxlength="6">
+                                </div>
+                                <button id="btn-confirm-delete" class="submit-btn final-delete-btn" disabled>Confirmar Exclusão Definitiva</button>
+                            </div>
                         </div>
                     </div>
 
@@ -94,31 +103,36 @@
                         </div>
                         <div class="settings-card">
                             <h2 class="pacifico-regular">Canais de Notificação</h2>
-                            <p>Escolha como deseja receber suas notificações, Você decide! Ao menos um canal deve estar habilitado obrigatoriamente.</p>
+                            <p>Escolha como deseja receber suas notificações, Você decide! Ao menos um canal deve estar
+                                habilitado obrigatoriamente.</p>
 
                             <form id="form-notification-channels" class="settings-form">
 
                                 <div class="input-group checkbox-group">
                                     <label>
-                                        <input type="checkbox" name="channels" value="email" 
-                                            <% if (user.notificationChannels && user.notificationChannels.includes('email')) { %> checked <% } %> >
-                                        Ativar Alertas por E-mail
+                                        <input type="checkbox" name="channels" value="email" <% if
+                                            (user.notificationChannels && user.notificationChannels.includes('email')) {
+                                            %> checked <% } %> >
+                                            Ativar Alertas por E-mail
                                     </label>
                                 </div>
 
                                 <div class="input-group checkbox-group telegram-group">
                                     <label class="<%= !user.chatId ? 'disabled-label' : '' %>">
-                                        <input type="checkbox" name="channels" value="telegram" 
-                                            <% if (user.notificationChannels && user.notificationChannels.includes('telegram')) { %> checked <% } %>
-                                            <% if (!user.chatId) { %> disabled title="Vincule seu Telegram primeiro para ativar" <% } %> >
-                                        Ativar Alertas por Telegram
+                                        <input type="checkbox" name="channels" value="telegram" <% if
+                                            (user.notificationChannels &&
+                                            user.notificationChannels.includes('telegram')) { %> checked <% } %>
+                                            <% if (!user.chatId) { %> disabled title="Vincule seu Telegram primeiro para
+                                                ativar" <% } %> >
+                                                    Ativar Alertas por Telegram
                                     </label>
 
                                     <% if (!user.chatId) { %>
                                         <small class="validation-warning">
-                                            * Você precisa vincular o Telegram no painel de <b>Integrações</b> para habilitar esta opção.
+                                            * Você precisa vincular o Telegram no painel de <b>Integrações</b> para
+                                            habilitar esta opção.
                                         </small>
-                                    <% } %>
+                                        <% } %>
                                 </div>
 
                                 <button type="submit" class="submit-btn save-channels-btn">Salvar Preferências</button>

@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 
 import Pessoa from "../models/Pessoa";
 import type { IPessoa } from "../models/Pessoa";
+import { tokenService } from "./TokenService";
+import { TokenType } from "../models/Token";
 
 dotenv.config();
 
@@ -95,7 +97,7 @@ export class TelegramBot {
 
     private async handleBindCommand(chatId: ChatId, email: string, token: string): Promise<void> {
         if (!email || !token) {
-            await this.sendMessage(chatId, "Por favor, forneça o email e o token. \nExemplo: <code>/bind seu-email@example.com TKG-ABCDEF</code>", { parse_mode: "HTML" });
+            await this.sendMessage(chatId, "Por favor, forneça o email e o token. \nExemplo: <code>/bind seu-email@example.com 8F4A2B</code>", { parse_mode: "HTML" });
             return;
         }
 
@@ -107,14 +109,16 @@ export class TelegramBot {
                 return;
             }
 
-            if (!usuario.telegramBindToken || usuario.telegramBindToken !== token) {
+            const isValidToken = await tokenService.validateToken(usuario._id, token, TokenType.TELEGRAM_BIND);
+            if (!isValidToken) {
                 await this.sendMessage(chatId, "Token inválido ou expirado.");
                 return;
             }
 
             usuario.chatId = chatId.toString();
-            usuario.telegramBindToken = null; 
             await usuario.save();
+            
+            await tokenService.deleteToken(usuario._id, TokenType.TELEGRAM_BIND);
             
             // Usando negrito HTML na confirmação
             await this.sendMessage(chatId, `✅ Sucesso! A conta de <b>${usuario.name}</b> foi vinculada.`, { parse_mode: "HTML" });
