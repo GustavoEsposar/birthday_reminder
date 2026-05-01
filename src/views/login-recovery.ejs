@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <%- include('partials/head.ejs') %>
+</head>
+
+<body class="body">
+    <div class="container">
+        <%- include('partials/navbar.ejs') %>
+            <div class="content">
+                <div>
+                    <h1 class="pacifico-regular text-center">Recuperar Senha</h1>
+                    <form id="form-recovery" method="POST" class="form-login">
+                        <div>
+                            <input type="email" id="email" name="email" required placeholder="Digite seu email">
+                        </div>
+                        <div>
+                            <button type="submit" class="pacifico-regular">Recuperar</button>
+                        </div>
+                    </form>
+                    <form id="form-token" method="POST" class="form-login hidden">
+                        <div>
+                            <input type="text" id="token" name="token" required placeholder="Digite o token">
+                        </div>
+                        <div>
+                            <input type="password" id="password" name="password" required
+                                placeholder="Digite a nova senha">
+                        </div>
+                        <div>
+                            <input type="password" id="passwordConfirm" name="passwordConfirm" required
+                                placeholder="Digite a confirmação da senha">
+                        </div>
+                        <div>
+                            <button type="submit" class="pacifico-regular">Verificar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <%- include('partials/footer.ejs') %>
+    </div>
+    <%- include('partials/foot.ejs') %>
+</body>
+
+</html>

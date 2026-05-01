@@ -8,7 +8,8 @@
         <%- include('partials/navbar.ejs') %>
         <div class="content">
             <div>
-                <form action="/register" method="POST" class="form-login">
+                <h1 class="pacifico-regular text-center">Cadastrar</h1>
+                <form id="form-register" class="form-login">
                     <div>
                         <input type="text" id="name" name="name" required placeholder="Digite seu nome completo">
                     </div>
@@ -22,7 +23,7 @@
                         <input type="password" id="passwordTwo" name="passwordTwo" required placeholder="Redigite sua senha">
                     </div>
                     <div>
-                        <input type="date" id="birth" name="birth" required placeholder="Data de nascimento">
+                        <input type="text" id="birth" name="birth" required placeholder="Data de nascimento" onfocus="(this.type='date')" onblur="if(!this.value) this.type='text'">
                     </div>
                     <div>
                         <button type="submit" class="pacifico-regular">Cadastrar</button>
