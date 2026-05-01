@@ -1,31 +1,39 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <%- include('partials/head.ejs') %>
 </head>
+
 <body class="body">
     <div class="container">
         <%- include('partials/navbar.ejs') %>
-        <div class="content">
-            <div>
-                <form action="/login" method="POST" class="form-login">
-                    <div>
-                        <input type="email" id="email" name="email" required placeholder="Digite seu email">
-                    </div>
-                    <div>
-                        <input type="password" id="password" name="password" required placeholder="Digite sua senha">
-                    </div>
-                    <div>
-                        <button type="submit" class="pacifico-regular">Entrar</button>
-                    </div>
-                    <div>
-                        Não tem uma conta ainda? <a href="/register">Crie uma!</a>
-                    </div>
-                </form>
+            <div class="content">
+                <div>
+                    <h1 class="pacifico-regular text-center">Login</h1>
+                    <form action="/login" method="POST" class="form-login">
+                        <div>
+                            <input type="email" id="email" name="email" required placeholder="Digite seu email">
+                        </div>
+                        <div>
+                            <input type="password" id="password" name="password" required
+                                placeholder="Digite sua senha">
+                        </div>
+                        <div>
+                            <button type="submit" class="pacifico-regular">Entrar</button>
+                        </div>
+                        <div class="login__text">
+                            Não tem uma conta ainda? <a href="/register">Crie uma!</a>
+                        </div>
+                        <div class="login__text">
+                            Esqueceu sua senha? <a href="/login/recovery">Recupere aqui!</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
-        <%- include('partials/footer.ejs') %>
-    </div>  
+            <%- include('partials/footer.ejs') %>
+    </div>
     <%- include('partials/foot.ejs') %>
 </body>
+
 </html>

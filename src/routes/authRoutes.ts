@@ -9,6 +9,12 @@ router.get('/login', authController.getLogin.bind(authController));
 
 router.post('/login', authController.login.bind(authController));
 
+router.get('/login/recovery', authController.getForgotPasswordView.bind(authController));
+
+router.post('/login/generate-recovery-token', authController.forgotPassword.bind(authController));
+
+router.post('/login/recovery', authController.resetPassword.bind(authController));
+
 router.get('/register', authController.getRegister.bind(authController));
 
 router.post('/register', authController.register.bind(authController));

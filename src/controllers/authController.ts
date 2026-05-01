@@ -2,6 +2,9 @@ import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import Pessoa from '../models/Pessoa';
 import { AuthRequest } from '../types/AuthRequest';
+import { TokenType } from '../models/Token';
+import { tokenService } from '../services/TokenService';
+import { emailService } from '../services/EmailService';
 
 export class AuthController {
     async getLogin(req: Request, res: Response) {
@@ -23,6 +26,61 @@ export class AuthController {
 
         } catch (error) {
             return res.status(500).send('Erro ao fazer login');
+        }
+    }
+
+    async getForgotPasswordView(req: Request, res: Response) {
+        res.render('login-recovery', { title: 'Recuperar Senha', extraScripts: ['/js/toast.js', '/js/recovery.js'] });
+    }
+
+    async forgotPassword(req: Request, res: Response) {
+        const { email } = req.body;
+
+        try {
+            const user = await Pessoa.findOne({ email });
+
+            if (user) {
+                const token = await tokenService.generateToken(user._id, TokenType.PASSWORD_RECOVERY);
+                await emailService.enviarToken(user, token, TokenType.PASSWORD_RECOVERY);
+
+                return res.status(200).json({ message: 'Verifique seu email para informar o token de recuperação.' });
+            } else {
+                return res.status(404).json({ error: 'Usuário não encontrado.' });
+            }
+        } catch (error) {
+            return res.status(500).json({ error: 'Erro interno ao processar a solicitação.' });
+        }
+    }
+
+    async resetPassword(req: Request, res: Response) {
+        const { email, token, password, passwordConfirm } = req.body;
+
+        try {
+            if (password !== passwordConfirm) {
+                return res.status(400).json({ error: "As senhas não coincidem." });
+            }
+
+            const user = await Pessoa.findOne({ email });
+
+            if (!user) {
+                return res.status(404).json({ error: "Usuário não encontrado." });
+            }
+
+            const isValidToken = await tokenService.validateToken(user._id, token, TokenType.PASSWORD_RECOVERY);
+            
+            if (!isValidToken) {
+                return res.status(400).json({ error: "Código de recuperação inválido ou expirado." });
+            }
+
+            user.password = password;
+            await user.save(); // O middleware de hash em Pessoa atuará aqui
+
+            await tokenService.deleteToken(user._id, TokenType.PASSWORD_RECOVERY);
+
+            return res.status(200).json({ message: "Senha redefinida com sucesso. Faça login novamente." });
+        } catch (error) {
+            console.error("Erro ao redefinir a senha:", error);
+            return res.status(500).json({ error: 'Erro interno ao processar a recuperação da senha.' });
         }
     }
 
