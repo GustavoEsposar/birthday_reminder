@@ -8,7 +8,7 @@ import { emailService } from '../services/EmailService';
 
 export class AuthController {
     async getLogin(req: Request, res: Response) {
-        res.render('login', { title: 'Login' });
+        res.render('login', { title: 'Login', extraScripts: ['/js/toast.js', '/js/login.js'] });
     }
 
     async login(req: Request, res: Response) {
@@ -19,13 +19,13 @@ export class AuthController {
 
             if (user && await user.matchPassword(password)) {
                 req.session.userId = String(user._id);
-                return res.redirect('/app');
+                return res.status(200).json({ redirect: '/app' });
             }
 
-            return res.status(400).send('Credenciais inválidas');
+            return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
 
         } catch (error) {
-            return res.status(500).send('Erro ao fazer login');
+            return res.status(500).json({ error: 'Erro interno ao fazer login. Tente novamente.' });
         }
     }
 
@@ -85,7 +85,7 @@ export class AuthController {
     }
 
     async getRegister(req: Request, res: Response) {
-        res.render('register', { title: 'Register' });
+        res.render('register', { title: 'Cadastrar', extraScripts: ['/js/toast.js', '/js/register.js'] });
     }
 
     async register(req: Request, res: Response) {
@@ -106,12 +106,15 @@ export class AuthController {
             });
 
             await newUser.save();
-            req.session.userId = String(newUser._id);
 
-            return res.redirect('/login');
+            return res.status(201).json({ redirect: '/login' });
 
         } catch (error: any) {
-            return res.status(400).send(error.message);
+            // Trata erro de e-mail duplicado (MongoDB E11000)
+            if (error.code === 11000) {
+                return res.status(409).json({ error: 'Este e-mail já está cadastrado.' });
+            }
+            return res.status(400).json({ error: error.message });
         }
     }
 
