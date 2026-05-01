@@ -7,7 +7,7 @@
     min-height: calc(100vh - 85px - 50px);
 }
 
-.content > div {
+.content>div {
     padding: 20px !important;
     background-color: #3b617485;
     border-radius: 15px;
@@ -19,7 +19,7 @@
     transition: all 250ms;
 }
 
-.content > div:last-of-type {
+.content>div:last-of-type {
     margin-bottom: 0;
 }
 
@@ -46,7 +46,7 @@
 
 .content .form-login div {
     font-size: 25px;
-    margin-bottom: 40px ;
+    margin-bottom: 40px;
 }
 
 .content .form-login div input {
@@ -64,7 +64,7 @@
     background-color: #2292ca;
     border-color: rgba(255, 255, 255, 0);
     border-style: outset;
-    border-width: 3px; 
+    border-width: 3px;
     box-shadow: 0 5px 5px black;
     transition: all 200ms ease-in-out;
 }
@@ -76,7 +76,7 @@
     text-decoration: underline;
 }
 
-.content .form-login div:last-of-type {
+.content .form-login div.login__text {
     font-size: 20px;
 }
 
@@ -90,7 +90,7 @@
 }
 
 @media screen and (max-width: 420px) {
-    .content > div {
+    .content>div {
         padding: 20px !important;
         background-color: #3b617485;
         border-radius: 15px;
@@ -104,4 +104,12 @@
     .content .form-login {
         padding: 20px 0;
     }
+}
+
+.text-center {
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
 }
