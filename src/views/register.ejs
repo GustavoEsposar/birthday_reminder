@@ -11,24 +11,37 @@
                 <h1 class="pacifico-regular text-center">Cadastrar</h1>
                 <form id="form-register" class="form-login">
                     <div>
-                        <input type="text" id="name" name="name" required placeholder="Digite seu nome completo">
+                        <input type="text" id="name" name="name" required placeholder="Digite seu nome completo" maxlength="100">
                     </div>
                     <div>
                         <input type="email" id="email" name="email" required placeholder="Digite seu email">
                     </div>
                     <div>
-                        <input type="password" id="passwordOne" name="passwordOne" required placeholder="Digite sua senha">
+                        <div class="password-wrapper">
+                            <input type="password" id="passwordOne" name="passwordOne" required placeholder="Digite sua senha" minlength="8" maxlength="64">
+                            <button type="button" class="toggle-password">
+                                <span class="material-symbols-outlined">visibility_off</span>
+                            </button>
+                        </div>
                     </div>
                     <div>
-                        <input type="password" id="passwordTwo" name="passwordTwo" required placeholder="Redigite sua senha">
+                        <div class="password-wrapper">
+                            <input type="password" id="passwordTwo" name="passwordTwo" required placeholder="Redigite sua senha" minlength="8" maxlength="64">
+                            <button type="button" class="toggle-password">
+                                <span class="material-symbols-outlined">visibility_off</span>
+                            </button>
+                        </div>
                     </div>
                     <div>
-                        <input type="text" id="birth" name="birth" required placeholder="Data de nascimento" onfocus="(this.type='date')" onblur="if(!this.value) this.type='text'">
+                        <input type="text" id="birth" name="birth" required placeholder="Data de nascimento" onfocus="(this.type='date')" onblur="if(!this.value) this.type='text'" max="9999-12-31">
                     </div>
                     <div>
                         <button type="submit" class="pacifico-regular">Cadastrar</button>
                     </div>
                 </form>
+
+                <%- include('partials/email-verify-form.ejs', { verifyContext: 'register' }) %>
+
             </div>
         </div>
         <%- include('partials/footer.ejs') %>

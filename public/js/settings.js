@@ -73,8 +73,26 @@ document.addEventListener("DOMContentLoaded", () => {
         passwordForm.addEventListener('submit', async (e) => {
             e.preventDefault(); // Evita que a página recarregue
 
-            const formData = new FormData(passwordForm);
-            const data = Object.fromEntries(formData.entries());
+            const oldPassword = document.querySelector('input[name="oldPassword"]').value.trim().replace(/\s+/g, ' ');
+            const newPassword = document.getElementById('password').value.trim().replace(/\s+/g, ' ');
+            const passwordConfirm = document.getElementById('passwordConfirm').value.trim().replace(/\s+/g, ' ');
+
+            if (!oldPassword || !newPassword || !passwordConfirm) {
+                showToast('Por favor, preencha todos os campos.', 'error');
+                return;
+            }
+
+            if (newPassword.length < 8 || newPassword.length > 64) {
+                showToast('A nova senha deve ter entre 8 e 64 caracteres.', 'error');
+                return;
+            }
+
+            if (newPassword !== passwordConfirm) {
+                showToast('A nova senha e a confirmação não coincidem.', 'error');
+                return;
+            }
+
+            const data = { oldPassword, newPassword };
 
             try {
                 const response = await fetch('/api/users/change-password', {
@@ -107,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const showError = (msg) => {
             errorMsg.textContent = msg;
-            errorMsg.style.display = "block";
+            errorMsg.classList.remove("hidden");
         };
 
         const getCurrentIntervals = () => {
@@ -118,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // NOVO: Limpa a borda vermelha e a mensagem de erro quando o usuário digita
         input.addEventListener("input", () => {
             input.classList.remove("input-error");
-            errorMsg.style.display = "none";
+            errorMsg.classList.add("hidden");
         });
 
         btnAdd.addEventListener("click", () => {
@@ -255,9 +273,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     const data = await response.json();
                     showToast(data.message, "success");
                     
-                    // Altera a UI
-                    btnDeleteAccount.style.display = "none";
-                    deleteTokenArea.style.display = "block";
+                    // Altera a UI usando classList para maior consistência
+                    btnDeleteAccount.classList.add("hidden");
+                    deleteTokenArea.classList.remove("hidden");
                     deleteTokenInput.focus();
                 } else {
                     const errorData = await response.json();

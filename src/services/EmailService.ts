@@ -99,6 +99,12 @@ export class EmailService implements INotificationProvider {
                 subtitle = "Você solicitou a exclusão permanente da sua conta. Para prosseguir, confirme utilizando o código abaixo.";
                 instructions = "Se você não solicitou isso, ignore este email ou altere sua senha imediatamente.";
                 break;
+            case TokenType.EMAIL_VERIFICATION:
+                this.subject = "Confirme seu cadastro no Birthday Reminder";
+                title = "Confirmar Cadastro";
+                subtitle = "Obrigado por se cadastrar! Use o código abaixo para ativar sua conta.";
+                instructions = "Insira este código na tela de cadastro para ativar sua conta. Ele expira em 5 minutos.";
+                break;
             default:
                 throw new Error(`Tipo de token inválido ou não suportado para envio de email: ${tipo}`);
         }

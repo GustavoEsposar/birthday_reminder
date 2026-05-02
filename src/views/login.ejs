@@ -16,8 +16,13 @@
                             <input type="email" id="email" name="email" required placeholder="Digite seu email">
                         </div>
                         <div>
+                            <div class="password-wrapper">
                             <input type="password" id="password" name="password" required
-                                placeholder="Digite sua senha">
+                                placeholder="Digite sua senha" minlength="8" maxlength="64">
+                            <button type="button" class="toggle-password">
+                                <span class="material-symbols-outlined">visibility_off</span>
+                            </button>
+                        </div>
                         </div>
                         <div>
                             <button type="submit" class="pacifico-regular">Entrar</button>
@@ -29,6 +34,9 @@
                             Esqueceu sua senha? <a href="/login/recovery">Recupere aqui!</a>
                         </div>
                     </form>
+
+                    <%- include('partials/email-verify-form.ejs', { verifyContext: 'login' }) %>
+
                 </div>
             </div>
             <%- include('partials/footer.ejs') %>

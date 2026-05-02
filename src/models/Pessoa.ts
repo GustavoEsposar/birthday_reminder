@@ -21,6 +21,8 @@ export interface IPessoa extends Document {
     cron: string[];
     notificationChannels: NotificationChannel[];
     chatId?: string | null;
+    isVerified: boolean;
+    verificationExpiry?: Date | null;
     matchPassword(enteredPassword: string): Promise<boolean>;
 }
 
@@ -66,6 +68,15 @@ const pessoaSchema = new Schema<IPessoa>({
     chatId: {
         type: String,
         default: null
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    verificationExpiry: {
+        type: Date,
+        default: null,
+        index: { expireAfterSeconds: 0 } // TTL condicional: MongoDB ignora campos null
     }
 }, { collection: COLLECTION_NAME });
 

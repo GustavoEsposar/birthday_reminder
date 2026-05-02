@@ -33,15 +33,15 @@
 
                 <div class="pessoas">
                     <form id="inline-add-form" action="/app/add-birthdate" method="POST"
-                        class="pessoa sobrepor new-person-card" style="display: none;">
+                        class="pessoa sobrepor new-person-card hidden">
                         <input type="hidden" name="userId" value="<%= user._id %>">
 
                         <input type="text" id="new-name" name="name" required placeholder="Nome da pessoa"
-                            class="inline-input-name">
+                            class="inline-input-name" maxlength="100">
 
                         <input type="text" id="new-birthdate" name="birthdate" required class="inline-input-date"
                             placeholder="Data (dd/mm/aaaa)" onfocus="(this.type='date')"
-                            onblur="if(!this.value) this.type='text'">
+                            onblur="if(!this.value) this.type='text'" max="9999-12-31">
 
                         <div class="action-buttons">
                             <button type="button" id="cancel-add" class="cancel-btn-inline material-symbols-outlined">

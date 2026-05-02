@@ -44,7 +44,7 @@
     justify-content: center;
 }
 
-.content .form-login div {
+.content .form-login > div {
     font-size: 25px;
     margin-bottom: 40px;
 }
@@ -78,6 +78,18 @@
 
 .content .form-login div.login__text {
     font-size: 20px;
+}
+
+.content .form-login .verify-hint {
+    margin-bottom: 40px;
+    color: white;
+}
+
+.content .form-login .token-input {
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    text-align: center;
+    font-size: 1.3rem;
 }
 
 .content .form-login div a {
