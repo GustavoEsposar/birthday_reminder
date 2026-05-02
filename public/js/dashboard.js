@@ -43,8 +43,21 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('inline-add-form').addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const formData = new FormData(this);
-        const data = Object.fromEntries(formData.entries());
+        const nameInput = document.getElementById("new-name");
+        const name = nameInput.value.trim().replace(/\s+/g, ' ');
+        const birthdate = document.getElementById("new-birthdate").value;
+
+        if (!name || !birthdate) {
+            showToast("Por favor, preencha todos os campos.", "error");
+            return;
+        }
+
+        if (name.length > 100) {
+            showToast("o nome deve ter no máximo 100 caracteres.", "error");
+            return;
+        }
+
+        const data = { name, birthdate };
 
         try {
             const response = await fetch('/app/add-birthdate', {
@@ -87,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // 7. Reseta e esconde o formulário
                 this.reset();
-                this.style.display = 'none';
+                this.classList.add('hidden');
                 document.getElementById("show-form").innerHTML = "+";
 
             } else {
@@ -106,15 +119,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const button = document.getElementById("show-form");
         const nameInput = document.getElementById("new-name");
 
-        // Toggle de visibilidade usando o estilo inline
-        if (formCard.style.display === "none") {
-            formCard.style.display = "flex"; // Mostra o card
+        // Toggle de visibilidade usando classList
+        if (formCard.classList.contains("hidden")) {
+            formCard.classList.remove("hidden"); // Mostra o card
             button.innerHTML = "✘";
 
             // UX Avançada: Coloca o cursor de digitação direto no campo de nome
             setTimeout(() => nameInput.focus(), 50);
         } else {
-            formCard.style.display = "none"; // Oculta o card
+            formCard.classList.add("hidden"); // Oculta o card
             button.innerHTML = "+";
         }
     });
@@ -124,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const formCard = document.getElementById("inline-add-form");
         const button = document.getElementById("show-form");
 
-        formCard.style.display = "none";
+        formCard.classList.add("hidden");
         button.innerHTML = "+";
         formCard.reset(); // Limpa o que o usuário havia digitado caso tenha desistido
     });
@@ -180,8 +193,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Lógica da Barra de Pesquisa (Filtro em tempo real)
     document.getElementById("search-input").addEventListener("input", function (e) {
-        // Pega o que foi digitado e converte para minúsculas (insensitive case)
-        const searchTerm = e.target.value.toLowerCase();
+        // Pega o que foi digitado, remove espaços extras e converte para minúsculas
+        const searchTerm = e.target.value.trim().toLowerCase();
 
         // Pega todas as divs de pessoas
         const pessoas = document.querySelectorAll(".pessoa:not(#inline-add-form)");
@@ -192,11 +205,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Verifica se o nome digitado está contido no nome da pessoa
             if (name.includes(searchTerm)) {
-                // Se encontrar o texto, remove qualquer 'display: none' para mostrar a div
-                pessoa.style.display = "";
+                // Se encontrar o texto, remove a classe hidden
+                pessoa.classList.remove("hidden");
             } else {
                 // Se não encontrar, oculta a div
-                pessoa.style.display = "none";
+                pessoa.classList.add("hidden");
             }
         });
     });

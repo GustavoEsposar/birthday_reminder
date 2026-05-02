@@ -43,12 +43,17 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
 
             const token = document.getElementById("token").value.trim().toUpperCase();
-            const password = document.getElementById("password").value;
-            const passwordConfirm = document.getElementById("passwordConfirm").value;
+            const password = document.getElementById("password").value.trim().replace(/\s+/g, ' ');
+            const passwordConfirm = document.getElementById("passwordConfirm").value.trim().replace(/\s+/g, ' ');
 
             // Validação local
             if (!token || !password || !passwordConfirm) {
                 showToast("Por favor, preencha todos os campos.", "error");
+                return;
+            }
+
+            if (password.length < 8 || password.length > 64) {
+                showToast("A senha deve ter entre 8 e 64 caracteres.", "error");
                 return;
             }
 

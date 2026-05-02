@@ -1,0 +1,36 @@
+<%#
+ * Partial reutilizável: Formulário de verificação de email por OTP
+ *
+ * Parâmetros esperados via include:
+ *   - verifyContext: 'register' | 'login'
+ *
+ * Uso em register.ejs:
+ *   < %- include('partials/email-verify-form.ejs', { verifyContext: 'register' }) % >
+ *
+ * Uso em login.ejs:
+ *   < %- include('partials/email-verify-form.ejs', { verifyContext: 'login' }) % >
+%>
+<form id="form-verify" class="form-login hidden" data-context="<%= verifyContext %>">
+    <p class="text-center verify-hint">
+        <% if (verifyContext === 'register') { %>
+            Um código de verificação foi enviado para o email informado. Insira-o abaixo para ativar sua conta.
+        <% } else { %>
+            Sua conta ainda não foi verificada. Enviamos um novo código para <strong id="email-display"></strong>.
+        <% } %>
+    </p>
+    <div>
+        <input
+            type="text"
+            id="token-verify"
+            name="token"
+            required
+            placeholder="Ex: ABC123"
+            maxlength="6"
+            autocomplete="one-time-code"
+            class="token-input"
+        >
+    </div>
+    <div>
+        <button type="submit" class="pacifico-regular">Verificar Email</button>
+    </div>
+</form>

@@ -19,4 +19,7 @@ router.get('/register', authController.getRegister.bind(authController));
 
 router.post('/register', authController.register.bind(authController));
 
+// Endpoint unificado de verificação de email (pendencia de cadastro) — usado pelo /register e pelo /login
+router.post('/register/verify-email', authController.verifyEmail.bind(authController));
+
 export default router;

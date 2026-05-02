@@ -3,7 +3,8 @@ import mongoose, { Schema, Document } from 'mongoose';
 export enum TokenType {
     TELEGRAM_BIND = 'TELEGRAM_BIND',
     PASSWORD_RECOVERY = 'PASSWORD_RECOVERY',
-    ACCOUNT_DELETION = 'ACCOUNT_DELETION'
+    ACCOUNT_DELETION = 'ACCOUNT_DELETION',
+    EMAIL_VERIFICATION = 'EMAIL_VERIFICATION'
 }
 
 export interface IToken extends Document {

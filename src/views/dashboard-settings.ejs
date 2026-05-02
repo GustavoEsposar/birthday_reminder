@@ -33,13 +33,33 @@
                             <form id="form-change-password" class="settings-form">
                                 <div class="input-group">
                                     <label>Senha Atual</label>
-                                    <input type="password" name="oldPassword" required class="input"
-                                        placeholder="Digite a senha atual">
+                                    <div class="password-wrapper">
+                                        <input type="password" name="oldPassword" required class="input"
+                                            placeholder="Digite a senha atual" minlength="8" maxlength="64">
+                                        <button type="button" class="toggle-password">
+                                            <span class="material-symbols-outlined">visibility_off</span>
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="input-group">
                                     <label>Nova Senha</label>
-                                    <input type="password" name="newPassword" required class="input"
-                                        placeholder="Nova senha">
+                                    <div class="password-wrapper">
+                                        <input type="password" id="password" name="password" required class="input"
+                                            placeholder="Digite a nova senha" minlength="8" maxlength="64">
+                                        <button type="button" class="toggle-password">
+                                            <span class="material-symbols-outlined">visibility_off</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label>Confirmar Nova Senha</label>
+                                    <div class="password-wrapper">
+                                        <input type="password" id="passwordConfirm" name="passwordConfirm" required class="input"
+                                            placeholder="Digite a confirmação da senha" minlength="8" maxlength="64">
+                                        <button type="button" class="toggle-password">
+                                            <span class="material-symbols-outlined">visibility_off</span>
+                                        </button>
+                                    </div>
                                 </div>
                                 <button type="submit" class="submit-btn">Atualizar Senha</button>
                             </form>
@@ -54,9 +74,9 @@
                                 <p class="delete-token-warning">Atenção: Um código de verificação foi enviado ao seu e-mail.</p>
                                 <p class="delete-token-instruction">Digite o código abaixo para confirmar a exclusão permanente da sua conta.</p>
                                 <div class="input-group">
-                                    <input type="text" id="delete-token-input" class="input delete-token-input" placeholder="Código de 6 dígitos" maxlength="6">
+                                    <input type="text" id="delete-token-input" class="input delete-token-input" placeholder="Ex: ABC123" maxlength="6">
                                 </div>
-                                <button id="btn-confirm-delete" class="submit-btn final-delete-btn" disabled>Confirmar Exclusão Definitiva</button>
+                                <button id="btn-confirm-delete" class="submit-btn final-delete-btn" disabled>Confirmar Exclusão</button>
                             </div>
                         </div>
                     </div>
@@ -96,7 +116,7 @@
                                         class="submit-btn outline-btn">Adicionar</button>
                                 </div>
 
-                                <small id="interval-error-msg" class="error-text" style="display: none;"></small>
+                                <small id="interval-error-msg" class="error-text hidden"></small>
 
                                 <button type="submit" class="submit-btn">Salvar Preferências</button>
                             </form>

@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import { emailService } from '../services/EmailService';
 import { tokenService } from '../services/TokenService';
 import { TokenType } from '../models/Token';
+import { sanitizeString, isValidLength } from '../utils/sanitizer';
 
 export class DashboardController {
     async getDashboard(req : Request, res: Response): Promise<void> {
@@ -22,7 +23,18 @@ export class DashboardController {
 
     async addBirthdate(req: Request, res: Response): Promise<void> {
         try {
-            const { name, birthdate } = req.body;
+            let { name, birthdate } = req.body;
+            name = sanitizeString(name);
+
+            if (!name || !birthdate) {
+                res.status(400).json({ error: "Nome e data são obrigatórios." });
+                return;
+            }
+
+            if (!isValidLength(name, 1, 100)) {
+                res.status(400).json({ error: "O nome deve ter no máximo 100 caracteres." });
+                return;
+            }
 
             const novoAniversario = {
                 _id: new mongoose.Types.ObjectId(), // Gera um ID único para o aniversário

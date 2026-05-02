@@ -21,15 +21,25 @@
                     </form>
                     <form id="form-token" method="POST" class="form-login hidden">
                         <div>
-                            <input type="text" id="token" name="token" required placeholder="Digite o token">
+                            <input type="text" id="token" name="token" required placeholder="Ex: ABC123" maxlength="6" class="token-input">
                         </div>
                         <div>
-                            <input type="password" id="password" name="password" required
-                                placeholder="Digite a nova senha">
+                            <div class="password-wrapper">
+                                <input type="password" id="password" name="password" required
+                                    placeholder="Digite a nova senha" minlength="8" maxlength="64">
+                                <button type="button" class="toggle-password">
+                                    <span class="material-symbols-outlined">visibility_off</span>
+                                </button>
+                            </div>
                         </div>
                         <div>
-                            <input type="password" id="passwordConfirm" name="passwordConfirm" required
-                                placeholder="Digite a confirmação da senha">
+                            <div class="password-wrapper">
+                                <input type="password" id="passwordConfirm" name="passwordConfirm" required
+                                    placeholder="Digite a confirmação da senha" minlength="8" maxlength="64">
+                                <button type="button" class="toggle-password">
+                                    <span class="material-symbols-outlined">visibility_off</span>
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <button type="submit" class="pacifico-regular">Verificar</button>
