@@ -11,7 +11,7 @@ export class SettingsController {
             res.render('dashboard-settings', {
                 title: 'Birthday Reminder - Configurações',
                 user: user,
-                extraScripts: ['/js/navbar-dashboard.js', '/js/settings.js', '/js/toast.js']
+                extraScripts: ['/js/navbar-dashboard.js', '/js/settings.js', '/js/toast.js', '/js/password-toggle.js']
             });
         } catch (error) {
             res.status(500).send('Erro ao carregar as configurações');
