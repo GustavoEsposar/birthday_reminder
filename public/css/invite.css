@@ -1,0 +1,123 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.invite-body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a3a4a 0%, #2292ca 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+}
+
+.invite-card {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 20px;
+    padding: 40px 32px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    text-align: center;
+}
+
+.invite-logo {
+    font-size: 60px;
+    margin-bottom: 8px;
+}
+
+.invite-logo-form {
+    margin-bottom: 12px;
+    line-height: 1;
+    width: 100px;
+    height: 100px;
+}
+
+.invite-title-form {
+    font-size: 28px;
+    color: #1a3a4a;
+    margin-bottom: 8px;
+}
+
+.invite-subtitle {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 28px;
+    line-height: 1.5;
+}
+
+.invite-hint {
+    font-size: 14px;
+    color: #888;
+    margin-top: 12px;
+}
+
+.invite-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+}
+
+.invite-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.invite-field label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.invite-field input {
+    padding: 12px 14px;
+    border: 1.5px solid #d0d7de;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #222;
+    transition: border-color 0.2s;
+    outline: none;
+    background: #fafafa;
+}
+
+.invite-field input:focus {
+    border-color: #2292ca;
+    background: #fff;
+}
+
+.invite-btn {
+    margin-top: 4px;
+    padding: 13px;
+    background-color: #2292ca;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    font-family: inherit;
+}
+
+.invite-btn:hover { background-color: #1a7aac; }
+.invite-btn:active { transform: scale(0.98); }
+.invite-btn:disabled { background-color: #aaa; cursor: not-allowed; }
+
+.invite-error {
+    font-size: 14px;
+    color: #dc3545;
+    text-align: center;
+    margin-top: -4px;
+}
+
+.hidden { display: none; }
+
+.invite-expiry {
+    color: black;
+}

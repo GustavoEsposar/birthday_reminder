@@ -31,6 +31,38 @@
                     </div>
                 </div>
 
+                <% if (pendingEntries && pendingEntries.length > 0) { %>
+                <div class="pendentes-wrapper">
+                    <h4 class="pendentes-titulo">
+                        Aguardando aprovação
+                        <span class="pendentes-count">(<%= pendingEntries.length %>)</span>
+                    </h4>
+                    <div class="pessoas-pendentes">
+                        <% pendingEntries.forEach(entry => {
+                            const pDate = new Date(entry.date);
+                            const pDay = String(pDate.getUTCDate()).padStart(2, '0');
+                            const pMonth = String(pDate.getUTCMonth() + 1).padStart(2, '0');
+                            const pYear = pDate.getUTCFullYear();
+                            const pFormattedDate = pDay + '/' + pMonth + '/' + pYear;
+                        %>
+                        <div class="pessoa-pendente sobrepor" data-pending-id="<%= entry._id %>">
+                            <span class="pendente-badge">Pendente</span>
+                            <h3 class="card-name"><%= entry.name %></h3>
+                            <p class="card-date"><%= pFormattedDate %></p>
+                            <div class="pendente-actions">
+                                <button class="approve-btn" data-pending-id="<%= entry._id %>" title="Aprovar">
+                                    <span class="material-symbols-outlined">check</span>
+                                </button>
+                                <button class="reject-btn" data-pending-id="<%= entry._id %>" title="Rejeitar">
+                                    <span class="material-symbols-outlined">close</span>
+                                </button>
+                            </div>
+                        </div>
+                        <% }) %>
+                    </div>
+                </div>
+                <% } %>
+
                 <div class="pessoas">
                     <form id="inline-add-form" action="/app/add-birthdate" method="POST"
                         class="pessoa sobrepor new-person-card hidden">

@@ -1,4 +1,68 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Lógica de aprovação/rejeição de pendentes
+    const pendentesWrapper = document.querySelector('.pendentes-wrapper');
+
+    function injectPessoaCard(birthdate) {
+        const template = document.getElementById('card-pessoa-template');
+        if (!template) return;
+        const clone = template.content.cloneNode(true);
+
+        let displayDate = birthdate.date;
+        if (typeof birthdate.date === 'string' && birthdate.date.includes('T')) {
+            const d = new Date(birthdate.date);
+            const day = String(d.getUTCDate()).padStart(2, '0');
+            const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+            const year = d.getUTCFullYear();
+            displayDate = `${day}/${month}/${year}`;
+        }
+
+        const cardDiv = clone.querySelector('.pessoa');
+        clone.querySelector('.card-name').textContent = birthdate.name;
+        clone.querySelector('.card-date').textContent = displayDate;
+        cardDiv.setAttribute('data-name', birthdate.name);
+        cardDiv.setAttribute('data-age', new Date(birthdate.date).getTime());
+        const d = new Date(birthdate.date);
+        const calValue = String(d.getUTCMonth() + 1).padStart(2, '0') + String(d.getUTCDate()).padStart(2, '0');
+        cardDiv.setAttribute('data-calendar', calValue);
+        clone.querySelector('input[name="birthdateId"]').value = birthdate._id;
+
+        const form = document.getElementById('inline-add-form');
+        form.parentNode.insertBefore(clone, form.nextElementSibling);
+    }
+
+    if (pendentesWrapper) {
+        pendentesWrapper.addEventListener('click', async function (e) {
+            const approveBtn = e.target.closest('.approve-btn');
+            const rejectBtn = e.target.closest('.reject-btn');
+            if (!approveBtn && !rejectBtn) return;
+
+            const pendingId = (approveBtn || rejectBtn).dataset.pendingId;
+            const action = approveBtn ? 'approve' : 'reject';
+            const card = pendentesWrapper.querySelector(`.pessoa-pendente[data-pending-id="${pendingId}"]`);
+
+            try {
+                const response = await fetch(`/app/invite/${action}/${pendingId}`, { method: 'POST' });
+                const result = await response.json();
+
+                if (response.ok) {
+                    showToast(result.message, 'success');
+                    card?.remove();
+
+                    if (action === 'approve' && result.birthdate) {
+                        injectPessoaCard(result.birthdate);
+                    }
+
+                    const remaining = pendentesWrapper.querySelectorAll('.pessoa-pendente');
+                    if (remaining.length === 0) pendentesWrapper.remove();
+                } else {
+                    showToast(result.error || 'Erro', 'error');
+                }
+            } catch {
+                showToast('Erro de comunicação com o servidor', 'error');
+            }
+        });
+    }
+
     // Lógica para deletar aniversarios
     // Captura o container pai que guarda todos os cards -> isso garante que novos cards também funcionarao
     const containerPessoas = document.querySelector('.pessoas');

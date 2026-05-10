@@ -162,6 +162,54 @@
 
                     <div class="tab-pane" id="tab-integrations">
                         <div class="settings-card">
+                            <h2 class="pacifico-regular">Link de Convite</h2>
+                            <p>Gere um link único e compartilhe com amigos e familiares. Quem clicar poderá cadastrar o próprio aniversário direto no seu painel — sem precisar de conta.</p>
+
+                            <div id="invite-link-area">
+                                <% if (activeInviteLink) { %>
+                                <div id="invite-active-state">
+                                    <div class="invite-url-group">
+                                        <input type="text" id="invite-url-input" class="input" readonly
+                                            value="<%= baseUrl %>/invite/<%= activeInviteLink.token %>">
+                                        <button id="btn-copy-invite" class="submit-btn outline-btn">Copiar</button>
+                                    </div>
+                                    <small class="invite-expiry">
+                                        Expira em: <strong id="invite-expiry-label"></strong>
+                                    </small>
+                                    <br>
+                                    <button id="btn-cancel-invite" class="submit-btn danger-btn">Cancelar Link</button>
+                                </div>
+                                <script>
+                                    (function() {
+                                        const expiresAt = new Date("<%= activeInviteLink.expiresAt.toISOString() %>");
+                                        const now = new Date();
+                                        const diffMs = expiresAt - now;
+                                        const diffH = Math.floor(diffMs / (1000 * 60 * 60));
+                                        const diffD = Math.floor(diffH / 24);
+                                        const remH = diffH % 24;
+                                        let label = '';
+                                        if (diffD > 0) label += diffD + ' dia(s) ';
+                                        if (remH > 0 || diffD === 0) label += remH + ' hora(s)';
+                                        document.getElementById('invite-expiry-label').textContent = label.trim() || 'menos de 1 hora';
+                                    })();
+                                </script>
+                                <% } else { %>
+                                <div id="invite-empty-state">
+                                    <div class="invite-generate-group">
+                                        <select id="invite-duration" class="input">
+                                            <option value="24h">24 horas</option>
+                                            <option value="3d">3 dias</option>
+                                            <option value="7d" selected>7 dias</option>
+                                            <option value="30d">30 dias</option>
+                                        </select>
+                                        <button id="btn-generate-invite" class="submit-btn">Gerar Link</button>
+                                    </div>
+                                </div>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <div class="settings-card">
                             <h2 class="pacifico-regular">Telegram Bot</h2>
                             <p>Receba seus lembretes diretamente no seu aplicativo do Telegram. Para isso basta clicar
                                 no botão <b>Gerar Token de Acesso</b> e você receberá um token de vinculação no seu

@@ -253,7 +253,64 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-    // 7. Lógica da Exclusão de Conta
+    // 7. Lógica do Link de Convite
+    const btnGenerateInvite = document.getElementById('btn-generate-invite');
+    const btnCancelInvite = document.getElementById('btn-cancel-invite');
+    const btnCopyInvite = document.getElementById('btn-copy-invite');
+
+    if (btnGenerateInvite) {
+        btnGenerateInvite.addEventListener('click', async () => {
+            const duration = document.getElementById('invite-duration').value;
+
+            try {
+                const response = await fetch('/app/invite/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ duration })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    showToast(data.message, 'success');
+                    setTimeout(() => window.location.reload(), 800);
+                } else {
+                    showToast(data.error || 'Erro ao gerar link.', 'error');
+                }
+            } catch {
+                showToast('Erro de comunicação com o servidor.', 'error');
+            }
+        });
+    }
+
+    if (btnCancelInvite) {
+        btnCancelInvite.addEventListener('action-confirmed', async () => {
+            try {
+                const response = await fetch('/app/invite', { method: 'DELETE' });
+                const data = await response.json();
+                if (response.ok) {
+                    showToast(data.message, 'success');
+                    setTimeout(() => window.location.reload(), 800);
+                } else {
+                    showToast(data.error || 'Erro ao cancelar link.', 'error');
+                }
+            } catch {
+                showToast('Erro de comunicação com o servidor.', 'error');
+            }
+        });
+    }
+
+    if (btnCopyInvite) {
+        btnCopyInvite.addEventListener('click', () => {
+            const url = document.getElementById('invite-url-input').value;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('Link copiado!', 'success');
+            }).catch(() => {
+                showToast('Não foi possível copiar. Copie manualmente.', 'error');
+            });
+        });
+    }
+
+    // 8. Lógica da Exclusão de Conta
     const btnDeleteAccount = document.getElementById("btn-delete-account");
     const deleteTokenArea = document.getElementById("delete-token-area");
     const deleteTokenInput = document.getElementById("delete-token-input");
