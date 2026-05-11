@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Aniversário Pendente - Birthday Reminder</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 40px 0;
+        }
+        .email {
+            max-width: 550px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        .email__title {
+            font-size: 24px;
+            color: #222;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .email__subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        .email__card {
+            background-color: #f0f8ff;
+            border: 2px solid #2292ca;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 0 auto 25px auto;
+            max-width: 320px;
+        }
+        .email__card-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0056b3;
+            margin: 0 0 8px 0;
+        }
+        .email__card-date {
+            font-size: 16px;
+            color: #444;
+            font-style: italic;
+            margin: 0;
+        }
+        .email__cta {
+            display: inline-block;
+            background-color: #2292ca;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .email__footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="email">
+        <h1 class="email__title">🎂 Novo aniversário aguardando aprovação!</h1>
+        <p class="email__subtitle">Alguém preencheu seu link de convite. Confira os dados e aprove ou rejeite no seu painel.</p>
+
+        <div class="email__card">
+            <p class="email__card-name">{{Name}}</p>
+            <p class="email__card-date">{{Date}}</p>
+        </div>
+
+        <a href="{{DashboardUrl}}" class="email__cta">Ver no Painel</a>
+
+        <div class="email__footer">
+            <p>Este é um email automático do Birthday Reminder. Por favor, não o responda.</p>
+        </div>
+    </div>
+</body>
+</html>

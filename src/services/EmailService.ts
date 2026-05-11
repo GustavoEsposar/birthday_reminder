@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import fs from "fs";
 import path from "path";
 import type { IPessoa } from "../models/Pessoa";
+import type { IPendingBirthdate } from "../models/PendingBirthdate";
 import type { UsuarioComAniversarios, INotificationProvider } from "../types/NotificationTypes";
 import { TokenType } from "../models/Token";
 
@@ -126,6 +127,29 @@ export class EmailService implements INotificationProvider {
 
         // Chama o método privado para realizar o envio
         await this.enviarEmail(usuario, html);
+    }
+
+    public async enviarNotificacaoPendente(owner: IPessoa, pending: IPendingBirthdate): Promise<void> {
+        if (!owner.email) return;
+
+        const templatePath = path.join(__dirname, "../../templates/inviteNotificationTemplate.html");
+        let html = fs.readFileSync(templatePath, "utf-8");
+
+        const date = new Date(pending.date);
+        const day = String(date.getUTCDate()).padStart(2, '0');
+        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+        const year = date.getUTCFullYear();
+        const formattedDate = `${day}/${month}/${year}`;
+
+        const baseUrl = process.env.BASE_URL || 'http://localhost:3003';
+
+        html = html
+            .replace('{{Name}}', pending.name)
+            .replace('{{Date}}', formattedDate)
+            .replace('{{DashboardUrl}}', `${baseUrl}/app`);
+
+        this.subject = "🎂 Novo aniversário aguardando sua aprovação!";
+        await this.enviarEmail(owner, html);
     }
 
     // --- Métodos Privados da Classe ---

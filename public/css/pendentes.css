@@ -1,0 +1,142 @@
+.pendentes-wrapper {
+    margin-top: 40px;
+    margin-bottom: -20px;
+    padding: 15px 20px;
+    background: rgba(255, 193, 7, 0.12);
+    border: 1px solid rgba(255, 193, 7, 0.4);
+    border-radius: 20px;
+}
+
+.pendentes-titulo {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: black;
+    margin: 0 0 12px 0;
+}
+
+.pendentes-count {
+    font-size: 14px;
+    opacity: 0.75;
+}
+
+.pessoas-pendentes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    justify-items: center;
+}
+
+.pessoa-pendente {
+    cursor: default !important;
+    position: relative;
+    width: 90%;
+    box-sizing: border-box;
+    padding: 15px;
+    background-color: rgba(255, 193, 7, 0.2);
+    transition: all 200ms ease-in-out;  
+    border-radius: 15px;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.pessoa-pendente h3 {
+    width: 80%;
+    margin: 0;
+    color: black;
+}
+
+.pessoa-pendente .card-date {
+    margin-top: 10px;
+    font-size: 18px;
+    font-style: italic;
+    text-align: center;
+    color: black;
+}
+
+.pendente-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(255, 193, 7, 0.35);
+    color: #ffe082;
+    padding: 2px 7px;
+    border-radius: 20px;
+    margin-bottom: 6px;
+}
+
+.pendente-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 4px;
+}
+
+.approve-btn,
+.reject-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background 0.15s;
+    line-height: 1;
+}
+
+.approve-btn .material-symbols-outlined {
+    font-size: 20px;
+    color: #81c784;
+}
+
+.reject-btn .material-symbols-outlined {
+    font-size: 20px;
+    color: #e57373;
+}
+
+.approve-btn:hover { background: rgba(129, 199, 132, 0.2); }
+.reject-btn:hover  { background: rgba(229, 115, 115, 0.2); }
+
+/* Invite Link section in Settings */
+.invite-url-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.invite-url-group .input {
+    flex: 1;
+    font-size: 13px;
+}
+
+.invite-expiry {
+    display: block;
+    margin-bottom: 12px;
+    color: black;
+    font-size: 13px;
+}
+
+.invite-generate-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.invite-generate-group .input {
+    flex: 1;
+}
+
+@media screen and (max-width: 420px) {
+    .pessoas-pendentes {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .invite-url-group,
+    .invite-generate-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

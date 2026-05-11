@@ -48,11 +48,15 @@ import homeRoute from "./routes/homeRoute";
 import authRoutes from "./routes/authRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
 import mobileRoutes from "./routes/mobileRoutes";
+import inviteRoutes from "./routes/inviteRoutes";
+import publicInviteRoutes from "./routes/publicInviteRoutes";
 
 app.use(homeRoute);
 app.use(authRoutes);
 app.use(dashboardRoutes);
 app.use(mobileRoutes);
+app.use(inviteRoutes);
+app.use(publicInviteRoutes);
 /*          
 =============================================================================================
 */
