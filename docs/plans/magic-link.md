@@ -1,5 +1,11 @@
 # Plano de Funcionalidade: Magic Link de Coleta de Aniversários
 
+> **Status:** ✅ Implementado — PR [#12](../../../pull/12) — 2026-05-10  
+> **Plano de UI:** [magic-link-ui.md](./magic-link-ui.md)  
+> **Voltar ao sumário:** [SUMMARY.md](../SUMMARY.md)
+
+---
+
 ## Entendimento Consolidado
 
 | Ponto | Decisão |
@@ -190,8 +196,8 @@ src/
 
 | Decisão | Alternativas consideradas | Motivo da escolha |
 |---|---|---|
-| `PendingBirthdate` como coleção separada | Embutir em `InviteLink` ou em `Pessoa` | Queries de aprovação independem do link; evita arrays crescentes em `Pessoa` |
-| Token de 16 chars hex | Reutilizar `TokenService` (6 chars) | Rota pública exige token maior; TTL variável não é suportado pelo modelo atual |
+| `PendingBirthdate` como coleção separada | Embutir em `InviteLink` ou em `Pessoa` | → Ver [ADR-002](../decisions/ADR-002-colecoes-transitorias-separadas.md) |
+| Token de 16 chars hex | Reutilizar `TokenService` (6 chars) | → Ver [ADR-001](../decisions/ADR-001-token-publico-16chars-hex.md) |
 | Link rápido na notificação aponta para `/app?section=pending` (requer login) | Link de aprovação one-click sem auth | Evita surface de ataque adicional; simplifica auth flow |
 | 1 link ativo por vez | Múltiplos links simultâneos | Reduz complexidade do MVP; caso de uso real não exige múltiplos |
 | Campos fixos no MVP | Formulário customizável desde o início | YAGNI — customização é complexidade desnecessária agora |
