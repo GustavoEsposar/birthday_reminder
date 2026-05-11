@@ -3,14 +3,21 @@ import type { Request, Response } from 'express';
 import { tokenService } from '../services/TokenService';
 import { emailService } from '../services/EmailService';
 import { TokenType } from '../models/Token';
+import { inviteLinkService } from '../services/InviteLinkService';
 
 export class SettingsController {
     public async getSettings(req: Request, res: Response): Promise<void> {
         try {
-            const user = await Pessoa.findById(req.session.userId);
+            const [user, activeInviteLink] = await Promise.all([
+                Pessoa.findById(req.session.userId),
+                inviteLinkService.findActiveByUser(req.session.userId!)
+            ]);
+            const baseUrl = process.env.BASE_URL || 'http://localhost:3003';
             res.render('dashboard-settings', {
                 title: 'Birthday Reminder - Configurações',
-                user: user,
+                user,
+                activeInviteLink,
+                baseUrl,
                 extraScripts: ['/js/navbar-dashboard.js', '/js/settings.js', '/js/toast.js', '/js/password-toggle.js']
             });
         } catch (error) {

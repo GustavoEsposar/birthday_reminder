@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="shortcut icon" href="/img/logo.png" type="image/png">
+    <link rel="stylesheet" href="/css/invite.css">
+    <%- include('partials/head.ejs') %>
+</head>
+<body class="invite-body">
+    <div class="invite-card">
+        <img src="/img/logo.png" class="invite-logo-form">
+        <h1 class="invite-title-form pacifico-regular">Birthday Reminder</h1>
+        <p class="invite-subtitle">
+            <strong><%= ownerName %></strong> quer saber seu aniversário!
+        </p>
+
+        <form id="invite-form" class="invite-form">
+            <div class="invite-field">
+                <label for="invite-name">Seu nome</label>
+                <input type="text" id="invite-name" name="name" required
+                    placeholder="Como você se chama?" maxlength="100" autocomplete="off">
+            </div>
+
+            <div class="invite-field">
+                <label for="invite-date">Seu aniversário</label>
+                <input type="date" id="invite-date" name="birthdate" required max="9999-12-31">
+            </div>
+
+            <button type="submit" class="invite-btn" id="invite-submit">Enviar</button>
+            <p id="invite-error" class="invite-error hidden"></p>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('invite-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('invite-name').value.trim().replace(/\s+/g, ' ');
+            const birthdate = document.getElementById('invite-date').value;
+            const errorEl = document.getElementById('invite-error');
+            const submitBtn = document.getElementById('invite-submit');
+
+            errorEl.classList.add('hidden');
+
+            if (!name || !birthdate) {
+                errorEl.textContent = 'Por favor, preencha todos os campos.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+
+            try {
+                const response = await fetch('/invite/<%= token %>/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, birthdate })
+                });
+
+                if (response.ok) {
+                    window.location.href = '/invite/<%= token %>/success';
+                } else {
+                    const data = await response.json();
+                    errorEl.textContent = data.error || 'Erro ao enviar. Tente novamente.';
+                    errorEl.classList.remove('hidden');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Enviar';
+                }
+            } catch {
+                errorEl.textContent = 'Erro de comunicação. Tente novamente.';
+                errorEl.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Enviar';
+            }
+        });
+    </script>
+</body>
+</html>

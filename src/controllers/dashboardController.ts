@@ -1,4 +1,5 @@
 import Pessoa, { NotificationChannel } from '../models/Pessoa';
+import PendingBirthdate from '../models/PendingBirthdate';
 import type { Request, Response, NextFunction } from 'express';
 import crypto from "crypto";
 import mongoose from 'mongoose';
@@ -10,10 +11,14 @@ import { sanitizeString, isValidLength } from '../utils/sanitizer';
 export class DashboardController {
     async getDashboard(req : Request, res: Response): Promise<void> {
         try {
-            const user = await Pessoa.findById(req.session.userId);
+            const [user, pendingEntries] = await Promise.all([
+                Pessoa.findById(req.session.userId),
+                PendingBirthdate.find({ ownerId: req.session.userId }).sort({ submittedAt: 1 })
+            ]);
             res.render('dashboard', {
                 title: 'Birthday Reminder - Dashboard',
-                user: user,
+                user,
+                pendingEntries,
                 extraScripts: ['/js/navbar-dashboard.js', '/js/dashboard.js', '/js/toast.js']
             });
         } catch (error) {

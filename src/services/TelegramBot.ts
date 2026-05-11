@@ -5,6 +5,7 @@ import Pessoa from "../models/Pessoa";
 import type { IPessoa } from "../models/Pessoa";
 import { tokenService } from "./TokenService";
 import { TokenType } from "../models/Token";
+import type { TTelegramDados } from "../types/TTelegramDados";
 
 dotenv.config();
 
@@ -52,6 +53,15 @@ export class TelegramBot {
         } catch (error) {
             console.error(`Falha ao enviar mensagem do Telegram para ${chatId}:`, error);
         }
+    }
+
+    public async sendConfirmationMessage(chatId:ChatId, dados:TTelegramDados): Promise<void> {
+        const message = `🎂 <b>${dados.firstName}</b>, novo aniversário aguardando aprovação!\n\n` +
+            `<b>Nome:</b> ${dados.name}\n` +
+            `<b>Data:</b> ${dados.day}/${dados.month}/${dados.year}\n\n` +
+            `Acesse seu painel para aprovar ou rejeitar.`;
+
+        await this.sendMessage(chatId, message, { parse_mode: 'HTML' });
     }
 
     // ==========================================
