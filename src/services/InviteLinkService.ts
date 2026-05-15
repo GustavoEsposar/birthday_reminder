@@ -17,12 +17,23 @@ export class InviteLinkService {
         // Invalida link anterior se existir
         await InviteLink.deleteMany({ userId });
 
-        const token = crypto.randomBytes(8).toString('hex');
         const expiresAt = new Date(Date.now() + hours * 60 * 60 * 1000);
 
-        const link = new InviteLink({ userId, token, expiresAt });
-        await link.save();
-        return link;
+        const tryInsert = async (attemptsLeft: number): Promise<IInviteLink> => {
+            const token = crypto.randomBytes(8).toString('hex');
+            try {
+                const link = new InviteLink({ userId, token, expiresAt });
+                await link.save();
+                return link;
+            } catch (error) {
+                if (error.code === 11000 && attemptsLeft > 1) {
+                    return tryInsert(attemptsLeft - 1);
+                }
+                throw error;
+            }
+        };
+
+        return tryInsert(3);
     }
 
     async findActiveByToken(token: string): Promise<IInviteLink | null> {
