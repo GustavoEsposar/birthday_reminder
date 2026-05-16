@@ -1,10 +1,17 @@
+import sanitizeHtml from 'xss';
+import mongoSanitize from 'mongo-sanitize';
 /**
  * Limpa uma string removendo espaços extras nas extremidades e substituindo
  * múltiplos espaços internos por apenas um.
  */
 export const sanitizeString = (str: string): string => {
     if (!str) return "";
-    return str.trim().replace(/\s+/g, ' ');
+    const clean = str.trim().replace(/\s+/g, ' ');
+    return sanitizeHtml(clean);
+};
+
+export const sanitizeBody = <T>(body: T): T => {
+    return mongoSanitize(body);                  // remove operadores Mongo
 };
 
 /**

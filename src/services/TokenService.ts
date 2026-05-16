@@ -7,17 +7,26 @@ export class TokenService {
         // Exclui token anterior do mesmo tipo para o usuário, se houver
         await Token.deleteMany({ userId, type });
 
-        // Gera um token aleatório de 6 caracteres hexadecimais (ex: 8F4A2B)
-        const finalToken = crypto.randomBytes(3).toString("hex").toUpperCase();
+        const tryInsert = async (attemptsLeft: number): Promise<string> => {
+            // Gera um token aleatório de 6 caracteres hexadecimais (ex: 8F4A2B)
+            const finalToken = crypto.randomBytes(3).toString("hex").toUpperCase();
+            try {
+                const tokenDoc = new Token({
+                    userId,
+                    token: finalToken,
+                    type
+                });
+                await tokenDoc.save();
+                return finalToken;
+            } catch (error) {
+                if (error.code === 11000 && attemptsLeft > 1) {
+                    return tryInsert(attemptsLeft - 1);
+                }
+                throw error;
+            }
+        };
 
-        const tokenDoc = new Token({
-            userId,
-            token: finalToken,
-            type
-        });
-
-        await tokenDoc.save();
-        return finalToken;
+        return tryInsert(3);
     }
 
     async validateToken(userId: string | mongoose.Types.ObjectId, token: string, type: TokenType): Promise<boolean> {

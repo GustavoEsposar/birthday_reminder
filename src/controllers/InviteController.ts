@@ -4,6 +4,7 @@ import Pessoa from '../models/Pessoa';
 import PendingBirthdate from '../models/PendingBirthdate';
 import { inviteLinkService } from '../services/InviteLinkService';
 import { sanitizeString, isValidLength } from '../utils/sanitizer';
+import { logger } from '../utils/logger';
 
 export class InviteController {
     async generateLink(req: Request, res: Response): Promise<void> {
@@ -26,7 +27,7 @@ export class InviteController {
                 expiresAt: link.expiresAt
             });
         } catch (error) {
-            console.error('Erro ao gerar link de convite:', error);
+            logger.error('Erro ao gerar link de convite:', error);
             res.status(500).json({ error: 'Erro interno ao gerar link.' });
         }
     }
@@ -37,7 +38,7 @@ export class InviteController {
             await inviteLinkService.cancelLink(userId);
             res.status(200).json({ message: 'Link cancelado com sucesso.' });
         } catch (error) {
-            console.error('Erro ao cancelar link:', error);
+            logger.error('Erro ao cancelar link:', error);
             res.status(500).json({ error: 'Erro interno ao cancelar link.' });
         }
     }
@@ -76,7 +77,7 @@ export class InviteController {
                 birthdate: novoAniversario
             });
         } catch (error) {
-            console.error('Erro ao aprovar pendente:', error);
+            logger.error('Erro ao aprovar pendente:', error);
             res.status(500).json({ error: 'Erro interno ao aprovar.' });
         }
     }
@@ -99,7 +100,7 @@ export class InviteController {
 
             res.status(200).json({ message: 'Entrada rejeitada.' });
         } catch (error) {
-            console.error('Erro ao rejeitar pendente:', error);
+            logger.error('Erro ao rejeitar pendente:', error);
             res.status(500).json({ error: 'Erro interno ao rejeitar.' });
         }
     }

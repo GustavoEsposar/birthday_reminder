@@ -3,10 +3,10 @@ import mongoose from 'mongoose';
 import InviteLink, { IInviteLink } from '../models/InviteLink';
 
 const DURATION_MAP: Record<string, number> = {
-    '24h':  24,
-    '3d':   72,
-    '7d':   168,
-    '30d':  720
+    '24h': 24,
+    '3d': 72,
+    '7d': 168,
+    '30d': 720
 };
 
 export class InviteLinkService {

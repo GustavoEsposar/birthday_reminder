@@ -5,6 +5,7 @@ import type { IPessoa } from "../models/Pessoa";
 import type { IPendingBirthdate } from "../models/PendingBirthdate";
 import type { UsuarioComAniversarios, INotificationProvider } from "../types/NotificationTypes";
 import { TokenType } from "../models/Token";
+import { logger } from "../utils/logger";
 
 export class EmailService implements INotificationProvider {
     private transporter: nodemailer.Transporter;
@@ -184,7 +185,7 @@ export class EmailService implements INotificationProvider {
             const info = await this.transporter.sendMail(mailOptions);
             console.log(`Email enviado para ${user.email}: ${info.response}`);
         } catch (err) {
-            console.error(`Erro ao enviar email para ${user.email}:`, err);
+            logger.error(`Erro ao enviar email:`, err);
         }
     }
 }

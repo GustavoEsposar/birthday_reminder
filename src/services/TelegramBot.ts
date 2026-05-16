@@ -6,6 +6,7 @@ import type { IPessoa } from "../models/Pessoa";
 import { tokenService } from "./TokenService";
 import { TokenType } from "../models/Token";
 import type { TTelegramDados } from "../types/TTelegramDados";
+import { logger } from "../utils/logger";
 
 dotenv.config();
 
@@ -22,7 +23,7 @@ export class TelegramBot {
         const token = process.env.TELEGRAM_TOKEN;
         
         if (!token) {
-            console.error("[TELEGRAM] AVISO: TELEGRAM_TOKEN não encontrado no .env. Bot não iniciado.");
+            logger.warn('[TELEGRAM] TELEGRAM_TOKEN não encontrado no .env. Bot não iniciado.');
             return;
         }
 
@@ -43,7 +44,7 @@ export class TelegramBot {
         options: TelegramBotAPI.SendMessageOptions = {} 
     ): Promise<void> {
         if (!this.bot) {
-            console.error("Tentativa de envio de mensagem sem o cliente Telegram inicializado.");
+            logger.warn('Tentativa de envio de mensagem sem o cliente Telegram inicializado.');
             return;
         }
         
@@ -51,7 +52,7 @@ export class TelegramBot {
             // REPASSE O OBJETO 'options' para o bot real aqui:
             await this.bot.sendMessage(chatId, message, options);
         } catch (error) {
-            console.error(`Falha ao enviar mensagem do Telegram para ${chatId}:`, error);
+            logger.error(`Falha ao enviar mensagem do Telegram para chatId ${chatId}:`, error);
         }
     }
 
@@ -78,7 +79,7 @@ export class TelegramBot {
             try {
                 await this.executeCommand(command || "", chatId, args);
             } catch (error) {
-                console.error("Erro interno ao processar comando:", error);
+                logger.error('Erro interno ao processar comando:', error);
                 await this.sendMessage(chatId, "Ocorreu um erro ao processar sua solicitação.");
             }
         });
@@ -133,7 +134,7 @@ export class TelegramBot {
             // Usando negrito HTML na confirmação
             await this.sendMessage(chatId, `✅ Sucesso! A conta de <b>${usuario.name}</b> foi vinculada.`, { parse_mode: "HTML" });
         } catch (error) {
-            console.error("Erro ao vincular conta:", error);
+            logger.error('Erro ao vincular conta:', error);
             await this.sendMessage(chatId, "Ocorreu um erro interno.");
         }
     }

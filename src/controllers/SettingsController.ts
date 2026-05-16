@@ -4,6 +4,7 @@ import { tokenService } from '../services/TokenService';
 import { emailService } from '../services/EmailService';
 import { TokenType } from '../models/Token';
 import { inviteLinkService } from '../services/InviteLinkService';
+import { logger } from '../utils/logger';
 
 export class SettingsController {
     public async getSettings(req: Request, res: Response): Promise<void> {
@@ -83,7 +84,7 @@ export class SettingsController {
             });
 
         } catch (error) {
-            console.error("Erro ao atualizar canais de notificação:", error);
+            logger.error("Erro ao atualizar canais de notificação:", error);
             return res.status(500).json({ error: "Erro interno do servidor." });
         }
     }
@@ -110,7 +111,7 @@ export class SettingsController {
 
             res.status(200).json({ message: "Token gerado com sucesso. Verifique seu e-mail." });
         } catch (error) {
-            console.error("Erro ao gerar token de deleção de conta:", error);
+            logger.error("Erro ao gerar token de deleção de conta:", error);
             res.status(500).json({ error: "Erro interno do servidor." });
         }
     }
@@ -146,12 +147,12 @@ export class SettingsController {
             await Pessoa.findByIdAndDelete(usuario._id);
 
             req.session.destroy((err) => {
-                if (err) console.error("Erro ao destruir sessão:", err);
+                if (err) logger.warn('Erro ao destruir sessão:', err);
             });
 
             res.status(200).json({ message: "Conta excluída com sucesso." });
         } catch (error) {
-            console.error("Erro ao excluir conta:", error);
+            logger.error("Erro ao excluir conta:", error);
             res.status(500).json({ error: "Erro interno do servidor ao excluir conta." });
         }
     }

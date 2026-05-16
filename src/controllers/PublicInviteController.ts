@@ -5,6 +5,7 @@ import { inviteLinkService } from '../services/InviteLinkService';
 import { emailService } from '../services/EmailService';
 import { telegramBot } from '../services/TelegramBot';
 import { sanitizeString, isValidLength } from '../utils/sanitizer';
+import { logger } from '../utils/logger';
 import type { TTelegramDados } from '../types/TTelegramDados';
 
 export class PublicInviteController {
@@ -30,7 +31,7 @@ export class PublicInviteController {
                 token
             });
         } catch (error) {
-            console.error('Erro ao exibir formulário de convite:', error);
+            logger.error('Erro ao exibir formulário de convite:', error);
             res.status(500).send('Erro interno do servidor.');
         }
     }
@@ -51,6 +52,7 @@ export class PublicInviteController {
 
             let { name, birthdate } = req.body;
             name = sanitizeString(name);
+            birthdate = typeof birthdate === 'string' ? birthdate.trim() : '';
 
             if (!name || !birthdate) {
                 res.status(400).json({ error: 'Nome e data são obrigatórios.' });
@@ -59,6 +61,12 @@ export class PublicInviteController {
 
             if (!isValidLength(name, 1, 100)) {
                 res.status(400).json({ error: 'O nome deve ter no máximo 100 caracteres.' });
+                return;
+            }
+
+            // Valida formato ISO antes de construir o Date (ex: "2024-03-15")
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(birthdate)) {
+                res.status(400).json({ error: 'Formato de data inválido. Use AAAA-MM-DD.' });
                 return;
             }
 
@@ -84,7 +92,7 @@ export class PublicInviteController {
 
             res.status(200).json({ message: 'Enviado com sucesso!' });
         } catch (error) {
-            console.error('Erro ao processar convite:', error);
+            logger.error('Erro ao processar convite:', error);
             res.status(500).json({ error: 'Erro interno do servidor.' });
         }
     }

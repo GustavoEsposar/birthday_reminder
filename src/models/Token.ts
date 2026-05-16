@@ -22,7 +22,8 @@ const tokenSchema = new Schema<IToken>({
     },
     token: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     type: {
         type: String,
