@@ -46,3 +46,41 @@ Os contatos acessam a página e preenchem anonimamente Nome e Data. Essas entrad
 4. Verifique a notificação de e-mail ou Telegram (se configurados).
 5. Retorne ao Dashboard (autenticado) para visualizar o Card com a tag de `Pendente`.
 6. Experimente Rejeitar e Aprovar. Ao aprovar, veja o item integrar a lista de datas confirmadas.
+
+---
+
+## 🔐 Security Hardening — Sprint OWASP Top 10
+
+> Conduzido em 2026-05-15 como sprint dedicada pós-entrega do Magic Link.  
+> Metodologia: OWASP Top 10 (2021) + STRIDE.  
+> Plano completo: [`docs/plans/security-hardening.md`](./docs/plans/security-hardening.md)
+
+### Findings e Remediações
+
+| # | Severidade | Finding | Remediação |
+|---|---|---|---|
+| 01 | 🔴 Crítico | Sem rate limiting | `express-rate-limit` com 3 políticas distintas (auth/recovery/invite) |
+| 02 | 🟠 Alto | Cookie de sessão inseguro | Flags `httpOnly`, `secure` (prod) e `sameSite: lax` |
+| 03 | 🟠 Alto | Enumeração de usuários via `forgotPassword` | Resposta genérica HTTP 200 independente do resultado |
+| 04 | 🟠 Alto | Headers de segurança ausentes | `helmet` com CSP restrita |
+| 05 | 🟡 Médio | Sanitização insuficiente (XSS + NoSQL Injection) | `xss` em `sanitizeString`; middleware global `mongo-sanitize`; validação regex em `birthdate` |
+| 06 | 🟡 Médio | Token de recuperação sem unicidade no banco | `unique: true` em `Token.token` + retry com tratamento de `E11000` |
+| 07 | 🔵 Baixo | CORS aberto para qualquer origem | Whitelist via `ALLOWED_ORIGINS` no `.env` ([ADR-005](./docs/decisions/ADR-005-cors-origin-whitelist.md)) |
+| 08 | 🔵 Baixo | `console.error` vazando stack traces em produção | `logger` centralizado em `src/utils/logger.ts` ([ADR-004](./docs/decisions/ADR-004-logger-centralizado-producao.md)) |
+
+### Arquivos Novos
+- `src/utils/logger.ts` — logger com supressão de stack traces em produção
+- `docs/plans/security-hardening.md` — plano da sprint
+- `docs/decisions/ADR-004-logger-centralizado-producao.md`
+- `docs/decisions/ADR-005-cors-origin-whitelist.md`
+
+### Dependências Adicionadas
+```
+express-rate-limit · helmet · xss · mongo-sanitize
+```
+
+### Configuração necessária em produção
+```env
+ALLOWED_ORIGINS=https://seudominio.com
+NODE_ENV=production
+```
