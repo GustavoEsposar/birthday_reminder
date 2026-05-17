@@ -2,6 +2,7 @@ import { buscarUsuariosComAniversarios, buscarUsuariosComAniversariosEmLotes } f
 import { emailService } from "../services/EmailService";
 import { telegramService } from "../services/TelegramService";
 import { NotificationChannel } from "../models/Pessoa";
+import { logger } from "../utils/logger";
 
 export const executarEnvioDiarioEmLotes = async (): Promise<void> => {
     try {
@@ -19,7 +20,7 @@ export const executarEnvioDiarioEmLotes = async (): Promise<void> => {
 
         console.log("[CRON] Rotina de notificações finalizada com sucesso.");
     } catch (error) {
-        console.error("[CRON] Erro crítico na rotina de notificações:", error);
+        logger.error('[CRON] Erro crítico na rotina de notificações:', error);
     }
 };
 
@@ -43,6 +44,6 @@ export const executarEnvioDiario = async (): Promise<void> => {
         
         console.log("[CRON] Rotina de notificações finalizada com sucesso.");
     } catch (error) {
-        console.error("[CRON] Erro crítico na rotina de notificações:", error);
+        logger.error('[CRON] Erro crítico na rotina de notificações:', error);
     }
 };

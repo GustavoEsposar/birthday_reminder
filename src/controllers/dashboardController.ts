@@ -7,6 +7,7 @@ import { emailService } from '../services/EmailService';
 import { tokenService } from '../services/TokenService';
 import { TokenType } from '../models/Token';
 import { sanitizeString, isValidLength } from '../utils/sanitizer';
+import { logger } from '../utils/logger';
 
 export class DashboardController {
     async getDashboard(req : Request, res: Response): Promise<void> {
@@ -52,7 +53,7 @@ export class DashboardController {
             );
             res.status(200).json({ message: 'Aniversário adicionado com sucesso!', birthdate: novoAniversario });
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             res.status(500).json({ error: 'Erro ao adicionar aniversário' });
         }
     }
@@ -66,7 +67,7 @@ export class DashboardController {
             );
             res.status(200).json({ message: 'Aniversário deletado com sucesso!' });
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             res.status(500).json({ error: 'Erro ao deletar aniversário' });
         }
     }
@@ -103,7 +104,7 @@ export class DashboardController {
             );
 
         } catch (error) {
-            console.error("Erro ao gerar token do Telegram:", error);
+            logger.error("Erro ao gerar token do Telegram:", error);
             res.status(500).json({ error: "Erro interno do servidor." });
         }
     }
@@ -140,7 +141,7 @@ export class DashboardController {
                 { message: "Telegram desvinculado com sucesso." }
             );
         } catch (error) {
-            console.error("Erro ao desvinular token do Telegram:", error);
+            logger.error("Erro ao desvinular token do Telegram:", error);
             res.status(500).json({ error: "Erro interno do servidor ao desvincular." });
         }
     }

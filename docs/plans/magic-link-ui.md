@@ -1,5 +1,11 @@
 # Plano de UI: Magic Link de Coleta de Aniversários
 
+> **Status:** ✅ Implementado — PR [#12](../../../pull/12) — 2026-05-10  
+> **Plano de backend:** [magic-link.md](./magic-link.md)  
+> **Voltar ao sumário:** [SUMMARY.md](../SUMMARY.md)
+
+---
+
 ## 1. Dashboard — Seção de Pendentes
 
 ### Análise: Container separado vs. dentro de `.pessoas`
@@ -316,5 +322,5 @@ Manter separado do `dashboard.css` para não poluir o escopo de `.dashboard .pes
 | `.pendentes-wrapper` como irmão de `.pessoas` | Primeiro filho dentro de `.pessoas` | Grid 2 colunas do `.pessoas` exigiria `grid-column: 1/-1` hacks; irmão isola completamente o layout |
 | `.pessoa-pendente` como classe nova | Reutilizar `.pessoa` com modifier | Evita conflitos com sort (`querySelectorAll(".pessoa")`) e com delete (`form.closest('.pessoa')`) |
 | Event delegation no `.pendentes-wrapper` | Listeners individuais em cada botão | Funciona para cards injetados dinamicamente pós-aprovação de outros, sem re-registrar listeners |
-| `Promise.all` SSR para pendentes | Fetch client-side lazy | Zero layout shift, sem complexidade de JS extra, custo de TTFB é `max()` não `sum()` |
+| `Promise.all` SSR para pendentes | Fetch client-side lazy | → Ver [ADR-003](../decisions/ADR-003-promise-all-ssr-queries-paralelas.md) |
 | Aprovação injeta card via `card-pessoa-template` | Reload da página | Consistência com o comportamento de add inline já existente |

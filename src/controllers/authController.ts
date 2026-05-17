@@ -6,6 +6,7 @@ import { TokenType } from '../models/Token';
 import { tokenService } from '../services/TokenService';
 import { emailService } from '../services/EmailService';
 import { sanitizeString, isValidLength } from '../utils/sanitizer';
+import { logger } from '../utils/logger';
 
 export class AuthController {
     async getLogin(req: Request, res: Response) {
@@ -65,11 +66,9 @@ export class AuthController {
             if (user) {
                 const token = await tokenService.generateToken(user._id, TokenType.PASSWORD_RECOVERY);
                 await emailService.enviarToken(user, token, TokenType.PASSWORD_RECOVERY);
-
-                return res.status(200).json({ message: 'Verifique seu email para informar o token de recuperação.' });
-            } else {
-                return res.status(404).json({ error: 'Usuário não encontrado.' });
             }
+
+            return res.status(200).json({ message: 'Se o e-mail estiver cadastrado, você receberá as instruções.' });
         } catch (error) {
             return res.status(500).json({ error: 'Erro interno ao processar a solicitação.' });
         }
@@ -114,7 +113,7 @@ export class AuthController {
 
             return res.status(200).json({ message: "Senha redefinida com sucesso. Faça login novamente." });
         } catch (error) {
-            console.error("Erro ao redefinir a senha:", error);
+            logger.error('Erro ao redefinir a senha:', error);
             return res.status(500).json({ error: 'Erro interno ao processar a recuperação da senha.' });
         }
     }
@@ -205,7 +204,7 @@ export class AuthController {
             return res.status(200).json({ redirect: '/login' });
 
         } catch (error) {
-            console.error("Erro ao verificar email:", error);
+            logger.error('Erro ao verificar email:', error);
             return res.status(500).json({ error: 'Erro interno ao verificar o email.' });
         }
     }
