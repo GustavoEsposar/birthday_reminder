@@ -31,7 +31,8 @@
     "nodemailer": "^8.0.4",
     "nodemon": "^3.1.7",
     "xss": "^1.0.15",
-    "yarn": "^1.22.22"
+    "yarn": "^1.22.22",
+    "@types/node": "^24.10.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -40,7 +41,6 @@
     "@types/express-session": "^1.18.2",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/mongo-sanitize": "^1.0.3",
-    "@types/node": "^24.10.1",
     "@types/node-cron": "^3.0.11",
     "@types/node-telegram-bot-api": "^0.64.14",
     "@types/nodemailer": "^7.0.4",
