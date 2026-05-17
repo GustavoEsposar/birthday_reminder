@@ -128,7 +128,7 @@ app.use(publicInviteRoutes);
 =============================================================================================
 */
 
-//telegramBot.initialize();
+telegramBot.initialize();
 
 // Cron jobs
 cron.schedule(
