@@ -92,6 +92,11 @@
     font-size: 1.3rem;
 }
 
+.content .form-login .token-input::placeholder {
+    text-transform: none;
+    letter-spacing: normal;
+}
+
 .content .form-login div a {
     transition: all 200ms ease-in-out;
     color: white;

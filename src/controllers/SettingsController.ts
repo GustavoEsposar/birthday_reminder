@@ -2,7 +2,7 @@ import Pessoa, { NotificationChannel } from '../models/Pessoa';
 import type { Request, Response } from 'express';
 import { tokenService } from '../services/TokenService';
 import { emailService } from '../services/EmailService';
-import { TokenType } from '../models/Token';
+import Token, { TokenType } from '../models/Token';
 import { inviteLinkService } from '../services/InviteLinkService';
 import { logger } from '../utils/logger';
 
@@ -154,6 +154,89 @@ export class SettingsController {
         } catch (error) {
             logger.error("Erro ao excluir conta:", error);
             res.status(500).json({ error: "Erro interno do servidor ao excluir conta." });
+        }
+    }
+
+    async generateChangeEmailToken(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = (req.session as any).userId;
+            const { newEmail } = req.body;
+
+            if (!userId) {
+                res.status(401).json({ error: "Não autorizado." });
+                return;
+            }
+
+            if (!newEmail) {
+                res.status(400).json({ error: "O novo e-mail é obrigatório." });
+                return;
+            }
+
+            const existingUser = await Pessoa.findOne({ email: newEmail });
+            if (existingUser) {
+                res.status(400).json({ error: "Este e-mail já está em uso." });
+                return;
+            }
+
+            const usuario = await Pessoa.findById(userId);
+            if (!usuario) {
+                res.status(404).json({ error: "Usuário não encontrado." });
+                return;
+            }
+
+            const changeToken = await tokenService.generateToken(usuario._id, TokenType.EMAIL_CHANGE, newEmail);
+            await emailService.enviarToken(usuario, changeToken, TokenType.EMAIL_CHANGE, newEmail);
+
+            res.status(200).json({ message: "Token enviado para o novo e-mail." });
+        } catch (error) {
+            logger.error("Erro ao gerar token de alteração de e-mail:", error);
+            res.status(500).json({ error: "Erro interno do servidor." });
+        }
+    }
+
+    async confirmChangeEmail(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = (req.session as any).userId;
+            const { token } = req.body;
+
+            if (!userId) {
+                res.status(401).json({ error: "Não autorizado." });
+                return;
+            }
+
+            if (!token) {
+                res.status(400).json({ error: "O token é obrigatório." });
+                return;
+            }
+
+            const usuario = await Pessoa.findById(userId);
+            if (!usuario) {
+                res.status(404).json({ error: "Usuário não encontrado." });
+                return;
+            }
+
+            const tokenDoc = await Token.findOne({ userId: usuario._id, token, type: TokenType.EMAIL_CHANGE });
+            
+            if (!tokenDoc) {
+                res.status(400).json({ error: "Token inválido ou expirado." });
+                return;
+            }
+
+            const newEmail = tokenDoc.payload;
+            if (!newEmail) {
+                res.status(400).json({ error: "Erro interno: E-mail não encontrado no token." });
+                return;
+            }
+
+            usuario.email = newEmail;
+            await usuario.save();
+
+            await tokenService.deleteToken(usuario._id, TokenType.EMAIL_CHANGE);
+
+            res.status(200).json({ message: "E-mail alterado com sucesso." });
+        } catch (error) {
+            logger.error("Erro ao alterar e-mail:", error);
+            res.status(500).json({ error: "Erro interno do servidor ao alterar e-mail." });
         }
     }
 }

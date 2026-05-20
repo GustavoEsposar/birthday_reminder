@@ -70,8 +70,9 @@ export class EmailService implements INotificationProvider {
         }
     }
 
-    public async enviarToken(usuario: IPessoa, token: string, tipo: TokenType): Promise<void> {
-        if (!usuario.email) {
+    public async enviarToken(usuario: IPessoa, token: string, tipo: TokenType, customEmail?: string): Promise<void> {
+        const targetEmail = customEmail || usuario.email;
+        if (!targetEmail) {
             console.log(`[EmailService] O usuário ${usuario.name} não possui email cadastrado. Não foi possível enviar o token.`);
             return;
         }
@@ -107,6 +108,12 @@ export class EmailService implements INotificationProvider {
                 subtitle = "Obrigado por se cadastrar! Use o código abaixo para ativar sua conta.";
                 instructions = "Insira este código na tela de cadastro para ativar sua conta. Ele expira em 5 minutos.";
                 break;
+            case TokenType.EMAIL_CHANGE:
+                this.subject = "Confirmação de Alteração de E-mail";
+                title = "Alterar E-mail";
+                subtitle = "Você solicitou a alteração do seu e-mail. Para prosseguir, confirme utilizando o código abaixo.";
+                instructions = "Se você não solicitou isso, ignore este email e seu e-mail não será alterado.";
+                break;
             default:
                 throw new Error(`Tipo de token inválido ou não suportado para envio de email: ${tipo}`);
         }
@@ -127,7 +134,7 @@ export class EmailService implements INotificationProvider {
         html = this.substituirVariaveisDoTemplate(html, corpoHtml);
 
         // Chama o método privado para realizar o envio
-        await this.enviarEmail(usuario, html);
+        await this.enviarEmail(usuario, html, targetEmail);
     }
 
     public async enviarNotificacaoPendente(owner: IPessoa, pending: IPendingBirthdate): Promise<void> {
@@ -173,10 +180,10 @@ export class EmailService implements INotificationProvider {
         return template.replace("{{Beggining}}", aniversariosUl);
     }
 
-    private async enviarEmail(user: IPessoa, htmlContent: string): Promise<void> {
+    private async enviarEmail(user: IPessoa, htmlContent: string, customEmail?: string): Promise<void> {
         const mailOptions = {
             from: process.env.EMAIL,
-            to: user.email,
+            to: customEmail || user.email,
             subject: this.subject,
             html: htmlContent
         };

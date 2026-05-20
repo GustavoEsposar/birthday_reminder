@@ -28,4 +28,8 @@ router.post('/app/settings/generate-delete-token', authController.isAuthenticate
 
 router.post('/app/settings/delete-account', authController.isAuthenticated.bind(authController), settingsController.deleteAccount.bind(settingsController));
 
+router.post('/app/settings/generate-change-email-token', authController.isAuthenticated.bind(authController), settingsController.generateChangeEmailToken.bind(settingsController));
+
+router.post('/app/settings/confirm-change-email', authController.isAuthenticated.bind(authController), settingsController.confirmChangeEmail.bind(settingsController));
+
 export default router;

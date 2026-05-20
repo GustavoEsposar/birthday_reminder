@@ -386,4 +386,87 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    // 9. Lógica de Alteração de E-mail
+    const btnChangeEmail = document.getElementById("btn-change-email");
+    const emailTokenArea = document.getElementById("email-token-area");
+    const emailTokenInput = document.getElementById("email-token-input");
+    const btnConfirmEmail = document.getElementById("btn-confirm-email");
+    const newEmailInput = document.getElementById("new-email-input");
+
+    if (btnChangeEmail) {
+        btnChangeEmail.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const newEmail = newEmailInput.value.trim();
+
+            if (!newEmail) {
+                showToast("Por favor, digite um novo e-mail.", "error");
+                return;
+            }
+
+            try {
+                const response = await fetch("/app/settings/generate-change-email-token", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newEmail })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showToast(data.message, "success");
+                    
+                    btnChangeEmail.classList.add("hidden");
+                    newEmailInput.setAttribute("disabled", "true");
+                    emailTokenArea.classList.remove("hidden");
+                    emailTokenInput.focus();
+                } else {
+                    const errorData = await response.json();
+                    showToast(errorData.error || "Ocorreu um erro desconhecido.", "error");
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+                showToast("Falha na comunicação com o servidor.", "error");
+            }
+        });
+    }
+
+    if (emailTokenInput) {
+        emailTokenInput.addEventListener("input", (e) => {
+            if (e.target.value.trim().length === 6) {
+                btnConfirmEmail.removeAttribute("disabled");
+            } else {
+                btnConfirmEmail.setAttribute("disabled", "true");
+            }
+        });
+    }
+
+    if (btnConfirmEmail) {
+        btnConfirmEmail.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const token = emailTokenInput.value.trim().toUpperCase();
+
+            try {
+                const response = await fetch("/app/settings/confirm-change-email", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showToast(data.message, "success");
+                    
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    const errorData = await response.json();
+                    showToast(errorData.error || "Código inválido.", "error");
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+                showToast("Falha na comunicação com o servidor.", "error");
+            }
+        });
+    }
 });

@@ -315,3 +315,8 @@
     font-size: 1.2em;
     letter-spacing: 5px;
 }
+
+.delete-token-input::placeholder {
+    text-transform: none;
+    letter-spacing: normal;
+}
