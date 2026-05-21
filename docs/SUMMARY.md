@@ -20,6 +20,9 @@
 | Magic Link — backend | [magic-link.md](./plans/magic-link.md) | #12 | ✅ | 2026-05-10 |
 | Magic Link — UI | [magic-link-ui.md](./plans/magic-link-ui.md) | #12 | ✅ | 2026-05-10 |
 | Security Hardening (OWASP Top 10) | [security-hardening.md](./plans/security-hardening.md) | — | ✅ | 2026-05-15 |
+| Alterar E-mail (two-step token) | [account-settings-2fa.md](./plans/account-settings-2fa.md) | — | ✅ | 2026-05-20 |
+| Alterar Senha (two-step token) | [account-settings-2fa.md](./plans/account-settings-2fa.md) | — | ✅ | 2026-05-20 |
+| Padronização de UI dos cards de configuração | — | — | ✅ | 2026-05-20 |
 
 ---
 
@@ -30,6 +33,7 @@
 | [magic-link.md](./plans/magic-link.md) | Magic Link — modelos, endpoints, fluxo | ✅ Implementado |
 | [magic-link-ui.md](./plans/magic-link-ui.md) | Magic Link — dashboard, settings, páginas públicas | ✅ Implementado |
 | [security-hardening.md](./plans/security-hardening.md) | Security hardening — 8 findings OWASP remediados | ✅ Implementado |
+| [account-settings-2fa.md](./plans/account-settings-2fa.md) | Alterar E-mail e Alterar Senha com confirmação por token em dois estágios | ✅ Implementado |
 
 ---
 

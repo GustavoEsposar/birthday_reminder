@@ -67,17 +67,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 4. Lógica de Submissão Segura de Senha via Fetch
-    const passwordForm = document.getElementById('form-change-password');
-    if (passwordForm) {
-        passwordForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Evita que a página recarregue
+    // 4. Lógica de Alteração de Senha (Two-step: solicitar token → confirmar)
+    const btnChangePassword = document.getElementById('btn-change-password');
+    const passwordTokenArea = document.getElementById('password-token-area');
+    const passwordTokenInput = document.getElementById('password-token-input');
+    const btnConfirmPassword = document.getElementById('btn-confirm-password');
 
-            const oldPassword = document.querySelector('input[name="oldPassword"]').value.trim().replace(/\s+/g, ' ');
-            const newPassword = document.getElementById('password').value.trim().replace(/\s+/g, ' ');
-            const passwordConfirm = document.getElementById('passwordConfirm').value.trim().replace(/\s+/g, ' ');
+    if (btnChangePassword) {
+        btnChangePassword.addEventListener('click', async (e) => {
+            e.preventDefault();
 
-            if (!oldPassword || !newPassword || !passwordConfirm) {
+            const newPassword = document.getElementById('password').value.trim();
+            const newPasswordConfirm = document.getElementById('passwordConfirm').value.trim();
+
+            if (!newPassword || !newPasswordConfirm) {
                 showToast('Por favor, preencha todos os campos.', 'error');
                 return;
             }
@@ -87,26 +90,63 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            if (newPassword !== passwordConfirm) {
+            if (newPassword !== newPasswordConfirm) {
                 showToast('A nova senha e a confirmação não coincidem.', 'error');
                 return;
             }
 
-            const data = { oldPassword, newPassword };
-
             try {
-                const response = await fetch('/api/users/change-password', {
+                const response = await fetch('/app/settings/generate-password-change-token', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({ newPassword, newPasswordConfirm })
                 });
 
                 const result = await response.json();
                 if (response.ok) {
-                    showToast('Senha atualizada com sucesso!', 'success');
-                    passwordForm.reset();
+                    showToast(result.message, 'success');
+                    btnChangePassword.classList.add('hidden');
+                    document.getElementById('password').setAttribute('disabled', 'true');
+                    document.getElementById('passwordConfirm').setAttribute('disabled', 'true');
+                    passwordTokenArea.classList.remove('hidden');
+                    passwordTokenInput.focus();
                 } else {
-                    showToast(result.error || 'Erro ao atualizar senha.', 'error');
+                    showToast(result.error || 'Erro ao solicitar alteração.', 'error');
+                }
+            } catch (err) {
+                showToast('Falha na comunicação com o servidor.', 'error');
+            }
+        });
+    }
+
+    if (passwordTokenInput) {
+        passwordTokenInput.addEventListener('input', (e) => {
+            if (e.target.value.trim().length === 6) {
+                btnConfirmPassword.removeAttribute('disabled');
+            } else {
+                btnConfirmPassword.setAttribute('disabled', 'true');
+            }
+        });
+    }
+
+    if (btnConfirmPassword) {
+        btnConfirmPassword.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const token = passwordTokenInput.value.trim().toUpperCase();
+
+            try {
+                const response = await fetch('/app/settings/confirm-password-change', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    showToast(result.message, 'success');
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    showToast(result.error || 'Código inválido.', 'error');
                 }
             } catch (err) {
                 showToast('Falha na comunicação com o servidor.', 'error');
@@ -376,6 +416,89 @@ document.addEventListener("DOMContentLoaded", () => {
                     setTimeout(() => {
                         window.location.href = "/login";
                     }, 2000);
+                } else {
+                    const errorData = await response.json();
+                    showToast(errorData.error || "Código inválido.", "error");
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+                showToast("Falha na comunicação com o servidor.", "error");
+            }
+        });
+    }
+
+    // 9. Lógica de Alteração de E-mail
+    const btnChangeEmail = document.getElementById("btn-change-email");
+    const emailTokenArea = document.getElementById("email-token-area");
+    const emailTokenInput = document.getElementById("email-token-input");
+    const btnConfirmEmail = document.getElementById("btn-confirm-email");
+    const newEmailInput = document.getElementById("new-email-input");
+
+    if (btnChangeEmail) {
+        btnChangeEmail.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const newEmail = newEmailInput.value.trim();
+
+            if (!newEmail) {
+                showToast("Por favor, digite um novo e-mail.", "error");
+                return;
+            }
+
+            try {
+                const response = await fetch("/app/settings/generate-change-email-token", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newEmail })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showToast(data.message, "success");
+                    
+                    btnChangeEmail.classList.add("hidden");
+                    newEmailInput.setAttribute("disabled", "true");
+                    emailTokenArea.classList.remove("hidden");
+                    emailTokenInput.focus();
+                } else {
+                    const errorData = await response.json();
+                    showToast(errorData.error || "Ocorreu um erro desconhecido.", "error");
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+                showToast("Falha na comunicação com o servidor.", "error");
+            }
+        });
+    }
+
+    if (emailTokenInput) {
+        emailTokenInput.addEventListener("input", (e) => {
+            if (e.target.value.trim().length === 6) {
+                btnConfirmEmail.removeAttribute("disabled");
+            } else {
+                btnConfirmEmail.setAttribute("disabled", "true");
+            }
+        });
+    }
+
+    if (btnConfirmEmail) {
+        btnConfirmEmail.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const token = emailTokenInput.value.trim().toUpperCase();
+
+            try {
+                const response = await fetch("/app/settings/confirm-change-email", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showToast(data.message, "success");
+                    
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
                 } else {
                     const errorData = await response.json();
                     showToast(errorData.error || "Código inválido.", "error");

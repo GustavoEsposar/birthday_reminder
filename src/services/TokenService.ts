@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import mongoose from 'mongoose';
 
 export class TokenService {
-    async generateToken(userId: string | mongoose.Types.ObjectId, type: TokenType): Promise<string> {
+    async generateToken(userId: string | mongoose.Types.ObjectId, type: TokenType, payload?: string): Promise<string> {
         // Exclui token anterior do mesmo tipo para o usuário, se houver
         await Token.deleteMany({ userId, type });
 
@@ -14,7 +14,8 @@ export class TokenService {
                 const tokenDoc = new Token({
                     userId,
                     token: finalToken,
-                    type
+                    type,
+                    payload
                 });
                 await tokenDoc.save();
                 return finalToken;

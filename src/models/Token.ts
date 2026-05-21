@@ -4,7 +4,9 @@ export enum TokenType {
     TELEGRAM_BIND = 'TELEGRAM_BIND',
     PASSWORD_RECOVERY = 'PASSWORD_RECOVERY',
     ACCOUNT_DELETION = 'ACCOUNT_DELETION',
-    EMAIL_VERIFICATION = 'EMAIL_VERIFICATION'
+    EMAIL_VERIFICATION = 'EMAIL_VERIFICATION',
+    EMAIL_CHANGE = 'EMAIL_CHANGE',
+    PASSWORD_CHANGE = 'PASSWORD_CHANGE'
 }
 
 export interface IToken extends Document {
@@ -12,6 +14,7 @@ export interface IToken extends Document {
     token: string;
     type: TokenType;
     createdAt: Date;
+    payload?: string;
 }
 
 const tokenSchema = new Schema<IToken>({
@@ -29,6 +32,10 @@ const tokenSchema = new Schema<IToken>({
         type: String,
         enum: Object.values(TokenType),
         required: true
+    },
+    payload: {
+        type: String,
+        required: false
     },
     createdAt: {
         type: Date,

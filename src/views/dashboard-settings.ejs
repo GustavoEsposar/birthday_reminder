@@ -26,21 +26,33 @@
                 <div class="settings-content">
 
                     <div class="tab-pane active" id="tab-account">
+                                                <div class="settings-card">
+                            <h2 class="pacifico-regular">Alterar E-mail</h2>
+                            <p>Atualize o endereço de e-mail associado à sua conta. Um código de confirmação será enviado para o novo e-mail.</p>
+                            
+                            <form id="form-change-email" class="settings-form">
+                                <div class="input-group">
+                                    <label>Novo E-mail</label>
+                                    <input type="email" id="new-email-input" name="newEmail" required class="input"
+                                        placeholder="Digite o novo e-mail">
+                                </div>
+                                <button type="button" id="btn-change-email" class="submit-btn">Solicitar Alteração</button>
+                            </form>
+
+                            <div id="email-token-area" class="delete-token-area hidden" style="margin-top: 15px;">
+                                <p class="delete-token-warning">Atenção: Um código de verificação foi enviado ao seu novo e-mail.</p>
+                                <p class="delete-token-instruction">Digite o código abaixo para confirmar a alteração do e-mail.</p>
+                                <div class="input-group">
+                                    <input type="text" id="email-token-input" class="input delete-token-input" placeholder="Digite o Token" maxlength="6">
+                                </div>
+                                <button id="btn-confirm-email" class="submit-btn" disabled>Confirmar Alteração</button>
+                            </div>
+                        </div>
                         <div class="settings-card">
                             <h2 class="pacifico-regular">Alterar Senha</h2>
-                            <p>Mantenha sua conta segura utilizando uma senha forte.</p>
+                            <p>Defina uma nova senha para a sua conta. A alteração será confirmada por um código enviado ao seu e-mail.</p>
 
                             <form id="form-change-password" class="settings-form">
-                                <div class="input-group">
-                                    <label>Senha Atual</label>
-                                    <div class="password-wrapper">
-                                        <input type="password" name="oldPassword" required class="input"
-                                            placeholder="Digite a senha atual" minlength="8" maxlength="64">
-                                        <button type="button" class="toggle-password">
-                                            <span class="material-symbols-outlined">visibility_off</span>
-                                        </button>
-                                    </div>
-                                </div>
                                 <div class="input-group">
                                     <label>Nova Senha</label>
                                     <div class="password-wrapper">
@@ -61,8 +73,17 @@
                                         </button>
                                     </div>
                                 </div>
-                                <button type="submit" class="submit-btn">Atualizar Senha</button>
+                                <button type="button" id="btn-change-password" class="submit-btn">Solicitar Alteração</button>
                             </form>
+
+                            <div id="password-token-area" class="delete-token-area hidden" style="margin-top: 15px;">
+                                <p class="delete-token-warning">Atenção: Um código de verificação foi enviado ao seu e-mail.</p>
+                                <p class="delete-token-instruction">Digite o código abaixo para confirmar a alteração da senha.</p>
+                                <div class="input-group">
+                                    <input type="text" id="password-token-input" class="input delete-token-input" placeholder="Digite o Token" maxlength="6">
+                                </div>
+                                <button id="btn-confirm-password" class="submit-btn" disabled>Confirmar Alteração</button>
+                            </div>
                         </div>
                         <div class="settings-card">
                             <h2 class="pacifico-regular">Excluir Conta</h2>
@@ -74,7 +95,7 @@
                                 <p class="delete-token-warning">Atenção: Um código de verificação foi enviado ao seu e-mail.</p>
                                 <p class="delete-token-instruction">Digite o código abaixo para confirmar a exclusão permanente da sua conta.</p>
                                 <div class="input-group">
-                                    <input type="text" id="delete-token-input" class="input delete-token-input" placeholder="Ex: ABC123" maxlength="6">
+                                    <input type="text" id="delete-token-input" class="input delete-token-input" placeholder="Digite o Token" maxlength="6">
                                 </div>
                                 <button id="btn-confirm-delete" class="submit-btn final-delete-btn" disabled>Confirmar Exclusão</button>
                             </div>
@@ -242,7 +263,7 @@
     </div>
 
     <%- include('partials/footer.ejs') %>
-        <%- include('partials/foot.ejs') %>
+
 </body>
 
 </html>

@@ -17,6 +17,7 @@ import mongoSanitize from "mongo-sanitize";
 import { executarEnvioDiario, executarEnvioDiarioEmLotes } from "./jobs/notificationJob";
 
 const app = express();
+app.set("trust proxy", 1); // Necessário para cookies secure: true atrás do Render e Cloudflare
 const PORT = process.env.PORT || 3003;
 const timezone = "America/Sao_Paulo";
 
@@ -29,7 +30,7 @@ app.use(helmet({
             defaultSrc: ["'self'"],
             scriptSrc: [
                 "'self'",
-                "https://www.googletagmanager.com",
+                "https://www.googletagmanager.com", "'unsafe-inline'",
             ],
             styleSrc: [
                 "'self'",

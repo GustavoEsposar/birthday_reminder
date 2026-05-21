@@ -2,9 +2,10 @@ import Pessoa, { NotificationChannel } from '../models/Pessoa';
 import type { Request, Response } from 'express';
 import { tokenService } from '../services/TokenService';
 import { emailService } from '../services/EmailService';
-import { TokenType } from '../models/Token';
+import Token, { TokenType } from '../models/Token';
 import { inviteLinkService } from '../services/InviteLinkService';
 import { logger } from '../utils/logger';
+import bcrypt from 'bcryptjs';
 
 export class SettingsController {
     public async getSettings(req: Request, res: Response): Promise<void> {
@@ -89,7 +90,94 @@ export class SettingsController {
         }
     }
 
-    async updateAccountPassword(req: Request, res: Response) {}
+    async generatePasswordChangeToken(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = (req.session as any).userId;
+            const { newPassword, newPasswordConfirm } = req.body;
+
+            if (!userId) {
+                res.status(401).json({ error: "Não autorizado." });
+                return;
+            }
+
+            if (!newPassword || !newPasswordConfirm) {
+                res.status(400).json({ error: "Todos os campos são obrigatórios." });
+                return;
+            }
+
+            if (newPassword.length < 8 || newPassword.length > 64) {
+                res.status(400).json({ error: "A nova senha deve ter entre 8 e 64 caracteres." });
+                return;
+            }
+
+            if (newPassword !== newPasswordConfirm) {
+                res.status(400).json({ error: "A nova senha e a confirmação não coincidem." });
+                return;
+            }
+
+            const usuario = await Pessoa.findById(userId);
+            if (!usuario) {
+                res.status(404).json({ error: "Usuário não encontrado." });
+                return;
+            }
+
+            const salt = await bcrypt.genSalt(10);
+            const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+            const changeToken = await tokenService.generateToken(usuario._id, TokenType.PASSWORD_CHANGE, hashedNewPassword);
+            await emailService.enviarToken(usuario, changeToken, TokenType.PASSWORD_CHANGE);
+
+            res.status(200).json({ message: "Token enviado para seu e-mail." });
+        } catch (error) {
+            logger.error("Erro ao gerar token de alteração de senha:", error);
+            res.status(500).json({ error: "Erro interno do servidor." });
+        }
+    }
+
+    async confirmPasswordChange(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = (req.session as any).userId;
+            const { token } = req.body;
+
+            if (!userId) {
+                res.status(401).json({ error: "Não autorizado." });
+                return;
+            }
+
+            if (!token) {
+                res.status(400).json({ error: "O token é obrigatório." });
+                return;
+            }
+
+            const usuario = await Pessoa.findById(userId);
+            if (!usuario) {
+                res.status(404).json({ error: "Usuário não encontrado." });
+                return;
+            }
+
+            const tokenDoc = await Token.findOne({ userId: usuario._id, token, type: TokenType.PASSWORD_CHANGE });
+            if (!tokenDoc) {
+                res.status(400).json({ error: "Token inválido ou expirado." });
+                return;
+            }
+
+            const hashedNewPassword = tokenDoc.payload;
+            if (!hashedNewPassword) {
+                res.status(400).json({ error: "Erro interno: dados do token inválidos." });
+                return;
+            }
+
+            // Atribui diretamente o hash pré-calculado, sem acionar o middleware de re-hash do Mongoose
+            await Pessoa.findByIdAndUpdate(usuario._id, { password: hashedNewPassword });
+
+            await tokenService.deleteToken(usuario._id, TokenType.PASSWORD_CHANGE);
+
+            res.status(200).json({ message: "Senha alterada com sucesso." });
+        } catch (error) {
+            logger.error("Erro ao confirmar alteração de senha:", error);
+            res.status(500).json({ error: "Erro interno do servidor ao alterar senha." });
+        }
+    }
 
     async generateDeleteToken(req: Request, res: Response): Promise<void> {
         try {
@@ -154,6 +242,89 @@ export class SettingsController {
         } catch (error) {
             logger.error("Erro ao excluir conta:", error);
             res.status(500).json({ error: "Erro interno do servidor ao excluir conta." });
+        }
+    }
+
+    async generateChangeEmailToken(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = (req.session as any).userId;
+            const { newEmail } = req.body;
+
+            if (!userId) {
+                res.status(401).json({ error: "Não autorizado." });
+                return;
+            }
+
+            if (!newEmail) {
+                res.status(400).json({ error: "O novo e-mail é obrigatório." });
+                return;
+            }
+
+            const existingUser = await Pessoa.findOne({ email: newEmail });
+            if (existingUser) {
+                res.status(400).json({ error: "Este e-mail já está em uso." });
+                return;
+            }
+
+            const usuario = await Pessoa.findById(userId);
+            if (!usuario) {
+                res.status(404).json({ error: "Usuário não encontrado." });
+                return;
+            }
+
+            const changeToken = await tokenService.generateToken(usuario._id, TokenType.EMAIL_CHANGE, newEmail);
+            await emailService.enviarToken(usuario, changeToken, TokenType.EMAIL_CHANGE, newEmail);
+
+            res.status(200).json({ message: "Token enviado para o novo e-mail." });
+        } catch (error) {
+            logger.error("Erro ao gerar token de alteração de e-mail:", error);
+            res.status(500).json({ error: "Erro interno do servidor." });
+        }
+    }
+
+    async confirmChangeEmail(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = (req.session as any).userId;
+            const { token } = req.body;
+
+            if (!userId) {
+                res.status(401).json({ error: "Não autorizado." });
+                return;
+            }
+
+            if (!token) {
+                res.status(400).json({ error: "O token é obrigatório." });
+                return;
+            }
+
+            const usuario = await Pessoa.findById(userId);
+            if (!usuario) {
+                res.status(404).json({ error: "Usuário não encontrado." });
+                return;
+            }
+
+            const tokenDoc = await Token.findOne({ userId: usuario._id, token, type: TokenType.EMAIL_CHANGE });
+            
+            if (!tokenDoc) {
+                res.status(400).json({ error: "Token inválido ou expirado." });
+                return;
+            }
+
+            const newEmail = tokenDoc.payload;
+            if (!newEmail) {
+                res.status(400).json({ error: "Erro interno: E-mail não encontrado no token." });
+                return;
+            }
+
+            usuario.email = newEmail;
+            await usuario.save();
+
+            await tokenService.deleteToken(usuario._id, TokenType.EMAIL_CHANGE);
+
+            res.status(200).json({ message: "E-mail alterado com sucesso." });
+        } catch (error) {
+            logger.error("Erro ao alterar e-mail:", error);
+            res.status(500).json({ error: "Erro interno do servidor ao alterar e-mail." });
         }
     }
 }
