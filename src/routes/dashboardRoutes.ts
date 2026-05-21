@@ -32,4 +32,8 @@ router.post('/app/settings/generate-change-email-token', authController.isAuthen
 
 router.post('/app/settings/confirm-change-email', authController.isAuthenticated.bind(authController), settingsController.confirmChangeEmail.bind(settingsController));
 
+router.post('/app/settings/generate-password-change-token', authController.isAuthenticated.bind(authController), settingsController.generatePasswordChangeToken.bind(settingsController));
+
+router.post('/app/settings/confirm-password-change', authController.isAuthenticated.bind(authController), settingsController.confirmPasswordChange.bind(settingsController));
+
 export default router;

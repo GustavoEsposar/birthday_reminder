@@ -102,6 +102,12 @@ export class EmailService implements INotificationProvider {
                 subtitle = "Você solicitou a exclusão permanente da sua conta. Para prosseguir, confirme utilizando o código abaixo.";
                 instructions = "Se você não solicitou isso, ignore este email ou altere sua senha imediatamente.";
                 break;
+            case TokenType.PASSWORD_CHANGE:
+                this.subject = "Confirmação de Alteração de Senha";
+                title = "Alterar Senha";
+                subtitle = "Você solicitou a alteração da sua senha. Para prosseguir, confirme utilizando o código abaixo.";
+                instructions = "Se você não solicitou isso, ignore este email. Sua senha permanece a mesma.";
+                break;
             case TokenType.EMAIL_VERIFICATION:
                 this.subject = "Confirme seu cadastro no Birthday Reminder";
                 title = "Confirmar Cadastro";
