@@ -71,9 +71,10 @@
                         <input type="text" id="new-name" name="name" required placeholder="Nome da pessoa"
                             class="inline-input-name" maxlength="100">
 
-                        <input type="text" id="new-birthdate" name="birthdate" required class="inline-input-date"
-                            placeholder="Data (dd/mm/aaaa)" onfocus="(this.type='date')"
-                            onblur="if(!this.value) this.type='text'" max="9999-12-31">
+                        <div class="inline-date-wrapper">
+                            <input type="date" id="new-birthdate" name="birthdate" required class="inline-input-date" max="9999-12-31">
+                            <span class="date-placeholder">Data (dd/mm/aaaa)</span>
+                        </div>
 
                         <div class="action-buttons">
                             <button type="button" id="cancel-add" class="cancel-btn-inline material-symbols-outlined">

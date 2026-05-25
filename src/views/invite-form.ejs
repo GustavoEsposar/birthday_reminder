@@ -10,30 +10,30 @@
 </head>
 <body class="invite-body">
     <div class="invite-card">
-        <img src="vamos/img/logo.png" class="invite-logo-form">
-        <h1 class=vamos"invite-title-form pacifico-regular">Birthday Reminder</h1>
-        <p class="vamosinvite-subtitle">
-            <stronvamosg><%= ownerName %></strong> quer saber seu aniversário!
+        <img src="/img/logo.png" class="invite-logo-form">
+        <h1 class="invite-title-form pacifico-regular">Birthday Reminder</h1>
+        <p class="invite-subtitle">
+            <strong><%= ownerName %></strong> quer saber seu aniversário!
         </p>
 
- vamos vamos      <form id="vamosinvite-form" class="invite-form">
-            <div cvamoslass="invite-field">
-                <lvamosabel for="invite-name">Seu nome</label>
-                <ivamosnput type="text" id="invite-name" name="name" required
-                  vamos  placeholder="Digite seu nome completo ou apelido" maxlength="100" autocomplete="off">
-            </div>vamos
+        <form id="invite-form" class="invite-form">
+            <div class="invite-field">
+                <label for="invite-name">Seu nome</label>
+                <input type="text" id="invite-name" name="name" required
+                    placeholder="Digite seu nome completo ou apelido" maxlength="100" autocomplete="off">
+            </div>
 
-  vamos          <div cvamoslass="invite-field">
-                <lvamosabel for="invite-date">Seu aniversário</label>
-                <ivamosnput type="date" id="invite-date" name="birthdate" required max="9999-12-31">
-            </div>vamos
+            <div class="invite-field">
+                <label for="invite-date">Seu aniversário</label>
+                <input type="date" id="invite-date" name="birthdate" required max="9999-12-31">
+            </div>
 
-  vamos          <buttovamosn type="submit" class="invite-btn" id="invite-submit">Enviar</button>
-            <p id=vamos"invite-error" class="invite-error hidden"></p>
+            <button type="submit" class="invite-btn" id="invite-submit">Enviar</button>
+            <p id="invite-error" class="invite-error hidden"></p>
         </form>
-  vamos  </div>
+    </div>
 
- vamos   <script>
+    <script>
         document.getElementById('invite-form').addEventListener('submit', async function (e) {
             e.preventDefault();
 
@@ -46,6 +46,19 @@
 
             if (!name || !birthdate) {
                 errorEl.textContent = 'Por favor, preencha todos os campos.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(birthdate)) {
+                errorEl.textContent = 'Formato de data inválido. Use AAAA-MM-DD.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            const dateObj = new Date(birthdate);
+            if (isNaN(dateObj.getTime())) {
+                errorEl.textContent = 'Data inválida.';
                 errorEl.classList.remove('hidden');
                 return;
             }

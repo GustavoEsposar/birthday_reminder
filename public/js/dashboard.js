@@ -116,6 +116,17 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(birthdate)) {
+            showToast("Formato de data inválido. Use AAAA-MM-DD.", "error");
+            return;
+        }
+
+        const dateObj = new Date(birthdate);
+        if (isNaN(dateObj.getTime())) {
+            showToast("Data inválida.", "error");
+            return;
+        }
+
         if (name.length > 100) {
             showToast("o nome deve ter no máximo 100 caracteres.", "error");
             return;

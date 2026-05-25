@@ -183,6 +183,38 @@
     font-size: 1em; /* Mesmo tamanho do <p> padrão */
 }
 
+/* Wrapper e Placeholder para Input Date */
+.inline-date-wrapper {
+    position: relative;
+    width: 90%;
+    display: flex;
+    justify-content: center;
+}
+
+.date-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    transition: opacity 0.2s;
+    font-size: 1em;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+/* Oculta o placeholder quando o input estiver focado ou contiver um valor válido */
+.inline-input-date:focus ~ .date-placeholder,
+.inline-input-date:valid ~ .date-placeholder {
+    opacity: 0;
+}
+
+/* Deixa o texto padrão do input invisível quando vazio e não focado para não sobrepor o placeholder */
+.inline-input-date:not(:focus):invalid {
+    color: transparent;
+}
+
 /* Foco amigável */
 .inline-input-name:focus, .inline-input-date:focus {
     outline: none;

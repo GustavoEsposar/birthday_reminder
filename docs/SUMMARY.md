@@ -23,6 +23,7 @@
 | Alterar E-mail (two-step token) | [account-settings-2fa.md](./plans/account-settings-2fa.md) | — | ✅ | 2026-05-20 |
 | Alterar Senha (two-step token) | [account-settings-2fa.md](./plans/account-settings-2fa.md) | — | ✅ | 2026-05-20 |
 | Padronização de UI dos cards de configuração | — | — | ✅ | 2026-05-20 |
+| Correção de UI/UX e Validação de Datas | — | — | ✅ | 2026-05-25 |
 
 ---
 
@@ -47,6 +48,7 @@
 | [ADR-003](./decisions/ADR-003-promise-all-ssr-queries-paralelas.md) | Promise.all para queries independentes no servidor | Aceito |
 | [ADR-004](./decisions/ADR-004-logger-centralizado-producao.md) | Logger centralizado com supressão de stack traces em produção | Aceito |
 | [ADR-005](./decisions/ADR-005-cors-origin-whitelist.md) | CORS restrito a origens explícitas via variável de ambiente | Aceito |
+| [ADR-006](./decisions/ADR-006-padrao-ui-ux-validacao-datas.md) | Padrão de UI/UX e validação de datas | Aceito |
 
 ---
 

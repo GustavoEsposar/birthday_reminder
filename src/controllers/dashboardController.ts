@@ -42,10 +42,23 @@ export class DashboardController {
                 return;
             }
 
+            birthdate = typeof birthdate === 'string' ? birthdate.trim() : '';
+
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(birthdate)) {
+                res.status(400).json({ error: 'Formato de data inválido. Use AAAA-MM-DD.' });
+                return;
+            }
+
+            const dateObj = new Date(birthdate);
+            if (isNaN(dateObj.getTime())) {
+                res.status(400).json({ error: 'Data inválida.' });
+                return;
+            }
+
             const novoAniversario = {
                 _id: new mongoose.Types.ObjectId(), // Gera um ID único para o aniversário
                 name,
-                date: birthdate
+                date: dateObj
             }
             await Pessoa.updateOne(
                 { _id: req.session.userId },
